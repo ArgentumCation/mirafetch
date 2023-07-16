@@ -3,55 +3,79 @@
 // #![allow(unused_imports)]
 #![warn(clippy::style)]
 
-use anyhow::{ Result };
+use anyhow::{ Result, anyhow };
 use crossterm::{
     cursor::{ MoveTo, MoveToColumn, MoveToNextLine },
-    style::{ PrintStyledContent, Stylize },
+    style::{ PrintStyledContent, Stylize, Color },
     terminal::{ Clear, ClearType::All },
     ExecutableCommand,
 };
 use mirafetch::{
     util::{ AsciiArt, get_icon, get_colorscheme },
-    Colorizer,
+    GayColorizer,
     Config,
     Info,
-    Orientation,
+    DefaultColorizer,
+    Colorizer,
 };
 
 // mod linuxinfo;
 
 // use rkyv::{ validation::validators::check_archived_root, Deserialize, Infallible };
 
-use std::{ io::stdout };
+use std::{ io::stdout, sync::Arc };
 mod util;
 
 fn main() -> anyhow::Result<()> {
     // Load Settings
     // todo: load from TOML
     let settings = Config::new(
-        "transgender".to_string(),
-        Orientation::Horizontal,
-        true,
-        "Windows".to_string()
+        None,
+        None,
+        None,
+        Some("Windows".to_string()) //Todo: determine distro and change this to None
     );
 
     // Get Color Scheme from archive
-    let scheme = get_colorscheme(&settings.scheme_name).unwrap();
+
+    let scheme: Option<Arc<[Color]>> = match settings.scheme_name {
+        Some(ref x) => get_colorscheme(&x).ok(),
+        None => None,
+    };
     let logo: AsciiArt = get_icon(&settings.icon_name).unwrap();
-    let colorizer = Colorizer { color_scheme: scheme, orientation: settings.orientation };
+    let colored_logo = colorize_logo(&settings, &scheme, &logo)?;
 
     // Get system info
     let info = Info::new().as_vec();
 
-    // Colorize
-    let icon = if settings.gay {
-        colorizer.gay_colorize(&logo)
-    } else {
-        colorizer.straight_colorize(&logo)
-    };
-
-    display(icon, info, logo)?;
+    display(colored_logo, info, logo)?;
     Ok(())
+}
+
+fn colorize_logo(
+    settings: &Config,
+    scheme: &Option<Arc<[Color]>>,
+    logo: &AsciiArt
+) -> Result<Vec<crossterm::style::StyledContent<String>>, anyhow::Error> {
+    let colorizer = if settings.gay {
+        if let Some(ref scheme) = *scheme {
+            if let Some(orientation) = settings.orientation {
+                Ok(
+                    Box::new(GayColorizer {
+                        color_scheme: scheme.clone(),
+                        orientation,
+                    }) as Box<dyn Colorizer>
+                )
+            } else {
+                Err(anyhow!("Missing Orientation"))
+            }
+        } else {
+            Err(anyhow!("Missing Scheme"))
+        }
+    } else {
+        Ok(Box::new(DefaultColorizer {}) as Box<dyn Colorizer>)
+    };
+    Ok(colorizer?.colorize(logo))
 }
 
 fn display(

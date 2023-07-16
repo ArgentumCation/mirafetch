@@ -5,10 +5,11 @@
 #![allow(clippy::cast_precision_loss)]
 // use regex::Replacer;
 use crate::util::AsciiArt;
+use rayon::iter::{ ParallelIterator, IndexedParallelIterator };
 // use anyhow::Ok;
 use rayon::prelude::*;
+use serde::{ Serialize, Deserialize };
 use util::OSInfo;
-
 use std::{ sync::Arc };
 use std::fmt::Display;
 use sysinfo::{ System, SystemExt };
@@ -22,40 +23,51 @@ use crate::linuxinfo::UnixInfo as get_info;
 mod linuxinfo;
 pub mod util;
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
-    pub scheme_name: Box<str>,
-    pub orientation: Orientation,
+    pub scheme_name: Option<Box<str>>,
+    pub orientation: Option<Orientation>,
     pub gay: bool,
     pub icon_name: Box<str>,
 }
 
-pub struct Colorizer {
+pub trait Colorizer {
+    fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>>;
+}
+
+pub struct GayColorizer {
     pub color_scheme: Arc<[Color]>,
     pub orientation: Orientation,
 }
 impl Config {
     #[must_use]
     pub fn new(
-        scheme_name: String,
-        orientation: Orientation,
-        gay: bool,
-        icon_name: String
+        scheme_name: Option<String>,
+        orientation: Option<Orientation>,
+        gay: Option<bool>,
+        icon_name: Option<String>
     ) -> Self {
         Self {
-            scheme_name: scheme_name.into_boxed_str(),
+            scheme_name: match scheme_name {
+                Some(x) => Some(x.into_boxed_str()),
+                None => Some("transgender".to_string().into_boxed_str()), //todo!(),
+            },
             orientation,
-            gay,
-            icon_name: icon_name.into_boxed_str(),
+            gay: gay.unwrap_or_default(),
+            icon_name: match icon_name {
+                Some(x) => x.into_boxed_str(),
+                None => "Arch".to_string().into_boxed_str(), //todo!(),
+            },
         }
     }
 }
-impl Colorizer {
-    fn length_to_colors(self, length: usize) -> Vec<Color> {
+impl GayColorizer {
+    fn length_to_colors(&self, length: usize) -> Vec<Color> {
         let preset_len = self.color_scheme.len(); //6
         let center = preset_len / 2; // 4
 
         let repeats = length / preset_len; // 1
-        let mut weights = [repeats].repeat(preset_len); //[1 1 1 1 1 1]
+        let mut weights = [repeats].repeat(preset_len);
         let mut extras = length % preset_len; // 2
         if extras % 2 == 1 {
             extras -= 1;
@@ -65,62 +77,65 @@ impl Colorizer {
         while extras > 0 {
             extras -= 2; //0
             weights[border] += 1; //
-            weights[preset_len - border - 1] += 1; // [2 1 1 1 1 2]
+            weights[preset_len - border - 1] += 1;
             border += 1;
         }
         self.weights_to_colors(weights)
     }
-    fn weights_to_colors(self, weights: Vec<usize>) -> Vec<Color> {
+    fn weights_to_colors(&self, weights: Vec<usize>) -> Vec<Color> {
         weights
             .into_par_iter()
             .enumerate()
             .flat_map(|(idx, weight)| {
-                let mut v: Vec<Color> = [self.color_scheme[idx]].repeat(weight); //Vec::with_capacity(colors.len());
+                let mut v: Vec<Color> = [self.color_scheme[idx]].repeat(weight);
                 v.fill(self.color_scheme[idx]);
                 v
             })
             .collect::<Vec<Color>>()
     }
-
-    #[must_use]
-    pub fn gay_colorize(self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>> {
+}
+impl Colorizer for GayColorizer {
+    fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>> {
         let txt: String = ascii_art.text
             .clone()
-            .into_iter()
+            .into_par_iter()
             .map(|x| x.1)
             .collect();
         match self.orientation {
             Orientation::Horizontal => {
-                let colors = self.length_to_colors(txt.lines().count());
+                let colors = self.length_to_colors(txt.par_lines().count());
 
                 txt.lines()
                     .enumerate()
+                    .par_bridge()
                     .map(move |(i, l)| { (l.to_string() + "\n").with(colors[i]) })
-                    .collect::<Vec<_>>() // as &dyn Iterator<Item = StyledContent<String>>
+                    .collect::<Vec<_>>()
             }
 
             Orientation::Vertical => {
                 //Requires txt has at least one line and is rectangular
                 let colors = self.length_to_colors(ascii_art.width as usize);
 
-                txt.lines()
-                    .enumerate()
-                    .flat_map(|(_idx, line)| {
-                        let x = line
-                            .char_indices()
-                            .map(|(jdx, ch)| { ch.to_string().with(colors[jdx]) });
-                        x.chain(["\n".to_string().with(Color::Reset)])
+                txt.par_lines()
+                    .flat_map(|line| {
+                        line.par_char_indices()
+                            .map(|(idx, ch)| { ch.to_string().with(colors[idx]) })
+                            .chain([String::from("\n").with(Color::Reset)])
                     })
-                    .collect::<Vec<_>>() // as &dyn Iterator<Item = StyledContent<String>>
+                    .collect()
             }
         }
         // Vertical
     }
+}
 
-    pub fn straight_colorize(self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>> {
+pub struct DefaultColorizer {}
+
+impl Colorizer for DefaultColorizer {
+    fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>> {
         let colors = &ascii_art.colors;
         ascii_art.text
-            .iter()
+            .par_iter()
             .map(
                 |(idx, text)| -> StyledContent<String> {
                     text.clone().with(*colors.get((*idx as usize) - 1).unwrap())
@@ -129,7 +144,7 @@ impl Colorizer {
             .collect::<Vec<StyledContent<String>>>()
     }
 }
-
+#[derive(Debug, Serialize, Deserialize, Copy, Clone)]
 pub enum Orientation {
     Horizontal,
     Vertical,
