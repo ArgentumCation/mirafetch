@@ -1,39 +1,73 @@
-use std::collections::HashMap;
-use std::fs;
-use std::sync::Arc;
 use anyhow::anyhow;
 use crossterm::style::Color;
-use rkyv::Infallible;
 use rkyv::archived_root;
 use rkyv::with::ArchiveWith;
 use rkyv::with::DeserializeWith;
 use rkyv::with::Map;
-use rkyv::{ Archive, Deserialize };
-use rkyv_with::{ ArchiveWith, DeserializeWith };
-use sysinfo::{ get_current_pid, CpuExt, ProcessExt, System, SystemExt, UserExt };
+use rkyv::Infallible;
+use rkyv::{Archive, Deserialize};
+use rkyv_with::{ArchiveWith, DeserializeWith};
+use std::collections::HashMap;
+use std::fs;
+use std::sync::Arc;
+// use sysinfo::{ get_current_pid, CpuExt, ProcessExt, System, SystemExt, UserExt };
 use std::path::Path;
 
 pub trait OSInfo {
-    fn new() -> Self;
+    fn sys_font(&self) -> Option<String> {
+        todo!();
+    }
+
+    fn cursor(&self) -> Option<String> {
+        todo!();
+    } //todo!(),
+    fn terminal(&self) -> Option<String> {
+        todo!();
+    } //todo!(),
+    fn term_font(&self) -> Option<String> {
+        todo!();
+    } //todo!(),
+    fn gpus(&self) -> Vec<String> {
+        todo!();
+    }
+    fn memory(&self) -> Option<String> {
+        todo!();
+    } //todo!(),
+    fn disks(&self) -> Vec<(String, String)> {
+        todo!();
+    } //todo!(),
+    fn battery(&self) -> Option<String> {
+        todo!();
+    } //todo!(),
+    fn locale(&self) -> Option<String> {
+        todo!();
+    } //todo!(),
+    fn theme(&self) -> Option<String> {
+        todo!();
+    } //todo!(),
+    fn icons(&self) -> Option<String> {
+        todo!();
+    } //todo!(),
+    fn os(&self) -> Option<String> {
+        todo!();
+    }
+    fn uptime(&self) -> Option<String>;
+    fn ip(&self) -> Vec<String>;
     fn displays(&self) -> Vec<String> {
         todo!();
     }
+
+    fn hostname(&self) -> Option<String>;
 
     fn machine(&self) -> Option<String> {
         todo!();
     }
 
-    fn kernel(&self, s: &System) -> Option<String> {
-        s.kernel_version()
+    fn kernel(&self) -> Option<String> {
+        // s.kernel_version()
+        None
     }
 
-    fn gpus(&self) -> Option<Vec<String>> {
-        todo!();
-    }
-
-    fn theme(&self) -> Option<String> {
-        todo!();
-    }
     fn wm(&self) -> Option<String> {
         todo!();
     }
@@ -42,38 +76,45 @@ pub trait OSInfo {
         todo!();
     }
 
-    fn shell(&self, s: &System) -> Option<String> {
-        let pid = get_current_pid().ok()?;
-        let parent_pid = s.process(pid)?.parent()?;
-        let parent = s.process(parent_pid)?.name();
-        Some(parent.replace(".exe", ""))
+    fn shell(&self) -> Option<String> {
+        None
+        // let pid = get_current_pid().ok()?;
+        // let parent_pid = s.process(pid)?.parent()?;
+        // let parent = s.process(parent_pid)?.name();
+        // Some(parent.replace(".exe", ""))
     }
     #[allow(clippy::cast_precision_loss)]
-    fn cpu(&self, sys: &System) -> Option<String> {
-        let cpu = &sys.cpus().get(0)?;
-        Some(
-            sys.physical_core_count().map_or_else(
-                || format!("{} @ {}MHz", cpu.brand(), cpu.frequency()),
-                |cores| {
-                    format!(
-                        "{} ({}) @ {}GHz",
-                        cpu.brand(),
-                        cores,
-                        (cpu.frequency() as f32) / 1000.0
-                    )
-                }
-            )
-        )
+    fn cpu(&self) -> Option<String> {
+        None
+        // let cpu = &sys.cpus().get(0)?;
+        // Some(
+        //     sys.physical_core_count().map_or_else(
+        //         || format!("{} @ {}MHz", cpu.brand(), cpu.frequency()),
+        //         |cores| {
+        //             format!(
+        //                 "{} ({}) @ {}GHz",
+        //                 cpu.brand(),
+        //                 cores,
+        //                 (cpu.frequency() as f32) / 1000.0
+        //             )
+        //         }
+        //     )
+        // )
     }
 
-    fn username(&self, sys: &System) -> Option<String> {
-        Some(
-            sys.get_user_by_id(sys.process(get_current_pid().ok()?)?.user_id()?)?.name().to_string()
-        )
+    fn username(&self) -> Option<String> {
+        None
+        // Some(
+        //     sys.get_user_by_id(sys.process(get_current_pid().ok()?)?.user_id()?)?.name().to_string()
+        // )
     }
 }
+#[allow(dead_code)]
 pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
-    let path = std::env::current_exe()?.parent().unwrap().join(Path::new("data/icons.rkyv"));
+    let path = std::env::current_exe()?
+        .parent()
+        .unwrap()
+        .join(Path::new("data/icons.rkyv"));
     // println!("{path:#?}");
     let binding = fs::read(path)?;
     let archived = unsafe { archived_root::<Vec<AsciiArtRemote>>(&binding) };
@@ -85,23 +126,23 @@ pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
         .ok_or_else(|| anyhow!(""))
 }
 
+#[allow(dead_code)]
 pub fn get_colorscheme(scheme_name: &str) -> anyhow::Result<Arc<[Color]>> {
-    let path = std::env::current_exe()?.parent().unwrap().join(Path::new("data/flags.rkyv"));
+    let path = std::env::current_exe()?
+        .parent()
+        .unwrap()
+        .join(Path::new("data/flags.rkyv"));
     println!("{path:#?}");
     let binding = fs::read(path)?;
-    let schemes: HashMap<String, Vec<(u8, u8, u8)>> = (
-        unsafe {
-            archived_root::<HashMap<String, Vec<(u8, u8, u8)>>>(binding.as_slice())
-        }
-    ).deserialize(&mut Infallible)?;
+    let schemes: HashMap<String, Vec<(u8, u8, u8)>> =
+        (unsafe { archived_root::<HashMap<String, Vec<(u8, u8, u8)>>>(binding.as_slice()) })
+            .deserialize(&mut Infallible)?;
 
-    Ok(
-        schemes[scheme_name]
-            .clone()
-            .into_iter()
-            .map(|(r, g, b)| Color::Rgb { r, g, b })
-            .collect()
-    )
+    Ok(schemes[scheme_name]
+        .clone()
+        .into_iter()
+        .map(|(r, g, b)| Color::Rgb { r, g, b })
+        .collect())
 }
 #[derive(
     serde::Serialize,
@@ -111,7 +152,7 @@ pub fn get_colorscheme(scheme_name: &str) -> anyhow::Result<Arc<[Color]>> {
     Debug,
     DeserializeWith,
     rkyv::Deserialize,
-    Clone
+    Clone,
 )]
 #[archive_with(from(Color))]
 enum ColorRemote {
@@ -170,11 +211,7 @@ enum ColorRemote {
     ///
     /// Most UNIX terminals and Windows 10 supported only.
     /// See [Platform-specific notes](enum.Color.html#platform-specific-notes) for more info.
-    Rgb {
-        r: u8,
-        g: u8,
-        b: u8,
-    },
+    Rgb { r: u8, g: u8, b: u8 },
 
     /// An ANSI color. See [256 colors - cheat sheet](https://jonasjacek.github.io/colors/) for more info.
     ///
@@ -196,7 +233,7 @@ pub struct AsciiArt {
     Debug,
     ArchiveWith,
     Deserialize,
-    Clone
+    Clone,
 )]
 #[archive_with(from(AsciiArt))]
 struct AsciiArtRemote {
@@ -211,7 +248,11 @@ impl From<AsciiArtRemote> for AsciiArt {
     fn from(other: AsciiArtRemote) -> Self {
         Self {
             names: other.names,
-            colors: other.colors.into_iter().map(std::convert::Into::into).collect(),
+            colors: other
+                .colors
+                .into_iter()
+                .map(std::convert::Into::into)
+                .collect(),
             width: other.width,
             text: other.text,
         }
@@ -241,4 +282,17 @@ impl From<ColorRemote> for Color {
             ColorRemote::AnsiValue(x) => Self::AnsiValue(x),
         }
     }
+}
+
+#[allow(dead_code)]
+#[must_use]
+pub fn bytecount_format(i: u64) -> String {
+    // let mut val = 0;
+    let units = ["bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"];
+    for val in [0, 1, 2, 3, 4, 5, 6] {
+        if (i >> (10 * (val + 1))) == 0 {
+            return format!("{} {}", i >> (10 * val), units[val]);
+        }
+    }
+    panic!()
 }

@@ -3,27 +3,23 @@
 // #![allow(unused_imports)]
 #![warn(clippy::style)]
 
-use anyhow::{ Result, anyhow };
+use anyhow::{anyhow, Result};
 use crossterm::{
-    cursor::{ MoveTo, MoveToColumn, MoveToNextLine },
-    style::{ PrintStyledContent, Stylize, Color },
-    terminal::{ Clear, ClearType::All },
+    cursor::{position, MoveTo, MoveToColumn, MoveToNextLine},
+    style::{Color, PrintStyledContent, Stylize},
+    terminal::{Clear, ClearType::All},
     ExecutableCommand,
 };
 use mirafetch::{
-    util::{ AsciiArt, get_icon, get_colorscheme },
-    GayColorizer,
-    Config,
-    Info,
-    DefaultColorizer,
-    Colorizer,
+    util::{get_colorscheme, get_icon, AsciiArt},
+    Colorizer, Config, DefaultColorizer, GayColorizer, Info,
 };
 
 // mod linuxinfo;
 
 // use rkyv::{ validation::validators::check_archived_root, Deserialize, Infallible };
 
-use std::{ io::stdout, sync::Arc };
+use std::{cmp::max, io::stdout, sync::Arc};
 mod util;
 
 fn main() -> anyhow::Result<()> {
@@ -33,15 +29,15 @@ fn main() -> anyhow::Result<()> {
         None,
         None,
         None,
-        Some("Windows".to_string()) //Todo: determine distro and change this to None
+        Some("Windows".to_string()), //Todo: determine distro and change this to None
     );
 
     // Get Color Scheme from archive
 
-    let scheme: Option<Arc<[Color]>> = settings.scheme_name.as_ref().map_or_else(
-        || None,
-        |x| get_colorscheme(x).ok()
-    );
+    let scheme: Option<Arc<[Color]>> = settings
+        .scheme_name
+        .as_ref()
+        .map_or_else(|| None, |x| get_colorscheme(x).ok());
     let logo: AsciiArt = get_icon(&settings.icon_name).unwrap();
     let colored_logo = colorize_logo(&settings, &scheme, &logo)?;
 
@@ -55,22 +51,22 @@ fn main() -> anyhow::Result<()> {
 fn colorize_logo(
     settings: &Config,
     scheme: &Option<Arc<[Color]>>,
-    logo: &AsciiArt
+    logo: &AsciiArt,
 ) -> Result<Vec<crossterm::style::StyledContent<String>>, anyhow::Error> {
     let colorizer = if settings.gay {
         scheme.as_ref().map_or_else(
             || Err(anyhow!("Missing Scheme")),
-            |scheme|
+            |scheme| {
                 settings.orientation.map_or_else(
                     || Err(anyhow!("Missing Orientation")),
-                    |orientation|
-                        Ok(
-                            Box::new(GayColorizer {
-                                color_scheme: scheme.clone(),
-                                orientation,
-                            }) as Box<dyn Colorizer>
-                        )
+                    |orientation| {
+                        Ok(Box::new(GayColorizer {
+                            color_scheme: scheme.clone(),
+                            orientation,
+                        }) as Box<dyn Colorizer>)
+                    },
                 )
+            },
         )
     } else {
         Ok(Box::new(DefaultColorizer {}) as Box<dyn Colorizer>)
@@ -81,7 +77,7 @@ fn colorize_logo(
 fn display(
     mut icon: Vec<crossterm::style::StyledContent<String>>,
     mut info: Vec<(String, String)>,
-    logo: &AsciiArt
+    logo: &AsciiArt,
 ) -> Result<(), anyhow::Error> {
     icon.reverse();
     info.reverse();
@@ -90,6 +86,7 @@ fn display(
         stdout() /* .execute(ResetColor)?*/
             .execute(PrintStyledContent(line))?;
     }
+    let pos = position()?;
     stdout().execute(MoveTo(0, 0))?;
     while let Some(line) = info.pop() {
         let (x, y) = line;
@@ -99,7 +96,11 @@ fn display(
         if !x.is_empty() && !y.is_empty() {
             stdout().execute(PrintStyledContent(": ".bold().red()))?;
         }
-        stdout().execute(PrintStyledContent(y.reset()))?.execute(MoveToNextLine(1))?;
+        stdout()
+            .execute(PrintStyledContent(y.reset()))?
+            .execute(MoveToNextLine(1))?;
     }
+    let (_x, y) = position().unwrap();
+    stdout().execute(MoveTo(0, max(y, pos.1) + 1))?;
     Ok(())
 }

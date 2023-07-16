@@ -5,21 +5,20 @@
 #![allow(clippy::cast_precision_loss)]
 // use regex::Replacer;
 use crate::util::AsciiArt;
-use rayon::iter::{ ParallelIterator, IndexedParallelIterator };
+use rayon::iter::{IndexedParallelIterator, ParallelIterator};
 // use anyhow::Ok;
-use rayon::prelude::*;
-use serde::{ Serialize, Deserialize };
-use util::OSInfo;
-use std::{ sync::Arc };
-use std::fmt::Display;
-use sysinfo::{ System, SystemExt };
-use time::Duration;
-use crossterm::{ style::{ Color, Stylize, StyledContent } };
 #[cfg(target_family = "windows")]
 use crate::wininfo::WindowsInfo as get_info;
+use crossterm::style::{Color, StyledContent, Stylize};
+use rayon::prelude::*;
+use serde::{Deserialize, Serialize};
+use std::fmt::Display;
+use std::sync::Arc;
+
+use util::OSInfo;
 mod wininfo;
 #[cfg(target_family = "unix")]
-use crate::linuxinfo::UnixInfo as get_info;
+use crate::linuxinfo::LinuxInfo as get_info;
 mod linuxinfo;
 pub mod util;
 
@@ -45,22 +44,23 @@ impl Config {
         scheme_name: Option<String>,
         orientation: Option<Orientation>,
         gay: Option<bool>,
-        icon_name: Option<String>
+        icon_name: Option<String>,
     ) -> Self {
         Self {
-            scheme_name: match scheme_name {
-                Some(x) => Some(x.into_boxed_str()),
-                None => Some("transgender".to_string().into_boxed_str()), //todo!(),
-            },
+            scheme_name: scheme_name.map_or_else(
+                || Some("transgender".to_string().into_boxed_str()),
+                |x| Some(x.into_boxed_str()),
+            ),
             orientation,
             gay: gay.unwrap_or_default(),
-            icon_name: match icon_name {
-                Some(x) => x.into_boxed_str(),
-                None => "Arch".to_string().into_boxed_str(), //todo!(),
-            },
+            icon_name: icon_name.map_or_else(
+                || "Arch".to_string().into_boxed_str(),
+                std::string::String::into_boxed_str,
+            ),
         }
     }
 }
+
 impl GayColorizer {
     fn length_to_colors(&self, length: usize) -> Vec<Color> {
         let preset_len = self.color_scheme.len(); //6
@@ -96,7 +96,8 @@ impl GayColorizer {
 }
 impl Colorizer for GayColorizer {
     fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>> {
-        let txt: String = ascii_art.text
+        let txt: String = ascii_art
+            .text
             .clone()
             .into_par_iter()
             .map(|x| x.1)
@@ -108,7 +109,7 @@ impl Colorizer for GayColorizer {
                 txt.lines()
                     .enumerate()
                     .par_bridge()
-                    .map(move |(i, l)| { (l.to_string() + "\n").with(colors[i]) })
+                    .map(move |(i, l)| (l.to_string() + "\n").with(colors[i]))
                     .collect::<Vec<_>>()
             }
 
@@ -119,7 +120,7 @@ impl Colorizer for GayColorizer {
                 txt.par_lines()
                     .flat_map(|line| {
                         line.par_char_indices()
-                            .map(|(idx, ch)| { ch.to_string().with(colors[idx]) })
+                            .map(|(idx, ch)| ch.to_string().with(colors[idx]))
                             .chain([String::from("\n").with(Color::Reset)])
                     })
                     .collect()
@@ -134,13 +135,12 @@ pub struct DefaultColorizer {}
 impl Colorizer for DefaultColorizer {
     fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>> {
         let colors = &ascii_art.colors;
-        ascii_art.text
+        ascii_art
+            .text
             .par_iter()
-            .map(
-                |(idx, text)| -> StyledContent<String> {
-                    text.clone().with(*colors.get((*idx as usize) - 1).unwrap())
-                }
-            )
+            .map(|(idx, text)| -> StyledContent<String> {
+                text.clone().with(*colors.get((*idx as usize) - 1).unwrap())
+            })
             .collect::<Vec<StyledContent<String>>>()
     }
 }
@@ -170,14 +170,15 @@ pub struct Info {
     terminal_font: Option<String>,
     gpus: Vec<String>,
     memory: Option<String>,
-    disks: Option<String>,
+    disks: Vec<(String, String)>,
     battery: Option<String>,
     locale: Option<String>,
     theme: Option<String>,
     icons: Option<String>,
+    ip: Vec<String>,
 }
 
-impl Display for Info {
+/*impl Display for Info {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         // println!("{:#?}", self);
         let username = self.username.clone().unwrap_or_default();
@@ -207,60 +208,59 @@ impl Display for Info {
         info_fmt(f, "Terminal", self.terminal.as_ref())?;
         info_fmt(f, "Terminal Font", self.terminal_font.as_ref())?;
         info_fmt(f, "Memory", self.memory.as_ref())?;
-        info_fmt(f, "Disks", self.disks.as_ref())?;
+        for (label, size) in self.disks.iter() {
+            info_fmt(f, &format!("Disk {label}"), Some(size))?;
+        }
         info_fmt(f, "Battery", self.battery.as_ref())?;
         info_fmt(f, "Locale", self.locale.as_ref())?;
         info_fmt(f, "Icon Theme", self.icons.as_ref())?;
         palette();
         Ok::<_, std::fmt::Error>(())
     }
-}
+}*/
 
 fn palette() -> (String, String) {
     (
-        (0..8u8).map(|x| "   ".on(Color::AnsiValue(x)).to_string()).collect::<String>(),
-        (8..16u8).map(|x| "   ".on(Color::AnsiValue(x)).to_string()).collect::<String>(),
+        (0..8u8)
+            .map(|x| "   ".on(Color::AnsiValue(x)).to_string())
+            .collect::<String>(),
+        (8..16u8)
+            .map(|x| "   ".on(Color::AnsiValue(x)).to_string())
+            .collect::<String>(),
     )
-}
-
-#[cfg(target_family = "unix")]
-fn get_kernel() -> Option<String> {
-    use sysinfo::RefreshKind;
-
-    let sys = System::new_all();
-    return sys.kernel_version();
 }
 
 impl Info {
     #[must_use]
     pub fn new() -> Self {
-        let mut sys = System::new_all();
-        let getter = get_info::new();
-        sys.refresh_all();
+        // let mut sys = System::new_all();
+        let getter: Box<dyn OSInfo> = Box::new(get_info::new());
+        //  sys.refresh_all();
         Self {
             // general_readout: general_readout.clone(),
-            os: sys.long_os_version(),
+            os: getter.os(),
             machine: getter.machine(),
-            kernel: getter.kernel(&sys),
-            uptime: Some(Duration::new(sys.uptime().try_into().unwrap(), 0).to_string()),
-            username: getter.username(&sys),
-            hostname: sys.host_name(),
+            kernel: getter.kernel(),
+            uptime: None, //Some(Duration::new(sys.uptime().try_into().unwrap(), 0).to_string()),
+            username: getter.username(),
+            hostname: getter.hostname(),
             resolution: getter.displays(),
             wm: getter.wm(),
             de: getter.de(),
-            shell: getter.shell(&sys),
-            cpu: getter.cpu(&sys),
-            font: None, //todo!(),
-            cursor: None, //todo!(),
-            terminal: None, //todo!(),
-            terminal_font: None, //todo!(),
-            gpus: getter.gpus().unwrap_or_default(),
-            memory: None, //todo!(),
-            disks: None, //todo!(),
-            battery: None, //todo!(),
-            locale: None, //todo!(),
-            theme: getter.theme(), //todo!(),
-            icons: None, //todo!(),
+            shell: getter.shell(),
+            cpu: getter.cpu(),
+            font: getter.sys_font(),           //todo!(),
+            cursor: getter.cursor(),           //todo!(),
+            terminal: getter.terminal(),       //todo!(),
+            terminal_font: getter.term_font(), //todo!(),
+            gpus: getter.gpus(),
+            memory: getter.memory(),   //todo!(),
+            disks: getter.disks(),     //todo!(),
+            battery: getter.battery(), //todo!(),
+            locale: getter.locale(),   //todo!(),
+            theme: getter.theme(),     //todo!(),
+            icons: getter.icons(),     //todo!(),
+            ip: getter.ip(),
         }
     }
     #[must_use]
@@ -289,39 +289,44 @@ impl Info {
             ("Terminal".to_string(), self.terminal),
             ("Terminal Font".to_string(), self.terminal_font),
             ("Memory".to_string(), self.memory),
-            ("Disks".to_string(), self.disks),
             ("Battery".to_string(), self.battery),
             ("Locale".to_string(), self.locale),
-            ("Icon Theme".to_string(), self.icons)
+            ("Icon Theme".to_string(), self.icons),
         ]
-            .into_iter()
-            .filter_map(|(x, y)| y.map(|z| (x, z)))
-            .chain(
-                self.resolution
-                    .into_iter()
-                    .enumerate()
-                    .map(|(idx, res)| { (format!("Display {}", idx + 1), res) })
-            )
-            .chain(
-                self.gpus
-                    .into_iter()
-                    .enumerate()
-                    .map(|(idx, res)| { (format!("GPU {}", idx + 1), res) })
-            )
-            .collect::<Vec<(String, String)>>();
+        .into_iter()
+        .filter_map(|(x, y)| y.map(|z| (x, z)))
+        .chain(
+            self.resolution
+                .into_iter()
+                .enumerate()
+                .map(|(idx, res)| (format!("Display {}", idx + 1), res)),
+        )
+        .chain(
+            self.gpus
+                .into_iter()
+                .enumerate()
+                .map(|(idx, res)| (format!("GPU {}", idx + 1), res)),
+        )
+        .chain(self.disks)
+        .chain(self.ip.into_iter().map(|x| ("IP".to_string(), x)))
+        .collect::<Vec<(String, String)>>();
         res.push((String::new(), dark));
         res.push((String::new(), light));
         res
     }
 }
 
+#[allow(dead_code)]
 fn info_fmt(
     f: &mut std::fmt::Formatter<'_>,
     info_type: &str,
-    val: Option<&String>
+    val: Option<&String>,
 ) -> std::fmt::Result {
     if let Some(x) = val {
-        info_type.with(Color::Red).attribute(crossterm::style::Attribute::Bold).fmt(f)?;
+        info_type
+            .with(Color::Red)
+            .attribute(crossterm::style::Attribute::Bold)
+            .fmt(f)?;
         x.clone().reset().fmt(f)?;
         '\n'.fmt(f)?;
     }

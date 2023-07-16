@@ -1,7 +1,7 @@
-use std::{ fs, collections::HashMap, env, iter::zip };
+use std::{collections::HashMap, env, fs, iter::zip};
 
-use rkyv::{ self, Archive };
-use regex::{ self, Regex };
+use regex::{self, Regex};
+use rkyv::{self, Archive};
 
 #[derive(serde::Serialize, serde::Deserialize, Archive, Debug, Clone, rkyv::Serialize)]
 pub enum Color {
@@ -60,11 +60,7 @@ pub enum Color {
     ///
     /// Most UNIX terminals and Windows 10 supported only.
     /// See [Platform-specific notes](enum.Color.html#platform-specific-notes) for more info.
-    Rgb {
-        r: u8,
-        g: u8,
-        b: u8,
-    },
+    Rgb { r: u8, g: u8, b: u8 },
 
     /// An ANSI color. See [256 colors - cheat sheet](https://jonasjacek.github.io/colors/) for more info.
     ///
@@ -92,17 +88,19 @@ struct AsciiArt {
 }
 
 fn main() {
+    //this should work with yaml serde without changes
     println!("cargo:rerun-if-changed=data/flags.json");
+    //todo: make this yaml
     println!("cargo:rerun-if-changed=data/data.json5");
 
     //Archive Flags
     let binding = fs::read_to_string("data/flags.json").unwrap();
     let flags_json: HashMap<String, Vec<(u8, u8, u8)>> = json5 //todo: switch to css hex strings
         ::from_str(binding.as_str())
-        .unwrap();
+    .unwrap();
     let bytes = rkyv::to_bytes::<_, 1024>(&flags_json).unwrap();
     let out_dir = (env::var("OUT_DIR").unwrap() + "/../../../data").into_boxed_str(); //todo: see if there's a less hacky way to do this
-    // println!("cargo:warning={out_dir}");
+                                                                                      // println!("cargo:warning={out_dir}");
     fs::DirBuilder::new().create(out_dir.as_ref()).ok();
     fs::write(out_dir.to_string() + "/flags.rkyv", bytes).unwrap();
 
