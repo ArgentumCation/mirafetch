@@ -1,13 +1,11 @@
 #![cfg(target_family = "unix")]
 use std::{
     alloc::Layout,
-    collections::{HashMap, HashSet},
     ffi::{CStr, CString},
     fs,
     mem::{self, MaybeUninit},
     net::{Ipv4Addr, Ipv6Addr},
-    ops::{Deref, DerefMut},
-    rc::Rc,
+    sync::RwLock,
 };
 
 use crate::util::{bytecount_format, OSInfo};
@@ -19,39 +17,42 @@ use libc::{getifaddrs, statvfs, AF_INET, AF_INET6, IFA_F_DEPRECATED, IFF_LOOPBAC
 use pci_ids::Device;
 use platform_info::{PlatformInfo, PlatformInfoAPI};
 use rayon::{
-    prelude::{
-        FromParallelIterator, IntoParallelRefIterator, ParallelBridge, ParallelExtend,
-        ParallelIterator,
-    },
+    prelude::{ParallelExtend, ParallelIterator},
     str::ParallelString,
 };
+use rustc_hash::{FxHashMap, FxHashSet};
 
 pub struct LinuxInfo {
     uts: PlatformInfo,
-    os_release: HashMap<Box<str>, Box<str>>,
+    os_release: RwLock<FxHashMap<Box<str>, Box<str>>>,
 }
 impl LinuxInfo {
     pub fn new() -> Self {
         Self {
             uts: PlatformInfo::new().unwrap(),
-            os_release: HashMap::new(),
+            os_release: RwLock::default(),
         }
     }
 }
 impl OSInfo for LinuxInfo {
-    fn os(&mut self) -> Option<String> {
+    fn os(&self) -> Option<String> {
         //Todo: check for lsb_release
         let data = fs::read_to_string("/etc/os-release").ok()?;
-        self.os_release.par_extend(data.par_lines().map(|line| {
-            let (x, y) = line.split_once('=').unwrap();
-            (
-                x.to_owned().into_boxed_str(),
-                y.trim_matches('"').to_owned().into_boxed_str(),
-            )
-        }));
+        self.os_release
+            .write()
+            .unwrap()
+            .par_extend(data.par_lines().map(|line| {
+                let (x, y) = line.split_once('=').unwrap();
+                (
+                    x.to_owned().into_boxed_str(),
+                    y.trim_matches('"').to_owned().into_boxed_str(),
+                )
+            }));
         Some(
-            (self.os_release).get("NAME")?.to_string()
+            (self.os_release).read().unwrap().get("NAME")?.to_string()
                 + (self.os_release)
+                    .read()
+                    .unwrap()
                     .get("VERSION")
                     .map_or(String::new(), |x| " ".to_string() + x + " ")
                     .as_ref()
@@ -196,8 +197,8 @@ impl OSInfo for LinuxInfo {
         ))
     }
     fn ip(&self) -> Vec<String> {
-        let mut ipv4_addrs = HashSet::<Ipv4Addr>::new();
-        let mut ipv6_addrs = HashSet::<Ipv6Addr>::new();
+        let mut ipv4_addrs = FxHashSet::<Ipv4Addr>::default();
+        let mut ipv6_addrs = FxHashSet::<Ipv6Addr>::default();
         unsafe {
             let mut addrs = mem::MaybeUninit::<*mut libc::ifaddrs>::uninit();
             getifaddrs(addrs.as_mut_ptr());
@@ -274,7 +275,6 @@ impl OSInfo for LinuxInfo {
                     let total = (*buf).f_blocks ;
                     let size_used = total - ((*buf).f_bavail );
                     let block_size = (*buf).f_bsize;
-                    println!("{total},{size_used}");
                     if size_used == 0 {
                         return None;
                     }
@@ -302,6 +302,10 @@ impl OSInfo for LinuxInfo {
         None
     }
     fn id(&self) -> Box<str> {
-        self.os_release.get("ID").unwrap().to_owned()
+        self.os_release
+            .read()
+            .unwrap()
+            .get("ID")
+            .unwrap().clone()
     }
 }

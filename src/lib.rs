@@ -12,8 +12,9 @@ use crate::wininfo::WindowsInfo as get_info;
 use crossterm::style::{Color, StyledContent, Stylize};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
+
 use std::fmt::Display;
-use std::ops::Deref;
+
 use std::sync::Arc;
 
 use util::OSInfo;
@@ -27,7 +28,6 @@ pub mod util;
 pub struct Config {
     pub scheme_name: Option<Box<str>>,
     pub orientation: Option<Orientation>,
-    pub gay: bool,
     pub icon_name: Box<str>,
 }
 
@@ -44,20 +44,12 @@ impl Config {
     pub fn new(
         scheme_name: Option<String>,
         orientation: Option<Orientation>,
-        gay: Option<bool>,
         icon_name: Option<String>,
     ) -> Self {
         Self {
-            scheme_name: scheme_name.map_or_else(
-                || Some("transgender".to_string().into_boxed_str()),
-                |x| Some(x.into_boxed_str()),
-            ),
+            scheme_name: scheme_name.map(std::string::String::into_boxed_str),
             orientation,
-            gay: gay.unwrap_or_default(),
-            icon_name: icon_name.map_or_else(
-                || "Arch".to_string().into_boxed_str(),
-                std::string::String::into_boxed_str,
-            ),
+            icon_name: icon_name.unwrap().into_boxed_str(),
         }
     }
 }
@@ -103,14 +95,16 @@ impl Colorizer for GayColorizer {
             .into_par_iter()
             .map(|x| x.1)
             .collect();
+
         match self.orientation {
             Orientation::Horizontal => {
                 let colors = self.length_to_colors(txt.par_lines().count());
 
-                txt.lines()
+                txt.par_lines()
+                    .collect::<Vec<&str>>()
+                    .par_iter()
                     .enumerate()
-                    .par_bridge()
-                    .map(move |(i, l)| (l.to_string() + "\n").with(colors[i]))
+                    .map(move |(i, l)| ((*l).to_string() + "\n").with(colors[i]))
                     .collect::<Vec<_>>()
             }
 
@@ -127,7 +121,6 @@ impl Colorizer for GayColorizer {
                     .collect()
             }
         }
-        // Vertical
     }
 }
 
@@ -195,34 +188,85 @@ impl Info {
     #[must_use]
     pub fn new() -> Self {
         // let mut sys = System::new_all();
-        let mut getter: Box<dyn OSInfo> = Box::new(get_info::new());
-        //  sys.refresh_all();
-        Self {
+        let getter = Arc::new(get_info::new());
+        let _getter_clone = Arc::clone(&getter);
+        let mut battery = Default::default();
+        let mut cpu = Default::default();
+        let mut cursor = Default::default();
+        let mut de = Default::default();
+        let mut disks = Default::default();
+        let mut font = Default::default();
+        let mut gpus = Default::default();
+        let mut hostname = Default::default();
+        let mut icons = Default::default();
+        let mut id = Default::default();
+        let mut ip = Default::default();
+        let mut kernel = Default::default();
+        let mut locale = Default::default();
+        let mut machine = Default::default();
+        let mut memory = Default::default();
+        let mut os = Default::default();
+        let mut resolution = Default::default();
+        let mut shell = Default::default();
+        let mut terminal_font = Default::default();
+        let mut terminal = Default::default();
+        let mut theme = Default::default();
+        let mut uptime = Default::default();
+        let mut username = Default::default();
+        let mut wm = Default::default();
+        rayon::scope(|s| {
             // general_readout: general_readout.clone(),
-            os: getter.os(),
-            machine: getter.machine(),
-            kernel: getter.kernel(),
-            uptime: None, //Some(Duration::new(sys.uptime().try_into().unwrap(), 0).to_string()),
-            username: getter.username(),
-            hostname: getter.hostname(),
-            resolution: getter.displays(),
-            wm: getter.wm(),
-            de: getter.de(),
-            shell: getter.shell(),
-            cpu: getter.cpu(),
-            font: getter.sys_font(),           //todo!(),
-            cursor: getter.cursor(),           //todo!(),
-            terminal: getter.terminal(),       //todo!(),
-            terminal_font: getter.term_font(), //todo!(),
-            gpus: getter.gpus(),
-            memory: getter.memory(),   //todo!(),
-            disks: getter.disks(),     //todo!(),
-            battery: getter.battery(), //todo!(),
-            locale: getter.locale(),   //todo!(),
-            theme: getter.theme(),     //todo!(),
-            icons: getter.icons(),     //todo!(),
-            ip: getter.ip(),
-            id: getter.id(),
+            s.spawn(|_| battery = getter.battery());
+            s.spawn(|_| cpu = getter.cpu());
+            s.spawn(|_| cursor = getter.cursor());
+            s.spawn(|_| de = getter.de());
+            s.spawn(|_| disks = getter.disks());
+            s.spawn(|_| font = getter.sys_font());
+            s.spawn(|_| gpus = getter.gpus());
+            s.spawn(|_| hostname = getter.hostname());
+            s.spawn(|_| icons = getter.icons());
+            s.spawn(|_| id = getter.id());
+            s.spawn(|_| ip = getter.ip());
+            s.spawn(|_| kernel = getter.kernel());
+            s.spawn(|_| locale = getter.locale());
+            s.spawn(|_| machine = getter.machine());
+            s.spawn(|_| memory = getter.memory());
+            s.spawn(|_| os = getter.os());
+            s.spawn(|_| resolution = getter.displays());
+            s.spawn(|_| shell = getter.shell());
+            s.spawn(|_| terminal = getter.terminal());
+            s.spawn(|_| terminal_font = getter.term_font());
+            s.spawn(|_| theme = getter.theme());
+            s.spawn(|_| uptime = getter.uptime());
+            s.spawn(|_| username = getter.username());
+            s.spawn(|_| wm = getter.wm());
+        });
+
+        Self {
+            os,
+            machine,
+            kernel,
+            uptime,
+            username,
+            hostname,
+            resolution,
+            wm,
+            de,
+            shell,
+            cpu,
+            font,
+            cursor,
+            terminal,
+            terminal_font,
+            gpus,
+            memory,
+            disks,
+            battery,
+            locale,
+            theme,
+            icons,
+            ip,
+            id,
         }
     }
     #[must_use]

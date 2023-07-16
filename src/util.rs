@@ -7,61 +7,61 @@ use rkyv::with::Map;
 use rkyv::Infallible;
 use rkyv::{Archive, Deserialize};
 use rkyv_with::{ArchiveWith, DeserializeWith};
-use std::collections::HashMap;
+use rustc_hash::FxHashMap;
 use std::fs;
 use std::sync::Arc;
 // use sysinfo::{ get_current_pid, CpuExt, ProcessExt, System, SystemExt, UserExt };
 use std::path::Path;
 
-pub trait OSInfo {
+pub trait OSInfo: Send + Sync {
     fn sys_font(&self) -> Option<String> {
-        todo!();
+        None
     }
 
     fn cursor(&self) -> Option<String> {
-        todo!();
+        None
     } //todo!(),
     fn terminal(&self) -> Option<String> {
-        todo!();
+        None
     } //todo!(),
     fn term_font(&self) -> Option<String> {
-        todo!();
+        None
     } //todo!(),
     fn gpus(&self) -> Vec<String> {
-        todo!();
+        Vec::new()
     }
     fn memory(&self) -> Option<String> {
-        todo!();
+        None
     } //todo!(),
     fn disks(&self) -> Vec<(String, String)> {
-        todo!();
+        Vec::new()
     } //todo!(),
     fn battery(&self) -> Option<String> {
-        todo!();
+        None
     } //todo!(),
     fn locale(&self) -> Option<String> {
-        todo!();
+        None
     } //todo!(),
     fn theme(&self) -> Option<String> {
-        todo!();
+        None
     } //todo!(),
     fn icons(&self) -> Option<String> {
-        todo!();
+        None
     } //todo!(),
-    fn os(&mut self) -> Option<String> {
-        todo!();
+    fn os(&self) -> Option<String> {
+        None
     }
     fn id(&self) -> Box<str>;
     fn uptime(&self) -> Option<String>;
     fn ip(&self) -> Vec<String>;
     fn displays(&self) -> Vec<String> {
-        todo!();
+        Vec::new()
     }
 
     fn hostname(&self) -> Option<String>;
 
     fn machine(&self) -> Option<String> {
-        todo!();
+        None
     }
 
     fn kernel(&self) -> Option<String> {
@@ -70,11 +70,11 @@ pub trait OSInfo {
     }
 
     fn wm(&self) -> Option<String> {
-        todo!();
+        None
     }
 
     fn de(&self) -> Option<String> {
-        todo!();
+        None
     }
 
     fn shell(&self) -> Option<String> {
@@ -110,6 +110,7 @@ pub trait OSInfo {
         // )
     }
 }
+
 #[allow(dead_code)]
 pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
     let icon_name = &icon_name.to_ascii_lowercase();
@@ -136,8 +137,8 @@ pub fn get_colorscheme(scheme_name: &str) -> anyhow::Result<Arc<[Color]>> {
         .join(Path::new("data/flags.rkyv"));
     println!("{path:#?}");
     let binding = fs::read(path)?;
-    let schemes: HashMap<String, Vec<(u8, u8, u8)>> =
-        (unsafe { archived_root::<HashMap<String, Vec<(u8, u8, u8)>>>(binding.as_slice()) })
+    let schemes: FxHashMap<String, Vec<(u8, u8, u8)>> =
+        (unsafe { archived_root::<FxHashMap<String, Vec<(u8, u8, u8)>>>(binding.as_slice()) })
             .deserialize(&mut Infallible)?;
 
     Ok(schemes[scheme_name]
@@ -286,7 +287,7 @@ impl From<ColorRemote> for Color {
     }
 }
 
-#[allow(dead_code)]
+#[allow(dead_code, clippy::cast_precision_loss)]
 #[must_use]
 pub fn bytecount_format(i: u64, precision: usize) -> String {
     // let mut val = 0;

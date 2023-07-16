@@ -38,12 +38,31 @@ edid-rs = "0.1.0"
 pci-ids = "0.2.5"
 itertools = "0.11.0"
 serde_yaml = "0.9.22"
+rustc-hash = "1.1.0"
 
 [target.'cfg(windows)'.dependencies]
 winreg = "0.50.0"
-
+wmi = "0.13.1"
+windows = { version = "*", features = [
+    "Data_Xml_Dom",
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_System_Threading",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_System_SystemInformation",
+    "Networking",
+    "Networking_Connectivity",
+    "Win32_Networking_WinSock",
+    "Win32_NetworkManagement_IpHelper",
+    "Win32_NetworkManagement_Ndis",
+    "Win32_System_Wmi",
+    "Win32_System_Com",
+] }
 winsafe = { git = "https://github.com/rodrigocfd/winsafe", features = [
     "kernel",
     "user",
     "dwm",
 ] }
+[profile.release]
+lto = true
+panic = "abort"

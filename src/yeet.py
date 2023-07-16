@@ -49,13 +49,10 @@ for path in pathlist:
 
     art = match.group("ascii").strip().split("\n")
     width = max([len(re.sub(r"\$\{c.*?\}", "", line.rstrip())) for line in art])
-    art = "\n".join([x.ljust(width) for x in art])
-    # color_regex = re.compile(r"\$\{c.+?\}", re.MULTILINE | re.DOTALL)
-    # color_mod = color_regex.findall(art)
-    # color_mod = [int(x[3:-1])-1 forx in color_mod]
-    # art_split = color_regex.split(art)[1:]
-    # art_split = [(color_mod[idx], val) for (idx,val) in enumerate(art_split)]
+    art = "\n".join([x.replace(":", ";").ljust(width) for x in art])
+
+    # Todo: multiline strings
     data += [{"name": name, "width": width, "colors": colors, "art": art}]
 
-with open("../data/data.json5", "w", encoding="utf-8") as f:
+with open("../data/data.yaml", "w", encoding="utf-8") as f:
     json.dump(data, f, ensure_ascii=False, indent=4)
