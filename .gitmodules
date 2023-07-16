@@ -1,0 +1,6 @@
+[submodule "hyfetch"]
+	path = hyfetch
+	url = https://github.com/hykilpikonna/hyfetch.git
+[submodule "src/hyfetch"]
+	path = src/hyfetch
+	url = https://github.com/hykilpikonna/hyfetch
