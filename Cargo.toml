@@ -1,0 +1,40 @@
+[package]
+name = "mirafetch"
+version = "0.1.0"
+edition = "2021"
+include = ["/data"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dev-dependencies]
+cargo-semver-checks = "0.22.0"
+
+[build-dependencies]
+json5 = "*"
+rkyv = { version = "0.7.42", features = ["validation"] }
+serde = { version = "1.0.164", features = ["derive"] }
+regex = "*"
+
+[dependencies]
+libc = "0.2.147"
+# owo-colors = "3.5.0"
+rayon = "1.7.0"
+json5 = "*"
+regex = "1.8.4"
+rkyv = { version = "0.7.42", features = ["validation"] }
+serde = { version = "1.0.164", features = ["derive"] }
+sysinfo = "0.29.2"
+time = "0.3.22"
+crossterm = "0.26.1"
+anyhow = "1.0.71"
+rkyv-with = "0.1.1"
+toml = "0.7.6"
+
+[target.'cfg(windows)'.dependencies]
+winreg = "0.50.0"
+
+winsafe = { git = "https://github.com/rodrigocfd/winsafe", features = [
+    "kernel",
+    "user",
+    "dwm",
+] }
