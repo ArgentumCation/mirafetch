@@ -144,16 +144,16 @@ pub enum Orientation {
     Vertical,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct Info {
     // general_readout: Rc<GeneralReadout>,
     os: Option<String>,
     machine: Option<String>,
     kernel: Option<String>,
     uptime: Option<String>,
-    username: Option<String>,
-    hostname: Option<String>,
-    resolution: Vec<String>,
+    username: Option<Arc<str>>,
+    hostname: Option<Arc<str>>,
+    resolution: Vec<Arc<str>>,
     wm: Option<String>,
     de: Option<String>,
     shell: Option<String>,
@@ -162,15 +162,15 @@ pub struct Info {
     cursor: Option<String>,
     terminal: Option<String>,
     terminal_font: Option<String>,
-    gpus: Vec<String>,
+    gpus: Vec<Arc<str>>,
     memory: Option<String>,
     disks: Vec<(String, String)>,
     battery: Option<String>,
     locale: Option<String>,
     theme: Option<String>,
     icons: Option<String>,
-    ip: Vec<String>,
-    pub id: Box<str>,
+    ip: Vec<Arc<str>>,
+    pub id: Arc<str>,
 }
 
 fn palette() -> (String, String) {
@@ -199,7 +199,7 @@ impl Info {
         let mut gpus = Default::default();
         let mut hostname = Default::default();
         let mut icons = Default::default();
-        let mut id = Default::default();
+        let mut id: Arc<str> = Arc::from("");
         let mut ip = Default::default();
         let mut kernel = Default::default();
         let mut locale = Default::default();
@@ -271,12 +271,12 @@ impl Info {
     }
     #[must_use]
     pub fn as_vec(self) -> Vec<(String, String)> {
-        let username = self.username.clone().unwrap_or_default();
-        let hostname = self.hostname.clone().unwrap_or_default();
+        let username = self.username.unwrap_or(Arc::from(""));
+        let hostname = self.hostname.unwrap_or(Arc::from(""));
         let y = format!("{username}@{hostname}");
         let repeats = y.len();
         let (dark, light) = palette();
-        let mut res = vec![
+        let mut res: Vec<(String, String)> = vec![
             (y, Some(String::new())),
             (["-"].repeat(repeats).join(""), Some(String::new())),
             // if none, empty string
@@ -305,17 +305,21 @@ impl Info {
             self.resolution
                 .into_iter()
                 .enumerate()
-                .map(|(idx, res)| (format!("Display {}", idx + 1), res)),
+                .map(|(idx, res)| (format!("Display {}", idx + 1), res.to_string())),
         )
         .chain(
             self.gpus
                 .into_iter()
                 .enumerate()
-                .map(|(idx, res)| (format!("GPU {}", idx + 1), res)),
+                .map(|(idx, res)| (format!("GPU {}", idx + 1), res.to_string())),
         )
         .chain(self.disks)
-        .chain(self.ip.into_iter().map(|x| ("IP".to_string(), x)))
-        .collect::<Vec<(String, String)>>();
+        .chain(
+            self.ip
+                .into_iter()
+                .map(|x| ("IP".to_string(), x.to_string())),
+        )
+        .collect();
         res.push((String::new(), dark));
         res.push((String::new(), light));
         res

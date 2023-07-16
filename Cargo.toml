@@ -39,6 +39,7 @@ pci-ids = "0.2.5"
 itertools = "0.11.0"
 serde_yaml = "0.9.22"
 rustc-hash = "1.1.0"
+lazy_format = "2.0.0"
 
 [target.'cfg(windows)'.dependencies]
 winreg = "0.50.0"

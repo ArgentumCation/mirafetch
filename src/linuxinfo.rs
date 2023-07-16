@@ -5,13 +5,14 @@ use std::{
     fs,
     mem::{self, MaybeUninit},
     net::{Ipv4Addr, Ipv6Addr},
-    sync::RwLock,
+    rc::Rc,
+    sync::{Arc, Once, RwLock},
 };
 
 use crate::util::{bytecount_format, OSInfo};
-
 use glob::glob;
 use itertools::Itertools;
+use lazy_format::lazy_format;
 use libc::{getifaddrs, statvfs, AF_INET, AF_INET6, IFA_F_DEPRECATED, IFF_LOOPBACK, IFF_RUNNING};
 
 use pci_ids::Device;
@@ -24,8 +25,10 @@ use rustc_hash::{FxHashMap, FxHashSet};
 
 pub struct LinuxInfo {
     uts: PlatformInfo,
-    os_release: RwLock<FxHashMap<Box<str>, Box<str>>>,
+    os_release: RwLock<FxHashMap<Arc<str>, Arc<str>>>,
 }
+
+const OS_RELEASE: Once = Once::new();
 impl LinuxInfo {
     pub fn new() -> Self {
         Self {
@@ -33,21 +36,29 @@ impl LinuxInfo {
             os_release: RwLock::default(),
         }
     }
+
+    fn get_os_release(&self) {
+        OS_RELEASE.call_once(|| {
+            if self.os_release.read().unwrap().is_empty() {
+                let data = fs::read_to_string("/etc/os-release").ok().unwrap();
+                self.os_release
+                    .write()
+                    .unwrap()
+                    .par_extend(data.par_lines().map(|line| {
+                        let (x, y) = line.split_once('=').unwrap();
+                        (
+                            x.to_owned().into_boxed_str().into(),
+                            y.trim_matches('"').to_owned().into_boxed_str().into(),
+                        )
+                    }));
+            }
+        })
+    }
 }
 impl OSInfo for LinuxInfo {
     fn os(&self) -> Option<String> {
         //Todo: check for lsb_release
-        let data = fs::read_to_string("/etc/os-release").ok()?;
-        self.os_release
-            .write()
-            .unwrap()
-            .par_extend(data.par_lines().map(|line| {
-                let (x, y) = line.split_once('=').unwrap();
-                (
-                    x.to_owned().into_boxed_str(),
-                    y.trim_matches('"').to_owned().into_boxed_str(),
-                )
-            }));
+        self.get_os_release();
         Some(
             (self.os_release).read().unwrap().get("NAME")?.to_string()
                 + (self.os_release)
@@ -60,17 +71,17 @@ impl OSInfo for LinuxInfo {
         )
     }
 
-    fn hostname(&self) -> Option<String> {
-        Some(self.uts.nodename().to_string_lossy().to_string())
+    fn hostname(&self) -> Option<Arc<str>> {
+        Some(Arc::from(self.uts.nodename().to_str()?))
     }
 
-    fn displays(&self) -> Vec<String> {
-        || -> anyhow::Result<Vec<String>> {
+    fn displays(&self) -> Vec<Arc<str>> {
+        || -> anyhow::Result<Vec<Arc<str>>> {
             let mut res = Vec::new();
             let mut paths = glob("/sys/class/drm/card*-*/modes")?;
             while let Some(Ok(path)) = paths.next() {
                 res.push(match fs::read_to_string(path)?.split_once('\n') {
-                    Some(x) => x.0.to_owned(),
+                    Some(x) => Arc::from(x.0),
                     None => continue,
                 });
             }
@@ -91,9 +102,9 @@ impl OSInfo for LinuxInfo {
         Some(self.uts.release().to_string_lossy().to_string())
     }
 
-    fn gpus(&self) -> Vec<String> {
-        || -> anyhow::Result<Vec<String>> {
-            let mut res = Vec::new();
+    fn gpus(&self) -> Vec<Arc<str>> {
+        || -> anyhow::Result<Vec<Arc<str>>> {
+            let mut res: Vec<Arc<str>> = Vec::new();
             let mut paths = glob("/sys/class/drm/card?/device")?;
             while let Some(Ok(card)) = paths.next() {
                 let path = card.to_str().unwrap().to_string() + "/vendor";
@@ -109,7 +120,7 @@ impl OSInfo for LinuxInfo {
                     .name()
                     .replace("Advanced Micro Devices, Inc. [AMD/ATI]", "AMD")
                     .replace("Intel Corporation", "Intel");
-                res.push(vendor.clone() + " " + device.name());
+                res.push(Arc::from(vendor + " " + device.name()));
             }
             Ok(res)
         }()
@@ -131,7 +142,7 @@ impl OSInfo for LinuxInfo {
 
     fn shell(&self) -> Option<String> {
         let ppid = std::os::unix::process::parent_id();
-        fs::read_to_string(format!("/proc/{ppid}/comm"))
+        fs::read_to_string(lazy_format!("/proc/{ppid}/comm").to_string())
             .ok()
             .map(|x| x.trim().to_string())
     }
@@ -155,14 +166,14 @@ impl OSInfo for LinuxInfo {
         Some(model.0.to_string() + "(" + cores + ") @" + model.1)
     }
 
-    fn username(&self) -> Option<String> {
+    fn username(&self) -> Option<Arc<str>> {
         unsafe {
             let uid = libc::getuid();
             let pwd = libc::getpwuid(uid);
             CStr::from_ptr((*pwd).pw_name)
                 .to_str()
-                .map(std::string::ToString::to_string)
                 .ok()
+                .map(|x| Arc::from(x))
         }
     }
 
@@ -190,13 +201,16 @@ impl OSInfo for LinuxInfo {
             .map(|x| str::parse::<u64>(x.get(2).unwrap().as_str()).unwrap())
             .collect_tuple()?;
 
-        Some(format!(
-            "{} / {}",
-            bytecount_format((caps.0 - caps.1) << 10, 2),
-            bytecount_format(caps.0 << 10, 2),
-        ))
+        Some(
+            lazy_format!(
+                "{} / {}",
+                bytecount_format((caps.0 - caps.1) << 10, 2),
+                bytecount_format(caps.0 << 10, 2),
+            )
+            .to_string(),
+        )
     }
-    fn ip(&self) -> Vec<String> {
+    fn ip(&self) -> Vec<Arc<str>> {
         let mut ipv4_addrs = FxHashSet::<Ipv4Addr>::default();
         let mut ipv6_addrs = FxHashSet::<Ipv6Addr>::default();
         unsafe {
@@ -238,12 +252,12 @@ impl OSInfo for LinuxInfo {
         };
 
         vec![
-            ipv4_addrs.iter().fold(String::new(), |x, y| -> String {
+            Arc::from(ipv4_addrs.iter().fold(String::new(), |x, y| -> String {
                 (if x.is_empty() { x } else { x + ", " }) + &y.to_string()
-            }), /*,
-                ipv6_addrs.iter().fold(String::new(), |x, y| {
-                    (if x.is_empty() { x } else { x + ", " }) + &y.to_string()
-                }),*/
+            })), /*,
+                 ipv6_addrs.iter().fold(String::new(), |x, y| {
+                     (if x.is_empty() { x } else { x + ", " }) + &y.to_string()
+                 }),*/
         ]
     }
     fn disks(&self) -> Vec<(String, String)> {
@@ -278,7 +292,7 @@ impl OSInfo for LinuxInfo {
                     if size_used == 0 {
                         return None;
                     }
-                Some((format!("Disk ({mount})"), format!("{}/ {}", bytecount_format(size_used * block_size ,0),bytecount_format(total * block_size,0))))
+                Some((lazy_format!("Disk ({mount})").to_string(), lazy_format!("{}/ {}", bytecount_format(size_used * block_size ,0),bytecount_format(total * block_size,0)).to_string()))
                 }
             }).collect::<Vec<(String,String)>>())
         })().unwrap_or_default()
@@ -301,11 +315,8 @@ impl OSInfo for LinuxInfo {
     fn icons(&self) -> Option<String> {
         None
     }
-    fn id(&self) -> Box<str> {
-        self.os_release
-            .read()
-            .unwrap()
-            .get("ID")
-            .unwrap().clone()
+    fn id(&self) -> Arc<str> {
+        self.get_os_release();
+        self.os_release.read().unwrap().get("ID").unwrap().clone()
     }
 }

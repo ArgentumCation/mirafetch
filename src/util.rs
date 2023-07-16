@@ -2,6 +2,8 @@ use anyhow::anyhow;
 use crossterm::style::Color;
 use rkyv::archived_root;
 use rkyv::with::ArchiveWith;
+use rkyv::with::AsBox;
+use rkyv::with::AsOwned;
 use rkyv::with::DeserializeWith;
 use rkyv::with::Map;
 use rkyv::Infallible;
@@ -9,6 +11,7 @@ use rkyv::{Archive, Deserialize};
 use rkyv_with::{ArchiveWith, DeserializeWith};
 use rustc_hash::FxHashMap;
 use std::fs;
+use std::rc::Rc;
 use std::sync::Arc;
 // use sysinfo::{ get_current_pid, CpuExt, ProcessExt, System, SystemExt, UserExt };
 use std::path::Path;
@@ -27,7 +30,7 @@ pub trait OSInfo: Send + Sync {
     fn term_font(&self) -> Option<String> {
         None
     } //todo!(),
-    fn gpus(&self) -> Vec<String> {
+    fn gpus(&self) -> Vec<Arc<str>> {
         Vec::new()
     }
     fn memory(&self) -> Option<String> {
@@ -51,14 +54,14 @@ pub trait OSInfo: Send + Sync {
     fn os(&self) -> Option<String> {
         None
     }
-    fn id(&self) -> Box<str>;
+    fn id(&self) -> Arc<str>;
     fn uptime(&self) -> Option<String>;
-    fn ip(&self) -> Vec<String>;
-    fn displays(&self) -> Vec<String> {
+    fn ip(&self) -> Vec<Arc<str>>;
+    fn displays(&self) -> Vec<Arc<str>> {
         Vec::new()
     }
 
-    fn hostname(&self) -> Option<String>;
+    fn hostname(&self) -> Option<Arc<str>>;
 
     fn machine(&self) -> Option<String> {
         None
@@ -103,11 +106,8 @@ pub trait OSInfo: Send + Sync {
         // )
     }
 
-    fn username(&self) -> Option<String> {
+    fn username(&self) -> Option<Arc<str>> {
         None
-        // Some(
-        //     sys.get_user_by_id(sys.process(get_current_pid().ok()?)?.user_id()?)?.name().to_string()
-        // )
     }
 }
 
