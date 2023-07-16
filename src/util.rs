@@ -11,6 +11,7 @@ use rkyv::with::Map;
 use rkyv::{ Archive, Deserialize };
 use rkyv_with::{ ArchiveWith, DeserializeWith };
 use sysinfo::{ get_current_pid, CpuExt, ProcessExt, System, SystemExt, UserExt };
+use std::path::Path;
 
 pub trait OSInfo {
     fn new() -> Self;
@@ -72,7 +73,7 @@ pub trait OSInfo {
     }
 }
 pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
-    let path = std::env::current_exe()?.join("../data/icons.rkyv");
+    let path = std::env::current_exe()?.parent().unwrap().join(Path::new("data/icons.rkyv"));
     // println!("{path:#?}");
     let binding = fs::read(path)?;
     let archived = unsafe { archived_root::<Vec<AsciiArtRemote>>(&binding) };
@@ -85,7 +86,7 @@ pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
 }
 
 pub fn get_colorscheme(scheme_name: &str) -> anyhow::Result<Arc<[Color]>> {
-    let path = std::env::current_exe()?.join("../data/flags.rkyv");
+    let path = std::env::current_exe()?.parent().unwrap().join(Path::new("data/flags.rkyv"));
     println!("{path:#?}");
     let binding = fs::read(path)?;
     let schemes: HashMap<String, Vec<(u8, u8, u8)>> = (
