@@ -1,56 +1,58 @@
 #![cfg(target_family = "unix")]
 use std::{
     alloc::Layout,
-    borrow::BorrowMut,
     collections::{HashMap, HashSet},
     ffi::{CStr, CString},
     fs,
     mem::{self, MaybeUninit},
-    net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr},
-    ops::Deref,
+    net::{Ipv4Addr, Ipv6Addr},
+    ops::{Deref, DerefMut},
+    rc::Rc,
 };
 
 use crate::util::{bytecount_format, OSInfo};
 
 use glob::glob;
 use itertools::Itertools;
-use libc::{
-    getifaddrs, ifaddrs, sockaddr_in, sockaddr_in6, statvfs, AF_INET, AF_INET6, IFA_F_DEPRECATED,
-    IFA_F_TEMPORARY, IFF_LOOPBACK, IFF_RUNNING,
-};
+use libc::{getifaddrs, statvfs, AF_INET, AF_INET6, IFA_F_DEPRECATED, IFF_LOOPBACK, IFF_RUNNING};
 
 use pci_ids::Device;
 use platform_info::{PlatformInfo, PlatformInfoAPI};
 use rayon::{
-    prelude::{FromParallelIterator, ParallelBridge, ParallelIterator},
+    prelude::{
+        FromParallelIterator, IntoParallelRefIterator, ParallelBridge, ParallelExtend,
+        ParallelIterator,
+    },
     str::ParallelString,
 };
 
 pub struct LinuxInfo {
     uts: PlatformInfo,
+    os_release: HashMap<Box<str>, Box<str>>,
 }
 impl LinuxInfo {
     pub fn new() -> Self {
         Self {
             uts: PlatformInfo::new().unwrap(),
+            os_release: HashMap::new(),
         }
     }
 }
 impl OSInfo for LinuxInfo {
-    fn os(&self) -> Option<String> {
+    fn os(&mut self) -> Option<String> {
         //Todo: check for lsb_release
         let data = fs::read_to_string("/etc/os-release").ok()?;
-
-        let binding = regex::Regex::new(r#"(?P<key>.*)="?(?P<val>.*?)("|$)"#).ok()?;
-        let captures = binding.captures_iter(&data);
-        let os: HashMap<&str, &str> = HashMap::from_par_iter(captures.par_bridge().map(|x| {
-            let k = x.name("key").unwrap().as_str();
-            let v = x.name("val").unwrap().as_str();
-            (k, v)
+        self.os_release.par_extend(data.par_lines().map(|line| {
+            let (x, y) = line.split_once('=').unwrap();
+            (
+                x.to_owned().into_boxed_str(),
+                y.trim_matches('"').to_owned().into_boxed_str(),
+            )
         }));
         Some(
-            os["NAME"].deref().to_string()
-                + os.get("VERSION")
+            (self.os_release).get("NAME")?.to_string()
+                + (self.os_release)
+                    .get("VERSION")
                     .map_or(String::new(), |x| " ".to_string() + x + " ")
                     .as_ref()
                 + &self.uts.machine().to_string_lossy(),
@@ -94,7 +96,6 @@ impl OSInfo for LinuxInfo {
             let mut paths = glob("/sys/class/drm/card?/device")?;
             while let Some(Ok(card)) = paths.next() {
                 let path = card.to_str().unwrap().to_string() + "/vendor";
-                println!("{path}");
                 let vid = u16::from_str_radix(&fs::read_to_string(path).unwrap().trim()[2..], 16)
                     .unwrap();
 
@@ -107,7 +108,7 @@ impl OSInfo for LinuxInfo {
                     .name()
                     .replace("Advanced Micro Devices, Inc. [AMD/ATI]", "AMD")
                     .replace("Intel Corporation", "Intel");
-                res.push(vendor.to_owned() + " " + device.name());
+                res.push(vendor.clone() + " " + device.name());
             }
             Ok(res)
         }()
@@ -188,15 +189,15 @@ impl OSInfo for LinuxInfo {
             .map(|x| str::parse::<u64>(x.get(2).unwrap().as_str()).unwrap())
             .collect_tuple()?;
 
-        println!("{caps:#?}");
         Some(format!(
             "{} / {}",
-            bytecount_format((caps.0 - caps.1) << 10),
-            bytecount_format(caps.0 << 10),
+            bytecount_format((caps.0 - caps.1) << 10, 2),
+            bytecount_format(caps.0 << 10, 2),
         ))
     }
     fn ip(&self) -> Vec<String> {
-        let mut res = HashSet::new();
+        let mut ipv4_addrs = HashSet::<Ipv4Addr>::new();
+        let mut ipv6_addrs = HashSet::<Ipv6Addr>::new();
         unsafe {
             let mut addrs = mem::MaybeUninit::<*mut libc::ifaddrs>::uninit();
             getifaddrs(addrs.as_mut_ptr());
@@ -209,21 +210,23 @@ impl OSInfo for LinuxInfo {
                     addrs = MaybeUninit::new(addr.ifa_next);
                     continue;
                 }
-                if addr.ifa_flags & IFA_F_DEPRECATED as u32 != 0 {
+                if addr.ifa_flags & IFA_F_DEPRECATED != 0 {
                     addrs = MaybeUninit::new(addr.ifa_next);
                     continue;
                 }
-                if (*addr.ifa_addr).sa_family as i32 == AF_INET {
-                    let ipv4 = (*((addr.ifa_addr) as *mut sockaddr_in))
+                if i32::from((*addr.ifa_addr).sa_family) == AF_INET {
+                    let ipv4 = (*(addr.ifa_addr).cast::<libc::sockaddr_in>())
                         .sin_addr
                         .s_addr
                         .swap_bytes();
-                    res.insert(Ipv4Addr::from(ipv4).to_string());
+                    ipv4_addrs.insert(Ipv4Addr::from(ipv4));
                 }
-                if (*addr.ifa_addr).sa_family as i32 == AF_INET6 {
-                    let ipv6 = (*((addr.ifa_addr) as *mut sockaddr_in6)).sin6_addr.s6_addr;
+                if i32::from((*addr.ifa_addr).sa_family) == AF_INET6 {
+                    let ipv6 = (*(addr.ifa_addr).cast::<libc::sockaddr_in6>())
+                        .sin6_addr
+                        .s6_addr;
                     if !ipv6.starts_with(&[0xfe, 0x80]) {
-                        res.insert(Ipv6Addr::from(ipv6).to_string());
+                        ipv6_addrs.insert(Ipv6Addr::from(ipv6));
                     }
                 }
                 // if addr.ifa_next.is_null() {
@@ -232,8 +235,15 @@ impl OSInfo for LinuxInfo {
                 addrs = MaybeUninit::new(addr.ifa_next);
             }
         };
-        // println!("{res:?}");
-        res.into_iter().collect_vec()
+
+        vec![
+            ipv4_addrs.iter().fold(String::new(), |x, y| -> String {
+                (if x.is_empty() { x } else { x + ", " }) + &y.to_string()
+            }), /*,
+                ipv6_addrs.iter().fold(String::new(), |x, y| {
+                    (if x.is_empty() { x } else { x + ", " }) + &y.to_string()
+                }),*/
+        ]
     }
     fn disks(&self) -> Vec<(String, String)> {
         (|| -> Option<Vec<(String,String)>> {
@@ -261,12 +271,14 @@ impl OSInfo for LinuxInfo {
                     let buf: *mut statvfs = std::alloc::alloc(Layout::new::<statvfs>()).cast();
 
                     statvfs(CString::new(mount).ok().unwrap().as_ptr(), buf);
-                    let total = (*buf).f_blocks * (*buf).f_frsize;
-                    let size_used = total - ((*buf).f_bavail * (*buf).f_frsize);
+                    let total = (*buf).f_blocks ;
+                    let size_used = total - ((*buf).f_bavail );
+                    let block_size = (*buf).f_bsize;
+                    println!("{total},{size_used}");
                     if size_used == 0 {
                         return None;
                     }
-                Some((format!("Disk ({mount})"), format!("{}/ {}", bytecount_format(size_used),bytecount_format(total))))
+                Some((format!("Disk ({mount})"), format!("{}/ {}", bytecount_format(size_used * block_size ,0),bytecount_format(total * block_size,0))))
                 }
             }).collect::<Vec<(String,String)>>())
         })().unwrap_or_default()
@@ -280,13 +292,16 @@ impl OSInfo for LinuxInfo {
         std::env::var("LANG")
             .ok()
             .filter(|x| !x.is_empty())
-            .or(std::env::var("LC_ALL").ok().filter(|x| !x.is_empty()))
-            .or(std::env::var("LC_MESSAGES").ok().filter(|x| !x.is_empty()))
+            .or_else(|| std::env::var("LC_ALL").ok().filter(|x| !x.is_empty()))
+            .or_else(|| std::env::var("LC_MESSAGES").ok().filter(|x| !x.is_empty()))
     }
     fn uptime(&self) -> Option<String> {
         None
     }
     fn icons(&self) -> Option<String> {
         None
+    }
+    fn id(&self) -> Box<str> {
+        self.os_release.get("ID").unwrap().to_owned()
     }
 }

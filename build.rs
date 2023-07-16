@@ -91,11 +91,12 @@ fn main() {
     //this should work with yaml serde without changes
     println!("cargo:rerun-if-changed=data/flags.json");
     //todo: make this yaml
-    println!("cargo:rerun-if-changed=data/data.json5");
+    // println!("cargo:rerun-if-changed=data/data2.json5");
+    println!("cargo:rerun-if-changed=data/data.yaml");
 
     //Archive Flags
     let binding = fs::read_to_string("data/flags.json").unwrap();
-    let flags_json: HashMap<String, Vec<(u8, u8, u8)>> = json5 //todo: switch to css hex strings
+    let flags_json: HashMap<String, Vec<(u8, u8, u8)>> = serde_yaml //todo: switch to css hex strings
         ::from_str(binding.as_str())
     .unwrap();
     let bytes = rkyv::to_bytes::<_, 1024>(&flags_json).unwrap();
@@ -107,8 +108,13 @@ fn main() {
     // Archive Icons
 
     // Read from json
-    let binding = fs::read_to_string("data/data.json5").unwrap();
-    let data_json: UnprocessedAsciiArtVec = json5::from_str(&binding).unwrap();
+    let binding = fs::read_to_string("data/data.yaml").unwrap();
+    let data_json: UnprocessedAsciiArtVec = serde_yaml::from_str(&binding).unwrap();
+    // fs::write(
+    //     "data/data.yaml",
+    //     serde_yaml::to_string(&data_json).unwrap().as_bytes(),
+    // )
+    // .unwrap();
     // println!("cargo:warning={:#?}", data_json);
     let regex = Regex::new(r#"\$\{c(\d*)\}"#).unwrap();
     let icons_json = data_json
@@ -126,7 +132,12 @@ fn main() {
                 .collect::<Vec<String>>();
             let ascii_art = Vec::from_iter(zip(color_idx, chunks));
             AsciiArt {
-                names: item.name.to_owned(),
+                names: item
+                    .name
+                    .clone()
+                    .into_iter()
+                    .map(|x| x.to_lowercase())
+                    .collect(),
                 colors: item.colors.to_vec(),
                 width: item.width,
                 text: ascii_art,

@@ -11,6 +11,7 @@ cargo-semver-checks = "0.22.0"
 
 [build-dependencies]
 json5 = "*"
+serde_yaml = "0.9.22"
 rkyv = { version = "0.7.42", features = ["validation"] }
 serde = { version = "1.0.164", features = ["derive"] }
 regex = "*"
@@ -36,6 +37,7 @@ nom = "7.1.3"
 edid-rs = "0.1.0"
 pci-ids = "0.2.5"
 itertools = "0.11.0"
+serde_yaml = "0.9.22"
 
 [target.'cfg(windows)'.dependencies]
 winreg = "0.50.0"

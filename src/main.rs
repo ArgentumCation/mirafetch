@@ -24,12 +24,15 @@ mod util;
 
 fn main() -> anyhow::Result<()> {
     // Load Settings
+    let info = Info::new();
+    let id = info.id.clone();
+    let info_vec = info.as_vec();
     // todo: load from TOML
     let settings = Config::new(
         None,
         None,
         None,
-        Some("Windows".to_string()), //Todo: determine distro and change this to None
+        Some(id.to_string()), //Todo: determine distro and change this to None
     );
 
     // Get Color Scheme from archive
@@ -42,9 +45,8 @@ fn main() -> anyhow::Result<()> {
     let colored_logo = colorize_logo(&settings, &scheme, &logo)?;
 
     // Get system info
-    let info = Info::new().as_vec();
 
-    display(colored_logo, info, &logo)?;
+    display(colored_logo, info_vec, &logo)?;
     Ok(())
 }
 

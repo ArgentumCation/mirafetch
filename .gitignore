@@ -17,3 +17,4 @@ Cargo.lock
 *.pdb
 src/neowofetch.bash
 .vscode/launch.json
+config.toml

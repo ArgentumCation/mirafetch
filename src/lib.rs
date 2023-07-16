@@ -13,6 +13,7 @@ use crossterm::style::{Color, StyledContent, Stylize};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
+use std::ops::Deref;
 use std::sync::Arc;
 
 use util::OSInfo;
@@ -176,48 +177,8 @@ pub struct Info {
     theme: Option<String>,
     icons: Option<String>,
     ip: Vec<String>,
+    pub id: Box<str>,
 }
-
-/*impl Display for Info {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        // println!("{:#?}", self);
-        let username = self.username.clone().unwrap_or_default();
-        let hostname = self.hostname.clone().unwrap_or_default();
-        let y = format!("{username}@{hostname}");
-        let repeats = y.len();
-        write!(f, "{}{}", y + "\n", ["-"].repeat(repeats).join("") + "\n")?;
-        // if none, empty string
-        // if not none
-        info_fmt(f, "OS", self.os.as_ref())?;
-        info_fmt(f, "Host", self.machine.as_ref())?;
-        info_fmt(f, "Kernel", self.kernel.as_ref())?;
-        info_fmt(f, "Uptime", self.uptime.as_ref())?;
-        info_fmt(f, "Shell", self.shell.as_ref())?;
-        for (idx, res) in self.resolution.iter().enumerate() {
-            info_fmt(f, format!("Display {}", idx + 1).as_str(), Some(res))?;
-        }
-        for (idx, res) in self.gpus.iter().enumerate() {
-            info_fmt(f, format!("GPU {}", idx + 1).as_str(), Some(res))?;
-        }
-        info_fmt(f, "WM", self.wm.as_ref())?;
-        info_fmt(f, "DE", self.de.as_ref())?;
-        info_fmt(f, "CPU", self.cpu.as_ref())?;
-        info_fmt(f, "Theme", self.theme.as_ref())?;
-        info_fmt(f, "System Font", self.font.as_ref())?;
-        info_fmt(f, "Cursor", self.cursor.as_ref())?;
-        info_fmt(f, "Terminal", self.terminal.as_ref())?;
-        info_fmt(f, "Terminal Font", self.terminal_font.as_ref())?;
-        info_fmt(f, "Memory", self.memory.as_ref())?;
-        for (label, size) in self.disks.iter() {
-            info_fmt(f, &format!("Disk {label}"), Some(size))?;
-        }
-        info_fmt(f, "Battery", self.battery.as_ref())?;
-        info_fmt(f, "Locale", self.locale.as_ref())?;
-        info_fmt(f, "Icon Theme", self.icons.as_ref())?;
-        palette();
-        Ok::<_, std::fmt::Error>(())
-    }
-}*/
 
 fn palette() -> (String, String) {
     (
@@ -234,7 +195,7 @@ impl Info {
     #[must_use]
     pub fn new() -> Self {
         // let mut sys = System::new_all();
-        let getter: Box<dyn OSInfo> = Box::new(get_info::new());
+        let mut getter: Box<dyn OSInfo> = Box::new(get_info::new());
         //  sys.refresh_all();
         Self {
             // general_readout: general_readout.clone(),
@@ -261,6 +222,7 @@ impl Info {
             theme: getter.theme(),     //todo!(),
             icons: getter.icons(),     //todo!(),
             ip: getter.ip(),
+            id: getter.id(),
         }
     }
     #[must_use]

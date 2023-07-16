@@ -48,9 +48,10 @@ pub trait OSInfo {
     fn icons(&self) -> Option<String> {
         todo!();
     } //todo!(),
-    fn os(&self) -> Option<String> {
+    fn os(&mut self) -> Option<String> {
         todo!();
     }
+    fn id(&self) -> Box<str>;
     fn uptime(&self) -> Option<String>;
     fn ip(&self) -> Vec<String>;
     fn displays(&self) -> Vec<String> {
@@ -111,6 +112,7 @@ pub trait OSInfo {
 }
 #[allow(dead_code)]
 pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
+    let icon_name = &icon_name.to_ascii_lowercase();
     let path = std::env::current_exe()?
         .parent()
         .unwrap()
@@ -286,12 +288,20 @@ impl From<ColorRemote> for Color {
 
 #[allow(dead_code)]
 #[must_use]
-pub fn bytecount_format(i: u64) -> String {
+pub fn bytecount_format(i: u64, precision: usize) -> String {
     // let mut val = 0;
     let units = ["bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"];
     for val in [0, 1, 2, 3, 4, 5, 6] {
         if (i >> (10 * (val + 1))) == 0 {
-            return format!("{} {}", i >> (10 * val), units[val]);
+            return format!(
+                "{:.precision$} {}",
+                if precision == 0 {
+                    (i >> (10 * val)) as f32
+                } else {
+                    (i as f32) / f32::powi(1024_f32, val)
+                },
+                units[val as usize]
+            );
         }
     }
     panic!()
