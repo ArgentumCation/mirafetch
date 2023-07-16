@@ -38,17 +38,17 @@ fn main() -> anyhow::Result<()> {
 
     // Get Color Scheme from archive
 
-    let scheme: Option<Arc<[Color]>> = match settings.scheme_name {
-        Some(ref x) => get_colorscheme(&x).ok(),
-        None => None,
-    };
+    let scheme: Option<Arc<[Color]>> = settings.scheme_name.as_ref().map_or_else(
+        || None,
+        |x| get_colorscheme(x).ok()
+    );
     let logo: AsciiArt = get_icon(&settings.icon_name).unwrap();
     let colored_logo = colorize_logo(&settings, &scheme, &logo)?;
 
     // Get system info
     let info = Info::new().as_vec();
 
-    display(colored_logo, info, logo)?;
+    display(colored_logo, info, &logo)?;
     Ok(())
 }
 
@@ -58,20 +58,20 @@ fn colorize_logo(
     logo: &AsciiArt
 ) -> Result<Vec<crossterm::style::StyledContent<String>>, anyhow::Error> {
     let colorizer = if settings.gay {
-        if let Some(ref scheme) = *scheme {
-            if let Some(orientation) = settings.orientation {
-                Ok(
-                    Box::new(GayColorizer {
-                        color_scheme: scheme.clone(),
-                        orientation,
-                    }) as Box<dyn Colorizer>
+        scheme.as_ref().map_or_else(
+            || Err(anyhow!("Missing Scheme")),
+            |scheme|
+                settings.orientation.map_or_else(
+                    || Err(anyhow!("Missing Orientation")),
+                    |orientation|
+                        Ok(
+                            Box::new(GayColorizer {
+                                color_scheme: scheme.clone(),
+                                orientation,
+                            }) as Box<dyn Colorizer>
+                        )
                 )
-            } else {
-                Err(anyhow!("Missing Orientation"))
-            }
-        } else {
-            Err(anyhow!("Missing Scheme"))
-        }
+        )
     } else {
         Ok(Box::new(DefaultColorizer {}) as Box<dyn Colorizer>)
     };
@@ -81,7 +81,7 @@ fn colorize_logo(
 fn display(
     mut icon: Vec<crossterm::style::StyledContent<String>>,
     mut info: Vec<(String, String)>,
-    logo: AsciiArt
+    logo: &AsciiArt
 ) -> Result<(), anyhow::Error> {
     icon.reverse();
     info.reverse();
@@ -91,7 +91,7 @@ fn display(
             .execute(PrintStyledContent(line))?;
     }
     stdout().execute(MoveTo(0, 0))?;
-    Ok(while let Some(line) = info.pop() {
+    while let Some(line) = info.pop() {
         let (x, y) = line;
         stdout()
             .execute(MoveToColumn(logo.width + 3))?
@@ -100,5 +100,6 @@ fn display(
             stdout().execute(PrintStyledContent(": ".bold().red()))?;
         }
         stdout().execute(PrintStyledContent(y.reset()))?.execute(MoveToNextLine(1))?;
-    })
+    }
+    Ok(())
 }
