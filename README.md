@@ -1,5 +1,11 @@
 # mirafetch
 -------
+![GitHub](https://img.shields.io/github/license/argentumcation/mirafetch?color=blue)
+<!--![GitHub release (with filter)](https://img.shields.io/github/v/release/argentumcation/mirafetch)
+![docs.rs](https://img.shields.io/docsrs/mirafetch)
+![Crates.io](https://img.shields.io/crates/d/mirafetch)
+![Repology - Repositories](https://img.shields.io/repology/repositories/mirafetch)-->
+
 A Rust reimplementation of Hyfetch wih a focus on speed
 
 ## Notes
