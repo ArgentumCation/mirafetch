@@ -10,39 +10,42 @@ use crossterm::{
     terminal::{Clear, ClearType::All},
     ExecutableCommand,
 };
+use directories::ProjectDirs;
 use mirafetch::{
     util::{get_colorscheme, get_icon, AsciiArt},
-    Colorizer, Config, DefaultColorizer, GayColorizer, Info, Orientation,
+    Colorizer, Config, DefaultColorizer, GayColorizer, Info,
 };
 
-// mod linuxinfo;
-
-// use rkyv::{ validation::validators::check_archived_root, Deserialize, Infallible };
-
-use std::{cmp::max, io::stdout, sync::Arc};
+use std::{cmp::max, fs, io::stdout, sync::Arc};
 mod util;
 
 fn main() -> anyhow::Result<()> {
     // Load Settings
     let info = Info::new();
-    let id = info.id.clone();
+    let id: Box<str> = Box::from(info.id.clone().as_ref());
     let info_vec = info.as_vec();
     // todo: load from TOML
-    let settings = Config::new(
-        Some("transgender".into()),
-        Some(Orientation::Horizontal),
-        Some(id.to_string()), //Todo: determine distro and change this to None
-    );
-
+    let settings: Config = ProjectDirs::from("", "", "Mirafetch")
+        .and_then(
+            // || Config::default().with_icon(id.as_ref()),
+            |proj_dir| -> Option<Config> {
+                let path = proj_dir.config_dir().join("config.hocon");
+                let conf_file = fs::read_to_string(path).ok()?;
+                toml::from_str(&(conf_file))
+                    .map_err(|err| println!("{err}"))
+                    .ok()
+            },
+        )
+        .or_else(|| Some(Config::default()))
+        .unwrap();
     // Get Color Scheme from archive
-
     let scheme: Option<Arc<[Color]>> = settings.orientation.and(
         settings
             .scheme_name
             .as_ref()
             .and_then(|x| get_colorscheme(x).ok()),
     );
-    let logo: AsciiArt = get_icon(&settings.icon_name).unwrap();
+    let logo: AsciiArt = get_icon(&settings.icon_name.as_ref().get_or_insert(&id)).unwrap();
     let colored_logo = colorize_logo(&settings, &scheme, &logo)?;
 
     // Get system info

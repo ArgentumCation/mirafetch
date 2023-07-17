@@ -60,7 +60,7 @@ impl WindowsInfo {
     }
 }
 impl OSInfo for WindowsInfo {
-    fn displays(&self) -> Vec<String> {
+    fn displays(&self) -> Vec<Arc<str>> {
         use std::sync::Mutex;
 
         use winsafe::{
@@ -71,11 +71,11 @@ impl OSInfo for WindowsInfo {
         let handle = HDC::NULL;
         handle
             .EnumDisplayMonitors(None, |_monitor, _hdc, rect| -> bool {
-                displays.lock().unwrap().push(format!(
+                displays.lock().unwrap().push(Arc::from(format!(
                     "{}x{}",
                     rect.right - rect.left,
                     rect.bottom - rect.top
-                ));
+                )));
                 true
             })
             .ok();
@@ -189,8 +189,8 @@ impl OSInfo for WindowsInfo {
         None
     }
 
-    fn gpus(&self) -> Vec<String> {
-        || -> Option<Vec<String>> {
+    fn gpus(&self) -> Vec<Arc<str>> {
+        || -> Option<Vec<Arc<str>>> {
             self.get_hklm();
             let video: RegKey = self
                 .hklm
@@ -201,20 +201,20 @@ impl OSInfo for WindowsInfo {
                 .ok()?;
 
             Some(
-                FxHashSet::<String>::from_iter(video.enum_keys().filter_map(|x| {
+                FxHashSet::<Arc<str>>::from_iter(video.enum_keys().filter_map(|x| {
                     video
                         .open_subkey(x.ok()?)
                         .map(|uuid| {
-                            uuid.enum_keys()
-                                .filter_map(|y| -> Option<String> {
-                                    uuid.open_subkey(y.unwrap())
-                                        .ok()?
-                                        .get_value::<String, &str>("DriverDesc")
-                                        .ok()
-                                })
-                                .collect()
+                            uuid.enum_keys().find_map(|y| -> Option<Arc<str>> {
+                                uuid.open_subkey(y.unwrap())
+                                    .ok()?
+                                    .get_value::<String, &str>("DriverDesc")
+                                    .ok()
+                                    .map(|x| Arc::from(x))
+                            })
+                            // .collect::<String>()
                         })
-                        .ok()
+                        .ok()?
                 }))
                 .into_iter()
                 .collect_vec(),
@@ -223,14 +223,14 @@ impl OSInfo for WindowsInfo {
         .unwrap_or_default()
     }
 
-    fn id(&self) -> Box<str> {
-        || -> Option<Box<str>> {
+    fn id(&self) -> Arc<str> {
+        || -> Option<Arc<str>> {
             let com_con = COMLibrary::new().ok()?;
             let wmi_con = WMIConnection::new(com_con).ok()?;
             let binding = wmi_con
                 .raw_query::<FxHashMap<String, String>>("SELECT Caption FROM Win32_OperatingSystem")
                 .ok()?;
-            Some(
+            Some(Arc::from(
                 binding
                     .first()?
                     .values()
@@ -238,9 +238,8 @@ impl OSInfo for WindowsInfo {
                     .trim_start_matches("Microsoft ")
                     .split_ascii_whitespace()
                     .dropping_back(1)
-                    .join(" ")
-                    .into_boxed_str(),
-            )
+                    .join(" "),
+            ))
         }()
         .unwrap()
     }
@@ -249,7 +248,7 @@ impl OSInfo for WindowsInfo {
         Some(time::Duration::milliseconds(GetTickCount64().try_into().ok()?).to_string())
     }
 
-    fn ip(&self) -> Vec<String> {
+    fn ip(&self) -> Vec<Arc<str>> {
         let mut res = Vec::new();
         unsafe {
             let size = Box::into_raw(Box::new(0x3FFF));
@@ -307,30 +306,30 @@ impl OSInfo for WindowsInfo {
             }
             let mut res = Vec::with_capacity(2);
             if !ipv4_addrs.is_empty() {
-                res.push(
+                res.push(Arc::from(
                     ipv4_addrs
                         .par_iter()
                         .map(std::string::ToString::to_string)
                         .collect::<Vec<String>>()
                         .join(", "),
-                );
+                ));
             }
             if !ipv6_addrs.is_empty() {
-                res.push(
+                res.push(Arc::from(
                     ipv6_addrs
                         .par_iter()
                         .map(std::string::ToString::to_string)
                         .collect::<Vec<String>>()
                         .join(", "),
-                );
+                ));
             }
 
             res
         }
     }
 
-    fn hostname(&self) -> Option<String> {
-        GetComputerName().ok().map(|f| f.to_lowercase())
+    fn hostname(&self) -> Option<Arc<str>> {
+        GetComputerName().ok().map(|f| Arc::from(f.to_lowercase()))
     }
 
     fn sys_font(&self) -> Option<String> {
@@ -460,7 +459,7 @@ impl OSInfo for WindowsInfo {
         Some(format!("{name} ({cores}) @ {:.2}GHz", freq as f32 / 1000.0))
     }
 
-    fn username(&self) -> Option<String> {
-        winsafe::GetUserName().ok()
+    fn username(&self) -> std::option::Option<Arc<str>> {
+        winsafe::GetUserName().ok().map(|x| Arc::from(x))
     }
 }

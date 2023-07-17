@@ -3,7 +3,6 @@
 #![allow(clippy::missing_panics_doc)]
 #![warn(clippy::style)]
 #![allow(clippy::cast_precision_loss)]
-// use regex::Replacer;
 use crate::util::AsciiArt;
 use rayon::iter::{IndexedParallelIterator, ParallelIterator};
 // use anyhow::Ok;
@@ -28,7 +27,17 @@ pub mod util;
 pub struct Config {
     pub scheme_name: Option<Box<str>>,
     pub orientation: Option<Orientation>,
-    pub icon_name: Box<str>,
+    pub icon_name: Option<Box<str>>,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            scheme_name: Default::default(),
+            orientation: Default::default(),
+            icon_name: None,
+        }
+    }
 }
 
 pub trait Colorizer {
@@ -40,6 +49,10 @@ pub struct GayColorizer {
     pub orientation: Orientation,
 }
 impl Config {
+    pub fn with_icon(mut self, icon_name: impl Into<String>) -> Self {
+        self.icon_name = Some(Into::<String>::into(icon_name).into_boxed_str());
+        return self;
+    }
     #[must_use]
     pub fn new(
         scheme_name: Option<String>,
@@ -49,7 +62,7 @@ impl Config {
         Self {
             scheme_name: scheme_name.map(std::string::String::into_boxed_str),
             orientation,
-            icon_name: icon_name.unwrap().into_boxed_str(),
+            icon_name: icon_name.map(|x| x.into_boxed_str()),
         }
     }
 }
@@ -216,7 +229,7 @@ impl Info {
         let mut wm = Default::default();
         rayon::scope(|s| {
             // general_readout: general_readout.clone(),
-            s.spawn(|_| battery = getter.battery());
+            (*s).spawn(|_| battery = getter.battery());
             s.spawn(|_| cpu = getter.cpu());
             s.spawn(|_| cursor = getter.cursor());
             s.spawn(|_| de = getter.de());

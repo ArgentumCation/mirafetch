@@ -1,8 +1,7 @@
 use std::{collections::HashMap, env, fs, iter::zip};
 
-use regex::{self, Regex};
-use rkyv::{self, Archive};
-
+use regex::Regex;
+use rkyv::Archive;
 #[derive(serde::Serialize, serde::Deserialize, Archive, Debug, Clone, rkyv::Serialize)]
 pub enum Color {
     /// Resets the terminal color.
@@ -130,7 +129,7 @@ fn main() {
                 .map(|c| c.to_owned())
                 .skip(1)
                 .collect::<Vec<String>>();
-            let ascii_art = Vec::from_iter(zip(color_idx, chunks));
+            let ascii_art = (zip(color_idx, chunks)).collect();
             AsciiArt {
                 names: item
                     .name

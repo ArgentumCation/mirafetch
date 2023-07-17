@@ -5,7 +5,6 @@ use std::{
     fs,
     mem::{self, MaybeUninit},
     net::{Ipv4Addr, Ipv6Addr},
-    rc::Rc,
     sync::{Arc, Once, RwLock},
 };
 
@@ -14,8 +13,8 @@ use glob::glob;
 use itertools::Itertools;
 use lazy_format::lazy_format;
 use libc::{getifaddrs, statvfs, AF_INET, AF_INET6, IFA_F_DEPRECATED, IFF_LOOPBACK, IFF_RUNNING};
-
 use pci_ids::Device;
+use platform_info::UNameAPI;
 use platform_info::{PlatformInfo, PlatformInfoAPI};
 use rayon::{
     prelude::{ParallelExtend, ParallelIterator},
