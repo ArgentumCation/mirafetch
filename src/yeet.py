@@ -8,7 +8,7 @@ data = []
 from pathlib import Path
 import json
 
-pathlist = Path(r"\hyfetch\hyfetch\distros").glob("**/*.py")
+pathlist = Path("../hyfetch/hyfetch/distros").glob("**/*.py")
 for path in pathlist:
     print(path)
     regex = re.compile(
@@ -51,8 +51,7 @@ for path in pathlist:
     width = max([len(re.sub(r"\$\{c.*?\}", "", line.rstrip())) for line in art])
     art = "\n".join([x.replace(":", ";").ljust(width) for x in art])
 
-    # Todo: multiline strings
     data += [{"name": name, "width": width, "colors": colors, "art": art}]
-
+# TODO: make sure this uses multi line strings, and formats colors correctly
 with open("../data/data.yaml", "w", encoding="utf-8") as f:
     json.dump(data, f, ensure_ascii=False, indent=4)
