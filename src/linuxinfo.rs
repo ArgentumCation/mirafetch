@@ -27,7 +27,7 @@ pub struct LinuxInfo {
     os_release: RwLock<FxHashMap<Arc<str>, Arc<str>>>,
 }
 
-const OS_RELEASE: Once = Once::new();
+static OS_RELEASE: Once = Once::new();
 impl LinuxInfo {
     pub fn new() -> Self {
         Self {
@@ -51,7 +51,7 @@ impl LinuxInfo {
                         )
                     }));
             }
-        })
+        });
     }
 }
 impl OSInfo for LinuxInfo {
@@ -101,6 +101,7 @@ impl OSInfo for LinuxInfo {
         Some(self.uts.release().to_string_lossy().to_string())
     }
 
+    #[allow(clippy::similar_names)]
     fn gpus(&self) -> Vec<Arc<str>> {
         || -> anyhow::Result<Vec<Arc<str>>> {
             let mut res: Vec<Arc<str>> = Vec::new();
@@ -169,10 +170,7 @@ impl OSInfo for LinuxInfo {
         unsafe {
             let uid = libc::getuid();
             let pwd = libc::getpwuid(uid);
-            CStr::from_ptr((*pwd).pw_name)
-                .to_str()
-                .ok()
-                .map(|x| Arc::from(x))
+            CStr::from_ptr((*pwd).pw_name).to_str().ok().map(Arc::from)
         }
     }
 

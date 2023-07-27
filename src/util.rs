@@ -1,5 +1,6 @@
 use anyhow::anyhow;
 use crossterm::style::Color;
+
 use rkyv::archived_root;
 use rkyv::with::ArchiveWith;
 
@@ -22,34 +23,34 @@ pub trait OSInfo: Send + Sync {
 
     fn cursor(&self) -> Option<String> {
         None
-    } //todo!(),
+    }
     fn terminal(&self) -> Option<String> {
         None
-    } //todo!(),
+    }
     fn term_font(&self) -> Option<String> {
         None
-    } //todo!(),
+    }
     fn gpus(&self) -> Vec<Arc<str>> {
         Vec::new()
     }
     fn memory(&self) -> Option<String> {
         None
-    } //todo!(),
+    }
     fn disks(&self) -> Vec<(String, String)> {
         Vec::new()
-    } //todo!(),
+    }
     fn battery(&self) -> Option<String> {
         None
-    } //todo!(),
+    }
     fn locale(&self) -> Option<String> {
         None
-    } //todo!(),
+    }
     fn theme(&self) -> Option<String> {
         None
-    } //todo!(),
+    }
     fn icons(&self) -> Option<String> {
         None
-    } //todo!(),
+    }
     fn os(&self) -> Option<String> {
         None
     }
@@ -67,7 +68,6 @@ pub trait OSInfo: Send + Sync {
     }
 
     fn kernel(&self) -> Option<String> {
-        // s.kernel_version()
         None
     }
 
@@ -81,28 +81,9 @@ pub trait OSInfo: Send + Sync {
 
     fn shell(&self) -> Option<String> {
         None
-        // let pid = get_current_pid().ok()?;
-        // let parent_pid = s.process(pid)?.parent()?;
-        // let parent = s.process(parent_pid)?.name();
-        // Some(parent.replace(".exe", ""))
     }
-    #[allow(clippy::cast_precision_loss)]
     fn cpu(&self) -> Option<String> {
         None
-        // let cpu = &sys.cpus().get(0)?;
-        // Some(
-        //     sys.physical_core_count().map_or_else(
-        //         || format!("{} @ {}MHz", cpu.brand(), cpu.frequency()),
-        //         |cores| {
-        //             format!(
-        //                 "{} ({}) @ {}GHz",
-        //                 cpu.brand(),
-        //                 cores,
-        //                 (cpu.frequency() as f32) / 1000.0
-        //             )
-        //         }
-        //     )
-        // )
     }
 
     fn username(&self) -> Option<Arc<str>> {
@@ -110,12 +91,17 @@ pub trait OSInfo: Send + Sync {
     }
 }
 
+/// .
+///
+/// # Errors
+///
+/// This function will return an error if the icon cannot be found
 #[allow(dead_code)]
 pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
     let icon_name = &icon_name.to_ascii_lowercase();
     let path = std::env::current_exe()?
         .parent()
-        .unwrap()
+        .ok_or_else(|| anyhow!("Could not find icon: {icon_name}"))?
         .join(Path::new("data/icons.rkyv"));
     // println!("{path:#?}");
     let binding = fs::read(path)?;
@@ -128,11 +114,16 @@ pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
         .ok_or_else(|| anyhow!(""))
 }
 
+/// TODO
+///
+/// # Errors
+///
+/// This function will return an error if the colorscheme cannot be found
 #[allow(dead_code)]
 pub fn get_colorscheme(scheme_name: &str) -> anyhow::Result<Arc<[Color]>> {
     let path = std::env::current_exe()?
         .parent()
-        .unwrap()
+        .ok_or_else(|| anyhow!("Could not find colorscheme: {scheme_name}"))?
         .join(Path::new("data/flags.rkyv"));
     println!("{path:#?}");
     let binding = fs::read(path)?;
@@ -291,14 +282,15 @@ impl From<ColorRemote> for Color {
 pub fn bytecount_format(i: u64, precision: usize) -> String {
     // let mut val = 0;
     let units = ["bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"];
-    for val in [0, 1, 2, 3, 4, 5, 6] {
+
+    for val in [0u8, 1u8, 2u8, 3u8, 4u8, 5u8, 6u8] {
         if (i >> (10 * (val + 1))) == 0 {
             return format!(
                 "{:.precision$} {}",
                 if precision == 0 {
                     (i >> (10 * val)) as f32
                 } else {
-                    (i as f32) / f32::powi(1024_f32, val)
+                    (i as f32) / f32::powi(1024_f32, i32::from(val))
                 },
                 units[val as usize]
             );

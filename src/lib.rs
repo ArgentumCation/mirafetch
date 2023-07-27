@@ -12,6 +12,7 @@ use crossterm::style::{Color, StyledContent, Stylize};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 
+use std::default;
 use std::fmt::Display;
 
 use std::sync::Arc;
@@ -22,52 +23,44 @@ mod wininfo;
 use crate::linuxinfo::LinuxInfo as get_info;
 mod linuxinfo;
 pub mod util;
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct Config {
     pub scheme_name: Option<Box<str>>,
     pub orientation: Option<Orientation>,
     pub icon_name: Option<Box<str>>,
 }
 
-impl Default for Config {
-    fn default() -> Self {
-        Self {
-            scheme_name: Default::default(),
-            orientation: Default::default(),
-            icon_name: None,
-        }
-    }
-}
-
 pub trait Colorizer {
+    /// .
     fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>>;
 }
 
-pub struct GayColorizer {
+pub struct FlagColorizer {
     pub color_scheme: Arc<[Color]>,
     pub orientation: Orientation,
 }
 impl Config {
+    /// Builder method to add an icon to config
     pub fn with_icon(mut self, icon_name: impl Into<String>) -> Self {
         self.icon_name = Some(Into::<String>::into(icon_name).into_boxed_str());
-        return self;
+        self
     }
+    /// Create new struct containing user settings
     #[must_use]
     pub fn new(
-        scheme_name: Option<String>,
+        scheme_name: Option<impl ToString>,
         orientation: Option<Orientation>,
-        icon_name: Option<String>,
+        icon_name: Option<impl ToString>,
     ) -> Self {
         Self {
-            scheme_name: scheme_name.map(std::string::String::into_boxed_str),
+            scheme_name: scheme_name.map(|x| x.to_string().into_boxed_str()),
             orientation,
-            icon_name: icon_name.map(|x| x.into_boxed_str()),
+            icon_name: icon_name.map(|x| x.to_string().into_boxed_str()),
         }
     }
 }
 
-impl GayColorizer {
+impl FlagColorizer {
     fn length_to_colors(&self, length: usize) -> Vec<Color> {
         let preset_len = self.color_scheme.len(); //6
         let center = preset_len / 2; // 4
@@ -100,7 +93,7 @@ impl GayColorizer {
             .collect::<Vec<Color>>()
     }
 }
-impl Colorizer for GayColorizer {
+impl Colorizer for FlagColorizer {
     fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>> {
         let txt: String = ascii_art
             .text
@@ -186,20 +179,9 @@ pub struct Info {
     pub id: Arc<str>,
 }
 
-fn palette() -> (String, String) {
-    (
-        (0..8u8)
-            .map(|x| "   ".on(Color::AnsiValue(x)).to_string())
-            .collect::<String>(),
-        (8..16u8)
-            .map(|x| "   ".on(Color::AnsiValue(x)).to_string())
-            .collect::<String>(),
-    )
-}
-
-impl Info {
-    #[must_use]
-    pub fn new() -> Self {
+impl Default for Info {
+    #[allow(clippy::default_trait_access)]
+    fn default() -> Self {
         // let mut sys = System::new_all();
         let getter = Arc::new(get_info::new());
         let _getter_clone = Arc::clone(&getter);
@@ -282,10 +264,16 @@ impl Info {
             id,
         }
     }
+}
+
+impl Info {
+    fn new() -> Self {
+        Info::default()
+    }
     #[must_use]
     pub fn as_vec(self) -> Vec<(String, String)> {
-        let username = self.username.unwrap_or(Arc::from(""));
-        let hostname = self.hostname.unwrap_or(Arc::from(""));
+        let username = self.username.unwrap_or_else(|| Arc::from(""));
+        let hostname = self.hostname.unwrap_or_else(|| Arc::from(""));
         let y = format!("{username}@{hostname}");
         let repeats = y.len();
         let (dark, light) = palette();
@@ -337,21 +325,37 @@ impl Info {
         res.push((String::new(), light));
         res
     }
+
+    /// TODO
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if .
+    #[allow(dead_code)]
+    fn info_fmt(
+        f: &mut std::fmt::Formatter<'_>,
+        info_type: &str,
+        val: Option<&String>,
+    ) -> std::fmt::Result {
+        if let Some(x) = val {
+            info_type
+                .with(Color::Red)
+                .attribute(crossterm::style::Attribute::Bold)
+                .fmt(f)?;
+            x.clone().reset().fmt(f)?;
+            '\n'.fmt(f)?;
+        }
+        Ok(())
+    }
 }
 
-#[allow(dead_code)]
-fn info_fmt(
-    f: &mut std::fmt::Formatter<'_>,
-    info_type: &str,
-    val: Option<&String>,
-) -> std::fmt::Result {
-    if let Some(x) = val {
-        info_type
-            .with(Color::Red)
-            .attribute(crossterm::style::Attribute::Bold)
-            .fmt(f)?;
-        x.clone().reset().fmt(f)?;
-        '\n'.fmt(f)?;
-    }
-    Ok(())
+fn palette() -> (String, String) {
+    (
+        (0..8u8)
+            .map(|x| "   ".on(Color::AnsiValue(x)).to_string())
+            .collect::<String>(),
+        (8..16u8)
+            .map(|x| "   ".on(Color::AnsiValue(x)).to_string())
+            .collect::<String>(),
+    )
 }

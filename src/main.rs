@@ -13,7 +13,7 @@ use crossterm::{
 use directories::ProjectDirs;
 use mirafetch::{
     util::{get_colorscheme, get_icon, AsciiArt},
-    Colorizer, Config, DefaultColorizer, GayColorizer, Info,
+    Colorizer, Config, DefaultColorizer, FlagColorizer, Info,
 };
 
 use std::{cmp::max, fs, io::stdout, sync::Arc};
@@ -21,8 +21,8 @@ mod util;
 
 fn main() -> anyhow::Result<()> {
     // Load Settings
-    let info = Info::new();
-    let id: Box<str> = Box::from(info.id.clone().as_ref());
+    let info = Info::default();
+    let id: Box<str> = Box::from(info.id.as_ref());
     let info_vec = info.as_vec();
     // todo: load from TOML
     let settings: Config = ProjectDirs::from("", "", "Mirafetch")
@@ -45,7 +45,7 @@ fn main() -> anyhow::Result<()> {
             .as_ref()
             .and_then(|x| get_colorscheme(x).ok()),
     );
-    let logo: AsciiArt = get_icon(&settings.icon_name.as_ref().get_or_insert(&id)).unwrap();
+    let logo: AsciiArt = get_icon(settings.icon_name.as_ref().get_or_insert(&id))?;
     let colored_logo = colorize_logo(&settings, &scheme, &logo)?;
 
     // Get system info
@@ -65,7 +65,7 @@ fn colorize_logo(
             settings.orientation.map_or_else(
                 || Err(anyhow!("Missing Orientation")),
                 |orientation| {
-                    Ok(Box::new(GayColorizer {
+                    Ok(Box::new(FlagColorizer {
                         color_scheme: scheme.clone(),
                         orientation,
                     }) as Box<dyn Colorizer>)
@@ -77,21 +77,24 @@ fn colorize_logo(
     Ok(colorizer?.colorize(logo))
 }
 
+/// Display the formatted logo and system information
+///
+/// # Errors
+///
+/// This function will return an error if the terminal settings (eg color, cursor position) cannot be modified
 fn display(
-    mut icon: Vec<crossterm::style::StyledContent<String>>,
-    mut info: Vec<(String, String)>,
+    icon: Vec<crossterm::style::StyledContent<String>>,
+    info: Vec<(String, String)>,
     logo: &AsciiArt,
 ) -> Result<(), anyhow::Error> {
-    icon.reverse();
-    info.reverse();
     stdout().execute(Clear(All))?.execute(MoveTo(0, 0))?;
-    while let Some(line) = icon.pop() {
+    for line in icon.into_iter().rev() {
         stdout() /* .execute(ResetColor)?*/
             .execute(PrintStyledContent(line))?;
     }
     let pos = position()?;
     stdout().execute(MoveTo(0, 0))?;
-    while let Some(line) = info.pop() {
+    for line in info.into_iter().rev() {
         let (x, y) = line;
         stdout()
             .execute(MoveToColumn(logo.width + 3))?
@@ -103,7 +106,7 @@ fn display(
             .execute(PrintStyledContent(y.reset()))?
             .execute(MoveToNextLine(1))?;
     }
-    let (_x, y) = position().unwrap();
+    let (_x, y) = position()?;
     stdout().execute(MoveTo(0, max(y, pos.1) + 1))?;
     Ok(())
 }
