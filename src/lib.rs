@@ -22,6 +22,7 @@ mod wininfo;
 #[cfg(target_family = "unix")]
 use crate::linuxinfo::LinuxInfo as get_info;
 mod linuxinfo;
+mod tests;
 pub mod util;
 #[derive(Debug, Serialize, Deserialize, Default)]
 pub struct Config {
