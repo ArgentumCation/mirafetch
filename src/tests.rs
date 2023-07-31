@@ -23,7 +23,7 @@ mod tests {
             let mut lines = output.lines();
             let (x, y) = lines.next().unwrap().split_once("@").unwrap();
             ff_tmp.insert("username".to_string(), x.into());
-            ff_tmp.insert("hostname".to_string(), x.into());
+            ff_tmp.insert("hostname".to_string(), y.into());
             lines.next();
             for line in lines {
                 if let Some((x, y)) = line.split_once(": ") {
@@ -37,8 +37,37 @@ mod tests {
     #[test]
     fn test_username() {
         assert_eq!(
-            &AsRef::<str>::as_ref(FF_INFO.get("username").unwrap()),
+            &AsRef::<str>::as_ref(FF_INFO.get("username").unwrap()).trim_matches('\0'),
             &(MIRA_INFO.username.as_ref().unwrap().as_ref())
+        );
+    }
+    #[test]
+    fn test_hostname() {
+        assert_eq!(
+            &AsRef::<str>::as_ref(FF_INFO.get("hostname").unwrap()).trim(),
+            &(MIRA_INFO.hostname.as_ref().unwrap().as_ref())
+        );
+    }
+    #[test]
+    #[ignore = "Mirafetch returns this differently from fastfetch"]
+    fn test_os() {
+        assert_eq!(
+            &AsRef::<str>::as_ref(FF_INFO.get("OS").unwrap()).trim(),
+            &(MIRA_INFO.os.as_ref().unwrap())
+        );
+    }
+    #[test]
+    fn test_kernel() {
+        assert_eq!(
+            &AsRef::<str>::as_ref(FF_INFO.get("Kernel").unwrap()).trim(),
+            &(MIRA_INFO.kernel.as_ref().unwrap())
+        );
+    }
+    #[test]
+    fn test_cpu() {
+        assert_eq!(
+            &AsRef::<str>::as_ref(FF_INFO.get("CPU").unwrap()).trim(),
+            &(MIRA_INFO.cpu.as_ref().unwrap())
         );
     }
 }
