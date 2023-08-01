@@ -19,6 +19,7 @@ serde_yaml = "0.9.22"
 rkyv = { version = "0.7.42", features = ["validation"] }
 serde = { version = "1.0.164", features = ["derive"] }
 regex = "*"
+bson = "*"
 directories = "5.0.1"
 
 [dependencies]

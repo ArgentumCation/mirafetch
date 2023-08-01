@@ -1,5 +1,8 @@
 use anyhow::anyhow;
 use crossterm::style::Color;
+use rkyv::check_archived_root;
+use rkyv::vec::ArchivedVec;
+use std::collections::HashMap;
 use std::str::FromStr;
 
 use directories::ProjectDirs;
@@ -110,12 +113,13 @@ pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
         }
     }?
     .join(Path::new("icons.rkyv"));
+    // .join(Path::new("icons.bson"));
     let icon_name = &icon_name.to_ascii_lowercase();
     // println!("{path:#?}");
     let binding = fs::read(&path)?;
-    println!("path: {path:?}");
-    let archived = unsafe { archived_root::<Vec<AsciiArtRemote>>(&binding) };
+    let archived = check_archived_root::<Vec<AsciiArtRemote>>(&binding).unwrap();
     let icons: Vec<AsciiArtRemote> = archived.deserialize(&mut Infallible).unwrap();
+    // let icons: Vec<AsciiArtRemote> = bson::from_slice(&binding).unwrap();
     icons
         .into_iter()
         .find(|item| item.names.contains(&icon_name.to_string()))
@@ -137,13 +141,15 @@ pub fn get_colorscheme(scheme_name: &str) -> anyhow::Result<Arc<[Color]>> {
             true => Ok(proj_dirs.data_dir().to_path_buf()),
         }
     }?
+    // .join(Path::new("flags.bson"));
     .join(Path::new("flags.rkyv"));
-    //println!("{path:#?}");
     let binding = fs::read(path)?;
     let schemes: FxHashMap<String, Vec<(u8, u8, u8)>> =
-        (unsafe { archived_root::<FxHashMap<String, Vec<(u8, u8, u8)>>>(binding.as_slice()) })
+        check_archived_root::<FxHashMap<String, Vec<(u8, u8, u8)>>>(&binding)?
             .deserialize(&mut Infallible)?;
-
+    // (unsafe { archived_root::<FxHashMap<String, Vec<(u8, u8, u8)>>>(binding.as_slice()) })
+    //     .deserialize(&mut Infallible)?;
+    // let schemes: FxHashMap<String, Vec<(u8, u8, u8)>> = bson::from_slice(&binding).unwrap();
     Ok(schemes[scheme_name]
         .clone()
         .into_iter()
@@ -161,6 +167,7 @@ pub fn get_colorscheme(scheme_name: &str) -> anyhow::Result<Arc<[Color]>> {
     Clone,
 )]
 #[archive_with(from(Color))]
+#[archive(check_bytes)]
 enum ColorRemote {
     /// Resets the terminal color.
     Reset,
@@ -242,6 +249,7 @@ pub struct AsciiArt {
     Clone,
 )]
 #[archive_with(from(AsciiArt))]
+#[archive(check_bytes)]
 struct AsciiArtRemote {
     pub names: Vec<String>,
     #[archive_with(from(Vec<Color>), via(Map<ColorRemote>))]

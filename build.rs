@@ -1,9 +1,10 @@
-use std::{collections::HashMap, env, fs, iter::zip};
+use std::{collections::HashMap, env, fs, iter::zip, path::Path};
 
 use directories::ProjectDirs;
 use regex::Regex;
-use rkyv::Archive;
+use rkyv::{check_archived_root, Archive};
 #[derive(serde::Serialize, serde::Deserialize, Archive, Debug, Clone, rkyv::Serialize)]
+#[archive(check_bytes)]
 pub enum Color {
     /// Resets the terminal color.
     Reset,
@@ -80,6 +81,7 @@ struct AsciiArtUnprocessed {
 type UnprocessedAsciiArtVec = Vec<AsciiArtUnprocessed>;
 
 #[derive(serde::Serialize, serde::Deserialize, rkyv::Serialize, Archive, Debug)]
+#[archive(check_bytes)]
 struct AsciiArt {
     names: Vec<String>,
     colors: Vec<Color>,
@@ -97,10 +99,12 @@ fn main() {
 
     //Archive Flags
     let binding = fs::read_to_string("data/flags.json").unwrap();
-    let flags_json: HashMap<String, Vec<(u8, u8, u8)>> = serde_yaml //todo: switch to css hex strings
+    let flags: HashMap<String, Vec<(u8, u8, u8)>> = serde_yaml //todo: switch to css hex strings
         ::from_str(binding.as_str())
     .unwrap();
-    let flag_bytes = rkyv::to_bytes::<_, 1024>(&flags_json).unwrap();
+    let flags_archived = rkyv::to_bytes::<_, 1024>(&flags).unwrap();
+    check_archived_root::<HashMap<String, Vec<(u8, u8, u8)>>>(&flags_archived).unwrap();
+    // let flags_archived = bson::to_vec( bson::doc!{"flags"&flags).unwrap();
     let out_dir = (env::var("OUT_DIR").unwrap() + "/../../../data").into_boxed_str(); //todo: see if there's a less hacky way to do this
                                                                                       // println!("cargo:warning={out_dir}");
     fs::DirBuilder::new().create(out_dir.as_ref()).ok();
@@ -108,56 +112,64 @@ fn main() {
     // Archive Icons
 
     // Read from json
-    let binding = fs::read_to_string("data/data.yaml").unwrap();
-    let data_json: UnprocessedAsciiArtVec = serde_yaml::from_str(&binding).unwrap();
-    // fs::write(
-    //     "data/data.yaml",
-    //     serde_yaml::to_string(&data_json).unwrap().as_bytes(),
-    // )
-    // .unwrap();
-    // println!("cargo:warning={:#?}", data_json);
-    let regex = Regex::new(r#"\$\{c(\d*)\}"#).unwrap();
-    let icons_json = data_json
-        .iter()
-        .map(|item| {
-            // println!("cargo:warning={:?}: {:?}", item.name, item.colors);
-            let color_idx = regex
-                .captures_iter(&item.art)
-                .map(|x| str::parse(x.get(1).unwrap().as_str()).unwrap())
-                .collect::<Vec<u8>>();
-            let chunks = regex
-                .split(&item.art)
-                .map(|c| c.to_owned())
-                .skip(1)
-                .collect::<Vec<String>>();
-            let ascii_art = (zip(color_idx, chunks)).collect();
-            AsciiArt {
-                names: item
-                    .name
-                    .clone()
-                    .into_iter()
-                    .map(|x| x.to_lowercase())
-                    .collect(),
-                colors: item.colors.to_vec(),
-                width: item.width,
-                text: ascii_art,
-            }
-        })
-        .collect::<Vec<AsciiArt>>();
-
+    let icons = load_icons_from_yaml(Path::new("data/data.yaml"));
     //save archived icons
-    let icon_bytes = rkyv::to_bytes::<_, 1024>(&icons_json).unwrap();
+    let icons_archived = rkyv::to_bytes::<_, 1024>(&icons).unwrap();
+    check_archived_root::<Vec<AsciiArt>>(&icons_archived).unwrap();
+    // let icons_archived = bson::to_vec(&icons).unwrap();
     match std::env::var("PROFILE").unwrap().as_str() {
         "debug" => {
-            fs::write(out_dir.to_string() + "/icons.rkyv", &flag_bytes).unwrap();
-            fs::write(out_dir.to_string() + "/flags.rkyv", &icon_bytes).unwrap();
+            println!("cargo:warning=File len{:?}", icons_archived.len());
+            fs::write(out_dir.to_string() + "/icons.rkyv", &icons_archived).unwrap();
+            fs::write(out_dir.to_string() + "/flags.rkyv", &flags_archived).unwrap();
         }
+
         "release" => {
+            fs::DirBuilder::new().create(proj_dirs.data_dir()).ok();
             fs::copy("data/flags.json", proj_dirs.data_dir().join("/icons.yaml")).unwrap();
-            fs::write(proj_dirs.data_dir().join("/icons.rkyv"), &icon_bytes).unwrap();
+            fs::write(proj_dirs.data_dir().join("/icons.rkyv"), &icons_archived).unwrap();
             fs::copy("data/flags.json", proj_dirs.data_dir().join("/flags.json")).unwrap();
-            fs::write(proj_dirs.data_dir().join("/flags.rkyv"), &flag_bytes).unwrap();
+            fs::write(proj_dirs.data_dir().join("/flags.rkyv"), &flags_archived).unwrap();
         }
-        _ => {}
+        _ => panic!("Unknown profile"),
     }
+}
+
+fn load_icons_from_yaml(path: &Path) -> Vec<AsciiArt> {
+    let binding = fs::read_to_string(path).unwrap();
+    let data_yaml: UnprocessedAsciiArtVec = serde_yaml::from_str(&binding).unwrap();
+    process_ascii_art(data_yaml)
+}
+
+fn process_ascii_art(data: Vec<AsciiArtUnprocessed>) -> Vec<AsciiArt> {
+    let icons = {
+        let regex = Regex::new(r#"\$\{c(\d*)\}"#).unwrap();
+        data.iter()
+            .map(|item| {
+                // println!("cargo:warning={:?}: {:?}", item.name, item.colors);
+                let color_idx = regex
+                    .captures_iter(&item.art)
+                    .map(|x| str::parse(x.get(1).unwrap().as_str()).unwrap())
+                    .collect::<Vec<u8>>();
+                let chunks = regex
+                    .split(&item.art)
+                    .map(|c| c.to_owned())
+                    .skip(1)
+                    .collect::<Vec<String>>();
+                let ascii_art = (zip(color_idx, chunks)).collect();
+                AsciiArt {
+                    names: item
+                        .name
+                        .clone()
+                        .into_iter()
+                        .map(|x| x.to_lowercase())
+                        .collect(),
+                    colors: item.colors.to_vec(),
+                    width: item.width,
+                    text: ascii_art,
+                }
+            })
+            .collect::<Vec<AsciiArt>>()
+    };
+    icons
 }
