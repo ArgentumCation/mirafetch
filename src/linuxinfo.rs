@@ -284,12 +284,18 @@ impl OSInfo for LinuxInfo {
 
                     statvfs(CString::new(mount).ok().unwrap().as_ptr(), buf);
                     let total = (*buf).f_blocks ;
-                    let size_used = total - ((*buf).f_bavail );
+                    let size_used = total.checked_sub((*buf).f_bavail )?;
                     let block_size = (*buf).f_bsize;
                     if size_used == 0 {
                         return None;
                     }
-                Some((lazy_format!("Disk ({mount})").to_string(), lazy_format!("{}/ {}", bytecount_format(size_used * block_size ,0),bytecount_format(total * block_size,0)).to_string()))
+                        // println!("Size Used: {size_used}, Block Size {block_size}");
+                    if let Some(bytes) = size_used.checked_mul(block_size){
+                        Some((lazy_format!("Disk ({mount})").to_string(), lazy_format!("{}/ {}", bytecount_format( bytes ,0),bytecount_format(total * block_size,0)).to_string()))
+                    }
+                    else{
+                        None
+                    }
                 }
             }).collect::<Vec<(String,String)>>())
         })().unwrap_or_default()

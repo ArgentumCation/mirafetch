@@ -1,5 +1,6 @@
 use std::{collections::HashMap, env, fs, iter::zip};
 
+use directories::ProjectDirs;
 use regex::Regex;
 use rkyv::Archive;
 #[derive(serde::Serialize, serde::Deserialize, Archive, Debug, Clone, rkyv::Serialize)]
@@ -87,6 +88,7 @@ struct AsciiArt {
 }
 
 fn main() {
+    let proj_dirs = ProjectDirs::from("", "", "Mirafetch").unwrap();
     //this should work with yaml serde without changes
     println!("cargo:rerun-if-changed=data/flags.json");
     //todo: make this yaml
@@ -98,11 +100,10 @@ fn main() {
     let flags_json: HashMap<String, Vec<(u8, u8, u8)>> = serde_yaml //todo: switch to css hex strings
         ::from_str(binding.as_str())
     .unwrap();
-    let bytes = rkyv::to_bytes::<_, 1024>(&flags_json).unwrap();
+    let flag_bytes = rkyv::to_bytes::<_, 1024>(&flags_json).unwrap();
     let out_dir = (env::var("OUT_DIR").unwrap() + "/../../../data").into_boxed_str(); //todo: see if there's a less hacky way to do this
                                                                                       // println!("cargo:warning={out_dir}");
     fs::DirBuilder::new().create(out_dir.as_ref()).ok();
-    fs::write(out_dir.to_string() + "/flags.rkyv", bytes).unwrap();
 
     // Archive Icons
 
@@ -145,6 +146,18 @@ fn main() {
         .collect::<Vec<AsciiArt>>();
 
     //save archived icons
-    let bytes = rkyv::to_bytes::<_, 1024>(&icons_json).unwrap();
-    fs::write(out_dir.to_string() + "/icons.rkyv", bytes).unwrap();
+    let icon_bytes = rkyv::to_bytes::<_, 1024>(&icons_json).unwrap();
+    match std::env::var("PROFILE").unwrap().as_str() {
+        "debug" => {
+            fs::write(out_dir.to_string() + "/icons.rkyv", &flag_bytes).unwrap();
+            fs::write(out_dir.to_string() + "/flags.rkyv", &icon_bytes).unwrap();
+        }
+        "release" => {
+            fs::copy("data/flags.json", proj_dirs.data_dir().join("/icons.yaml")).unwrap();
+            fs::write(proj_dirs.data_dir().join("/icons.rkyv"), &icon_bytes).unwrap();
+            fs::copy("data/flags.json", proj_dirs.data_dir().join("/flags.json")).unwrap();
+            fs::write(proj_dirs.data_dir().join("/flags.rkyv"), &flag_bytes).unwrap();
+        }
+        _ => {}
+    }
 }

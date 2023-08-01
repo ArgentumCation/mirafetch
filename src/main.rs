@@ -29,7 +29,7 @@ fn main() -> anyhow::Result<()> {
         .and_then(
             // || Config::default().with_icon(id.as_ref()),
             |proj_dir| -> Option<Config> {
-                let path = proj_dir.config_dir().join("config.hocon");
+                let path = proj_dir.config_dir().join("config.toml");
                 let conf_file = fs::read_to_string(path).ok()?;
                 toml::from_str(&(conf_file))
                     .map_err(|err| println!("{err}"))
@@ -94,7 +94,7 @@ fn display(
     }
     let pos = position()?;
     stdout().execute(MoveTo(0, 0))?;
-    for line in info.into_iter().rev() {
+    for line in info.into_iter() {
         let (x, y) = line;
         stdout()
             .execute(MoveToColumn(logo.width + 3))?

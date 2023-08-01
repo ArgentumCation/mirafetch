@@ -1,6 +1,8 @@
 use anyhow::anyhow;
 use crossterm::style::Color;
+use std::str::FromStr;
 
+use directories::ProjectDirs;
 use rkyv::archived_root;
 use rkyv::with::ArchiveWith;
 
@@ -12,6 +14,8 @@ use rkyv_with::{ArchiveWith, DeserializeWith};
 use rustc_hash::FxHashMap;
 use std::fs;
 
+use std::ops::Shr;
+use std::ops::Sub;
 use std::sync::Arc;
 // use sysinfo::{ get_current_pid, CpuExt, ProcessExt, System, SystemExt, UserExt };
 use std::path::Path;
@@ -98,13 +102,18 @@ pub trait OSInfo: Send + Sync {
 /// This function will return an error if the icon cannot be found
 #[allow(dead_code)]
 pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
+    let proj_dirs = ProjectDirs::from("", "", "Mirafetch").unwrap();
+    let path = {
+        match proj_dirs.data_dir().exists() {
+            false => std::env::current_exe().map(|x| x.to_owned().parent().unwrap().join("data")),
+            true => Ok(proj_dirs.data_dir().to_path_buf()),
+        }
+    }?
+    .join(Path::new("icons.rkyv"));
     let icon_name = &icon_name.to_ascii_lowercase();
-    let path = std::env::current_exe()?
-        .parent()
-        .ok_or_else(|| anyhow!("Could not find icon: {icon_name}"))?
-        .join(Path::new("data/icons.rkyv"));
     // println!("{path:#?}");
-    let binding = fs::read(path)?;
+    let binding = fs::read(&path)?;
+    println!("path: {path:?}");
     let archived = unsafe { archived_root::<Vec<AsciiArtRemote>>(&binding) };
     let icons: Vec<AsciiArtRemote> = archived.deserialize(&mut Infallible).unwrap();
     icons
@@ -121,11 +130,15 @@ pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
 /// This function will return an error if the colorscheme cannot be found
 #[allow(dead_code)]
 pub fn get_colorscheme(scheme_name: &str) -> anyhow::Result<Arc<[Color]>> {
-    let path = std::env::current_exe()?
-        .parent()
-        .ok_or_else(|| anyhow!("Could not find colorscheme: {scheme_name}"))?
-        .join(Path::new("data/flags.rkyv"));
-    println!("{path:#?}");
+    let proj_dirs = ProjectDirs::from("", "", "Mirafetch").unwrap();
+    let path = {
+        match proj_dirs.data_dir().exists() {
+            false => std::env::current_exe().map(|x| x.to_owned().parent().unwrap().join("data")),
+            true => Ok(proj_dirs.data_dir().to_path_buf()),
+        }
+    }?
+    .join(Path::new("flags.rkyv"));
+    //println!("{path:#?}");
     let binding = fs::read(path)?;
     let schemes: FxHashMap<String, Vec<(u8, u8, u8)>> =
         (unsafe { archived_root::<FxHashMap<String, Vec<(u8, u8, u8)>>>(binding.as_slice()) })
@@ -279,22 +292,35 @@ impl From<ColorRemote> for Color {
 
 #[allow(dead_code, clippy::cast_precision_loss)]
 #[must_use]
-pub fn bytecount_format(i: u64, precision: usize) -> String {
+pub fn bytecount_format<
+    T: num::Unsigned
+        + std::ops::Shr<u8>
+        + std::fmt::Display
+        + PartialEq<T>
+        + Shr<u8, Output = T>
+        + From<u8>
+        + Copy,
+>(
+    i: T,
+    precision: usize,
+) -> String {
     // let mut val = 0;
     let units = ["bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"];
-
+    // let i = f64::from_str(i.to_string().as_str()).unwrap();
     for val in [0u8, 1u8, 2u8, 3u8, 4u8, 5u8, 6u8] {
-        if (i >> (10 * (val + 1))) == 0 {
+        if (i >> (10 * (val + 1))) == 0.into() {
             return format!(
                 "{:.precision$} {}",
                 if precision == 0 {
-                    (i >> (10 * val)) as f32
+                    let tmp: T = i >> (10 * val).into();
+                    f64::from_str(tmp.to_string().as_str()).unwrap()
                 } else {
-                    (i as f32) / f32::powi(1024_f32, i32::from(val))
+                    f64::from_str(i.to_string().as_str()).unwrap()
+                        / f64::powi(1024_f64, i32::from(val))
                 },
                 units[val as usize]
             );
         }
     }
-    panic!()
+    panic!("bytes: {i}, precision: {precision}")
 }
