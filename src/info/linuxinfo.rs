@@ -1,4 +1,4 @@
-#![cfg(target_family = "unix")]
+#![cfg(target_os = "linux")]
 use std::{
     alloc::Layout,
     ffi::{CStr, CString},
@@ -8,7 +8,8 @@ use std::{
     sync::{Arc, Once, RwLock},
 };
 
-use crate::util::{bytecount_format, OSInfo};
+use crate::info::OSInfo;
+use crate::util::bytecount_format;
 use glob::glob;
 use itertools::Itertools;
 use lazy_format::lazy_format;

@@ -35,7 +35,8 @@ use winreg::{
     RegKey,
 };
 
-use crate::util::{bytecount_format, OSInfo};
+use crate::info::OSInfo;
+use crate::util::bytecount_format;
 
 static INIT: Once = Once::new();
 #[derive(Default)]
@@ -246,7 +247,14 @@ impl OSInfo for WindowsInfo {
     }
 
     fn uptime(&self) -> Option<String> {
-        Some(time::Duration::milliseconds(GetTickCount64().try_into().ok()?).to_string())
+        let uptime = time::Duration::milliseconds(GetTickCount64().try_into().ok()?).to_string();
+        Some(
+            uptime
+                .split_inclusive("m")
+                .next()?
+                .replace("h", " hours, ")
+                .replace("m", " mins"),
+        )
     }
 
     fn ip(&self) -> Vec<Arc<str>> {

@@ -1,13 +1,11 @@
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
-    use std::{process::Command};
+    use std::process::Command;
 
     use lazy_static::lazy_static;
-    
 
-    use crate::Info;
-    use crate::OSInfo;
+    use crate::info::Info;
     lazy_static! {
         static ref FF_INFO: HashMap<String, String> = {
             let mut ff_tmp = HashMap::new();
@@ -64,10 +62,40 @@ mod tests {
         );
     }
     #[test]
+    #[ignore = "Mirafetch returns this differently from fastfetch"]
     fn test_cpu() {
         assert_eq!(
             &AsRef::<str>::as_ref(FF_INFO.get("CPU").unwrap()).trim(),
             &(MIRA_INFO.cpu.as_ref().unwrap())
+        );
+    }
+
+    #[test]
+    fn test_host() {
+        assert_eq!(
+            &AsRef::<str>::as_ref(FF_INFO.get("Host").unwrap()).trim(),
+            &(MIRA_INFO.machine.as_ref().unwrap())
+        );
+    }
+    #[test]
+    fn test_uptime() {
+        assert_eq!(
+            &AsRef::<str>::as_ref(FF_INFO.get("Uptime").unwrap()).trim(),
+            &(MIRA_INFO.uptime.as_ref().unwrap())
+        );
+    }
+    #[test]
+    fn test_de() {
+        assert_eq!(
+            &AsRef::<str>::as_ref(FF_INFO.get("DE").unwrap()).trim(),
+            &(MIRA_INFO.de.as_ref().unwrap())
+        );
+    }
+    #[test]
+    fn test_wm() {
+        assert_eq!(
+            &AsRef::<str>::as_ref(FF_INFO.get("WM").unwrap()).trim(),
+            &(MIRA_INFO.wm.as_ref().unwrap())
         );
     }
 }

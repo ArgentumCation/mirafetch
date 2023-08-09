@@ -12,8 +12,10 @@ use crossterm::{
 };
 use directories::ProjectDirs;
 use mirafetch::{
+    colorizer::{Colorizer, DefaultColorizer, FlagColorizer},
+    config::Config,
+    info::Info,
     util::{get_colorscheme, get_icon, AsciiArt},
-    Colorizer, Config, DefaultColorizer, FlagColorizer, Info,
 };
 
 use std::{cmp::max, fs, io::stdout, sync::Arc};
