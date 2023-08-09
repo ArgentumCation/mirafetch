@@ -1,10 +1,10 @@
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
-    use std::{process::Command, sync::Once};
+    use std::{process::Command};
 
     use lazy_static::lazy_static;
-    use rustc_hash::FxHashMap;
+    
 
     use crate::Info;
     use crate::OSInfo;
@@ -21,7 +21,7 @@ mod tests {
             )
             .to_string();
             let mut lines = output.lines();
-            let (x, y) = lines.next().unwrap().split_once("@").unwrap();
+            let (x, y) = lines.next().unwrap().split_once('@').unwrap();
             ff_tmp.insert("username".to_string(), x.into());
             ff_tmp.insert("hostname".to_string(), y.into());
             lines.next();

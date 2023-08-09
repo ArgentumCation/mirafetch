@@ -12,7 +12,6 @@ use crossterm::style::{Color, StyledContent, Stylize};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use std::default;
 use std::fmt::Display;
 
 use std::sync::Arc;
@@ -42,6 +41,7 @@ pub struct FlagColorizer {
 }
 impl Config {
     /// Builder method to add an icon to config
+    #[must_use]
     pub fn with_icon(mut self, icon_name: impl Into<String>) -> Self {
         self.icon_name = Some(Into::<String>::into(icon_name).into_boxed_str());
         self
@@ -269,7 +269,7 @@ impl Default for Info {
 
 impl Info {
     fn new() -> Self {
-        Info::default()
+        Self::default()
     }
     #[must_use]
     pub fn as_vec(self) -> Vec<(String, String)> {

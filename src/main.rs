@@ -94,7 +94,7 @@ fn display(
     }
     let pos = position()?;
     stdout().execute(MoveTo(0, 0))?;
-    for line in info.into_iter() {
+    for line in info {
         let (x, y) = line;
         stdout()
             .execute(MoveToColumn(logo.width + 3))?

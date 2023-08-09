@@ -1,8 +1,8 @@
-use std::{collections::HashMap, env, fs, iter::zip, path::Path};
-
 use directories::ProjectDirs;
 use regex::Regex;
-use rkyv::{check_archived_root, Archive};
+use rkyv::Archive;
+use std::{collections::HashMap, env, fs, iter::zip, path::Path};
+
 #[derive(serde::Serialize, serde::Deserialize, Archive, Debug, Clone, rkyv::Serialize)]
 #[archive(check_bytes)]
 pub enum Color {
@@ -88,51 +88,55 @@ struct AsciiArt {
     width: u16,
     text: Vec<(u8, String)>,
 }
-
+enum Profile {
+    Debug,
+    Release,
+}
 fn main() {
-    let proj_dirs = ProjectDirs::from("", "", "Mirafetch").unwrap();
+    let out_dir: &Path = &(Path::new(&env::var("OUT_DIR").unwrap()).join("../../../data")); //todo: see if there's a less hacky way to do this
+    let proj_dirs: ProjectDirs = ProjectDirs::from("", "", "Mirafetch").unwrap();
     //this should work with yaml serde without changes
-    println!("cargo:rerun-if-changed=data/flags.json");
+    println!("cargo:rerun-if-changed=data/flags.toml");
     //todo: make this yaml
     // println!("cargo:rerun-if-changed=data/data2.json5");
     println!("cargo:rerun-if-changed=data/data.yaml");
 
-    //Archive Flags
-    let binding = fs::read_to_string("data/flags.json").unwrap();
-    let flags: HashMap<String, Vec<(u8, u8, u8)>> = serde_yaml //todo: switch to css hex strings
+    fs::DirBuilder::new().create(out_dir).ok();
+    // let icons_archived = bson::to_vec(&icons).unwrap();
+    let profile = match std::env::var("PROFILE").unwrap().as_str() {
+        "debug" => Profile::Debug,
+        "release" => Profile::Release,
+        _ => panic!("Unknown profile"),
+    };
+    match profile {
+        Profile::Debug => {
+            archive_flags(Path::new("data"), out_dir);
+            archive_icons(Path::new("data"), out_dir);
+        }
+        Profile::Release => {
+            fs::DirBuilder::new().create(proj_dirs.data_dir()).ok();
+            fs::copy("data/icons.yaml", proj_dirs.data_dir().join("icons.yaml")).unwrap();
+            fs::copy("data/flags.toml", proj_dirs.data_dir().join("flags.toml")).unwrap();
+            archive_flags(Path::new("data"), proj_dirs.data_dir());
+            archive_icons(Path::new("data"), proj_dirs.data_dir());
+        }
+    }
+}
+
+fn archive_icons(in_dir: &Path, out_dir: &Path) {
+    let icons = load_icons_from_yaml(&in_dir.join("data.yaml"));
+    //save archived icons
+    let icons_archived = rkyv::to_bytes::<_, 1024>(&icons).unwrap();
+    fs::write(out_dir.join("icons.rkyv"), &icons_archived).unwrap();
+}
+
+fn archive_flags(in_dir: &Path, out_dir: &Path) {
+    let binding = fs::read_to_string(in_dir.join("flags.toml")).unwrap();
+    let flags: HashMap<String, Vec<(u8, u8, u8)>> = toml //todo: switch to css hex strings
         ::from_str(binding.as_str())
     .unwrap();
     let flags_archived = rkyv::to_bytes::<_, 1024>(&flags).unwrap();
-    check_archived_root::<HashMap<String, Vec<(u8, u8, u8)>>>(&flags_archived).unwrap();
-    // let flags_archived = bson::to_vec( bson::doc!{"flags"&flags).unwrap();
-    let out_dir = (env::var("OUT_DIR").unwrap() + "/../../../data").into_boxed_str(); //todo: see if there's a less hacky way to do this
-                                                                                      // println!("cargo:warning={out_dir}");
-    fs::DirBuilder::new().create(out_dir.as_ref()).ok();
-
-    // Archive Icons
-
-    // Read from json
-    let icons = load_icons_from_yaml(Path::new("data/data.yaml"));
-    //save archived icons
-    let icons_archived = rkyv::to_bytes::<_, 1024>(&icons).unwrap();
-    check_archived_root::<Vec<AsciiArt>>(&icons_archived).unwrap();
-    // let icons_archived = bson::to_vec(&icons).unwrap();
-    match std::env::var("PROFILE").unwrap().as_str() {
-        "debug" => {
-            println!("cargo:warning=File len{:?}", icons_archived.len());
-            fs::write(out_dir.to_string() + "/icons.rkyv", &icons_archived).unwrap();
-            fs::write(out_dir.to_string() + "/flags.rkyv", &flags_archived).unwrap();
-        }
-
-        "release" => {
-            fs::DirBuilder::new().create(proj_dirs.data_dir()).ok();
-            fs::copy("data/flags.json", proj_dirs.data_dir().join("/icons.yaml")).unwrap();
-            fs::write(proj_dirs.data_dir().join("/icons.rkyv"), &icons_archived).unwrap();
-            fs::copy("data/flags.json", proj_dirs.data_dir().join("/flags.json")).unwrap();
-            fs::write(proj_dirs.data_dir().join("/flags.rkyv"), &flags_archived).unwrap();
-        }
-        _ => panic!("Unknown profile"),
-    }
+    fs::write(out_dir.join("flags.rkyv"), &flags_archived).unwrap();
 }
 
 fn load_icons_from_yaml(path: &Path) -> Vec<AsciiArt> {

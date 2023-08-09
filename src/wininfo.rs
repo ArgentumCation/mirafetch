@@ -5,7 +5,7 @@ use crossterm::style::{Color, Stylize};
 use itertools::Itertools;
 use rayon::prelude::{IntoParallelRefIterator, ParallelIterator};
 use rustc_hash::FxHashMap;
-use rustc_hash::FxHashSet;
+
 use std::mem::size_of;
 use std::net::{Ipv4Addr, Ipv6Addr};
 use windows::Win32::System::SystemInformation::{
@@ -201,23 +201,24 @@ impl OSInfo for WindowsInfo {
                 .ok()?;
 
             Some(
-                FxHashSet::<Arc<str>>::from_iter(video.enum_keys().filter_map(|x| {
-                    video
-                        .open_subkey(x.ok()?)
-                        .map(|uuid| {
-                            uuid.enum_keys().find_map(|y| -> Option<Arc<str>> {
-                                uuid.open_subkey(y.unwrap())
-                                    .ok()?
-                                    .get_value::<String, &str>("DriverDesc")
-                                    .ok()
-                                    .map(|x| Arc::from(x))
+                video
+                    .enum_keys()
+                    .filter_map(|x| {
+                        video
+                            .open_subkey(x.ok()?)
+                            .map(|uuid| {
+                                uuid.enum_keys().find_map(|y| -> Option<Arc<str>> {
+                                    uuid.open_subkey(y.unwrap())
+                                        .ok()?
+                                        .get_value::<String, &str>("DriverDesc")
+                                        .ok()
+                                        .map(Arc::from)
+                                })
+                                // .collect::<String>()
                             })
-                            // .collect::<String>()
-                        })
-                        .ok()?
-                }))
-                .into_iter()
-                .collect_vec(),
+                            .ok()?
+                    })
+                    .collect_vec(),
             )
         }()
         .unwrap_or_default()
@@ -332,6 +333,7 @@ impl OSInfo for WindowsInfo {
         GetComputerName().ok().map(|f| Arc::from(f.to_lowercase()))
     }
 
+    #[allow(clippy::cast_possible_truncation)]
     fn sys_font(&self) -> Option<String> {
         let mut metrics = NONCLIENTMETRICS::default();
         let size = size_of::<NONCLIENTMETRICS>();
@@ -428,7 +430,7 @@ impl OSInfo for WindowsInfo {
         let mut length = 0; // Box::into_raw(Box::<u32>::default());
         let mut buf: Vec<u8>;
         // let mut info: Box<SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>;
-        let mut cores = 0;
+        let mut core_count = 0;
         unsafe {
             GetLogicalProcessorInformationEx(RelationAll, None, &mut length);
             buf = Vec::<u8>::with_capacity(length as usize);
@@ -441,7 +443,7 @@ impl OSInfo for WindowsInfo {
             let mut current: *mut SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX = buf.as_mut_ptr().cast();
             while current.cast() < buf.as_mut_ptr().add(length as usize) {
                 if (*current).Relationship == RelationProcessorCore {
-                    cores += 1;
+                    core_count += 1;
                 }
                 //todo: logical/online cores
                 current = current.cast::<u8>().add((*current).Size as usize).cast();
@@ -456,10 +458,13 @@ impl OSInfo for WindowsInfo {
             .ok()?;
         let name: String = core0.get_value("ProcessorNameString").ok()?;
         let freq: u32 = core0.get_value("~MHz").ok()?;
-        Some(format!("{name} ({cores}) @ {:.2}GHz", freq as f32 / 1000.0))
+        Some(format!(
+            "{name} ({core_count}) @ {:.2}GHz",
+            freq as f32 / 1000.0
+        ))
     }
 
     fn username(&self) -> std::option::Option<Arc<str>> {
-        winsafe::GetUserName().ok().map(|x| Arc::from(x))
+        winsafe::GetUserName().ok().map(Arc::from)
     }
 }
