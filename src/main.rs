@@ -90,7 +90,7 @@ fn display(
     logo: &AsciiArt,
 ) -> Result<(), anyhow::Error> {
     stdout().execute(Clear(All))?.execute(MoveTo(0, 0))?;
-    for line in icon.into_iter().rev() {
+    for line in icon.into_iter() {
         stdout() /* .execute(ResetColor)?*/
             .execute(PrintStyledContent(line))?;
     }
