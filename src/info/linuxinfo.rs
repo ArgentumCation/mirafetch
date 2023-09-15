@@ -108,11 +108,17 @@ impl OSInfo for LinuxInfo {
             let mut res: Vec<Arc<str>> = Vec::new();
             let mut paths = glob("/sys/class/drm/card?/device")?;
             while let Some(Ok(card)) = paths.next() {
-                let path = card.to_str().unwrap().to_string() + "/vendor";
+                let path = card.join("vendor");
+                if !path.exists() {
+                    continue;
+                }
                 let vid = u16::from_str_radix(&fs::read_to_string(path).unwrap().trim()[2..], 16)
                     .unwrap();
 
-                let path = card.to_str().unwrap().to_string() + "/device";
+                let path = card.join("device");
+                if !path.exists() {
+                    continue;
+                }
                 let pid = u16::from_str_radix(&fs::read_to_string(path).unwrap().trim()[2..], 16)
                     .unwrap();
                 let device = &Device::from_vid_pid(vid, pid).unwrap();
