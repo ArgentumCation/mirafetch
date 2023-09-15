@@ -11,8 +11,17 @@ A Rust reimplementation of Hyfetch wih a focus on speed
 ## Installation
 Download the repo and run `cargo run` in the folder to try it out. To install mirafetch try `cargo install .` and ensure your cargo directory is in `$PATH`
 
+## Configuration
+- The configuration file is located in:
+  - Linux: `TODO/config.toml`
+  - macOS: `TODO/config.toml`
+  - Windows `TODO\config.toml`
+
+- `icon_name` is optional and overrides the default icon for your system, these are defined in `data/data.yaml`
+- `scheme_name` is optional and defines the flag pattern to overlay on your OS icon, these are defined in `data/flags.toml`
+  - `orientation` is required when `scheme_name` is present, and can be `Horizontal` or `Vertical`, and sets the direction of the flag's stripes
 ## Notes
-- Currently this has only been tested on Ubuntu 23.10, and Windows 11, I could definitely use help testing on other platforms
+- I could definitely use help testing on other platforms
 - There's currently no support for macOS, if you have a Mac and want to port this, feel free to make a PR
 
 ## Tested on:
