@@ -221,6 +221,10 @@ impl OSInfo for LinuxInfo {
             let mut addrs = mem::MaybeUninit::<*mut libc::ifaddrs>::uninit();
             getifaddrs(addrs.as_mut_ptr());
             while let Some(addr) = addrs.assume_init().as_ref() {
+                if addr.ifa_addr == std::ptr::null_mut() {
+                    addrs = MaybeUninit::new(addr.ifa_next);
+                    continue;
+                }
                 if addr.ifa_flags & IFF_RUNNING as u32 == 0 {
                     addrs = MaybeUninit::new(addr.ifa_next);
                     continue;
