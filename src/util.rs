@@ -47,7 +47,7 @@ pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
         .into_iter()
         .find(|item| item.names.contains(&icon_name.to_string()))
         .map(std::convert::Into::into)
-        .ok_or_else(|| anyhow!(""))
+        .ok_or_else(|| anyhow!(format!("Could not find an icon for {icon_name}")))
 }
 
 /// TODO
