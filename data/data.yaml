@@ -5955,6 +5955,7 @@
     - Pop!_OS
     - popos
     - pop_os
+    - pop
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
