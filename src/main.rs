@@ -2,7 +2,8 @@
 #![warn(clippy::nursery)]
 // #![allow(unused_imports)]
 #![warn(clippy::style)]
-
+// CR: If you are distributing this as a binary with the data.yaml and flags.toml included
+// I would suggest converting them a format that uses less space and/or minifying them if possible. 
 use anyhow::{anyhow, Result};
 use crossterm::{
     cursor::{position, MoveTo, MoveToColumn, MoveToNextLine},
@@ -27,6 +28,7 @@ fn main() -> anyhow::Result<()> {
     let id: Box<str> = Box::from(info.id.as_ref());
     let info_vec = info.as_vec();
     // todo: load from TOML
+    // CR: Should this be try from?
     let settings: Config = ProjectDirs::from("", "", "Mirafetch")
         .and_then(
             // || Config::default().with_icon(id.as_ref()),
@@ -64,6 +66,9 @@ fn colorize_logo(
     let colorizer = scheme.as_ref().map_or_else(
         || Ok(Box::new(DefaultColorizer {}) as Box<dyn Colorizer>),
         |scheme| {
+            // CR: You could use .context() or .with_context() here
+            // instead and then just use map for the orientation part
+            // getting a result for free from context() 
             settings.orientation.map_or_else(
                 || Err(anyhow!("Missing Orientation")),
                 |orientation| {
@@ -89,6 +94,7 @@ fn display(
     info: Vec<(String, String)>,
     logo: &AsciiArt,
 ) -> Result<(), anyhow::Error> {
+    // CR: stdout is a function that gets a handle. You don't need to call it repeatedly. Just keep the handle
     stdout().execute(Clear(All))?.execute(MoveTo(0, 0))?;
     for line in icon.into_iter() {
         stdout() /* .execute(ResetColor)?*/

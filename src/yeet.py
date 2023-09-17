@@ -1,6 +1,6 @@
 # coding=utf8
 # the above tag defines encoding for this document and is for Python 2.x compatibility
-
+# CR: You should rename this file to appropriately describe it's purpose
 import re
 import io
 
