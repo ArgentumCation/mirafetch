@@ -94,10 +94,8 @@ fn display(
         stdout() /* .execute(ResetColor)?*/
             .execute(PrintStyledContent(line))?;
     }
-    let pos = position()?;
     stdout().execute(MoveTo(0, 0))?;
-    for line in info {
-        let (x, y) = line;
+    for (x, y) in info {
         stdout()
             .execute(MoveToColumn(logo.width + 3))?
             .execute(PrintStyledContent(x.clone().bold().red()))?;
