@@ -1,3 +1,4 @@
+// CR: Kinda feels weird for all these to just be in some top-level util file but I'm not sure where they belong instead.
 use anyhow::anyhow;
 use crossterm::style::Color;
 use num::Unsigned;
@@ -27,8 +28,10 @@ use std::path::Path;
 /// This function will return an error if the icon cannot be found
 #[allow(dead_code)]
 pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
+    // CR: Definitely should be try from
     let proj_dirs = ProjectDirs::from("", "", "Mirafetch").unwrap();
     let path = {
+        // CR: Not the end of the world, but lowkey feels like this should be a Path not a Pathbuf
         if proj_dirs.data_dir().exists() {
             Ok(proj_dirs.data_dir().to_path_buf())
         } else {

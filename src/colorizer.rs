@@ -8,6 +8,8 @@ use crate::{config::Orientation, util::AsciiArt};
 pub trait Colorizer {
     fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>>;
 }
+
+// CR: You know, this might be a good spot to derive Default and just use that instead of actually making one.  
 pub struct DefaultColorizer {}
 
 impl Colorizer for DefaultColorizer {
@@ -15,6 +17,8 @@ impl Colorizer for DefaultColorizer {
         let colors = &ascii_art.colors;
         ascii_art
             .text
+            // CR: Might be worth benchmarking with and without this par_iter and see
+            // if it's actually leveraging the parallelization well. 
             .par_iter()
             .map(|(idx, text)| -> StyledContent<String> {
                 text.clone().with(*colors.get((*idx as usize) - 1).unwrap())
@@ -36,6 +40,9 @@ impl FlagColorizer {
         let repeats = length / preset_len; // 1
         let mut weights = [repeats].repeat(preset_len);
         let mut extras = length % preset_len; // 2
+        // CR: I don't know it off the top of my head,
+        // but this entire next section feels completely mathable
+        // in some way cleaner than a while loop counting down. 
         if extras % 2 == 1 {
             extras -= 1;
             weights[center] += 1;
@@ -54,6 +61,10 @@ impl FlagColorizer {
             .into_par_iter()
             .enumerate()
             .flat_map(|(idx, weight)| {
+                // CR: I may be wrong here, but shouldn't v already be filled with 
+                // color_scheme[idx]?
+                // Also, why are you allocating an entire vector here when you could just
+                // use something like iter::repeat(self.color_scheme[idx]).take(weight)
                 let mut v: Vec<Color> = [self.color_scheme[idx]].repeat(weight);
                 v.fill(self.color_scheme[idx]);
                 v
@@ -67,6 +78,10 @@ impl Colorizer for FlagColorizer {
         let txt: String = ascii_art
             .text
             .clone()
+            // CR: Why would parallelizing help here? The overhead you get from
+            // going parallel may be more costly than the speed boosts you may get.
+            // Especially considering the map operation is only unpacking a tuple
+            // and not really doing a complex cpu-bound op. 
             .into_par_iter()
             .map(|x| x.1)
             .collect();
