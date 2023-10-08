@@ -1,105 +1,107 @@
+use arcstr::ArcStr;
+
 use crate::info::OSInfo;
 
-pub struct iOSInfo {}
-impl iOSInfo {
+pub struct IosInfo {}
+impl IosInfo {
     pub fn new() -> Self {
         Self {}
     }
 }
-impl OSInfo for iOSInfo {
-    fn sys_font(&self) -> Option<String> {
+impl OSInfo for IosInfo {
+    fn sys_font(&self) -> Option<ArcStr> {
         None
     }
 
-    fn cursor(&self) -> Option<String> {
+    fn cursor(&self) -> Option<ArcStr> {
         None
     }
 
-    fn terminal(&self) -> Option<String> {
+    fn terminal(&self) -> Option<ArcStr> {
         None
     }
 
-    fn term_font(&self) -> Option<String> {
+    fn term_font(&self) -> Option<ArcStr> {
         None
     }
 
-    fn gpus(&self) -> Vec<std::sync::Arc<str>> {
+    fn gpus(&self) -> Vec<arcstr::ArcStr> {
         Vec::new()
     }
 
-    fn memory(&self) -> Option<String> {
+    fn memory(&self) -> Option<ArcStr> {
         None
     }
 
-    fn disks(&self) -> Vec<(String, String)> {
+    fn disks(&self) -> Vec<(ArcStr, ArcStr)> {
         Vec::new()
     }
 
-    fn battery(&self) -> Option<String> {
+    fn battery(&self) -> Option<ArcStr> {
         None
     }
 
-    fn locale(&self) -> Option<String> {
+    fn locale(&self) -> Option<ArcStr> {
         None
     }
 
-    fn theme(&self) -> Option<String> {
+    fn theme(&self) -> Option<ArcStr> {
         None
     }
 
-    fn icons(&self) -> Option<String> {
+    fn icons(&self) -> Option<ArcStr> {
         None
     }
 
-    fn os(&self) -> Option<String> {
+    fn os(&self) -> Option<ArcStr> {
         None
     }
 
-    fn displays(&self) -> Vec<std::sync::Arc<str>> {
+    fn displays(&self) -> Vec<arcstr::ArcStr> {
         Vec::new()
     }
 
-    fn machine(&self) -> Option<String> {
+    fn machine(&self) -> Option<ArcStr> {
         None
     }
 
-    fn kernel(&self) -> Option<String> {
+    fn kernel(&self) -> Option<ArcStr> {
         None
     }
 
-    fn wm(&self) -> Option<String> {
+    fn wm(&self) -> Option<ArcStr> {
         None
     }
 
-    fn de(&self) -> Option<String> {
+    fn de(&self) -> Option<ArcStr> {
         None
     }
 
-    fn shell(&self) -> Option<String> {
+    fn shell(&self) -> Option<ArcStr> {
         None
     }
 
-    fn cpu(&self) -> Option<String> {
+    fn cpu(&self) -> Option<ArcStr> {
         None
     }
 
-    fn username(&self) -> Option<std::sync::Arc<str>> {
+    fn username(&self) -> Option<arcstr::ArcStr> {
         None
     }
 
-    fn id(&self) -> std::sync::Arc<str> {
+    fn id(&self) -> arcstr::ArcStr {
         todo!()
     }
 
-    fn uptime(&self) -> Option<String> {
+    fn uptime(&self) -> Option<ArcStr> {
         todo!()
     }
 
-    fn ip(&self) -> Vec<std::sync::Arc<str>> {
+    fn ip(&self) -> Vec<arcstr::ArcStr> {
         todo!()
     }
 
-    fn hostname(&self) -> Option<std::sync::Arc<str>> {
+    fn hostname(&self) -> Option<arcstr::ArcStr> {
         todo!()
     }
 }

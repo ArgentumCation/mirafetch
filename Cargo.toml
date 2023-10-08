@@ -42,6 +42,7 @@ directories = "5.0.1"
 lazy_static = "1.4.0"
 exitcode = "1.1.2"
 num = "0.4.1"
+arcstr = "1.1.5"
 
 [target.'cfg(windows)'.dependencies]
 winreg = "0.50.0"

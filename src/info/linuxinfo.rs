@@ -1,15 +1,7 @@
 #![cfg(target_os = "linux")]
-use std::{
-    alloc::Layout,
-    ffi::{CStr, CString},
-    fs,
-    mem::{self, MaybeUninit},
-    net::{Ipv4Addr, Ipv6Addr},
-    sync::{Arc, Once, RwLock},
-};
-
 use crate::info::OSInfo;
 use crate::util::bytecount_format;
+use arcstr::ArcStr;
 use glob::glob;
 use itertools::Itertools;
 use lazy_format::lazy_format;
@@ -22,13 +14,26 @@ use rayon::{
     str::ParallelString,
 };
 use rustc_hash::{FxHashMap, FxHashSet};
+use std::{
+    alloc::Layout,
+    ffi::{CStr, CString},
+    fs,
+    mem::{self, MaybeUninit},
+    net::{Ipv4Addr, Ipv6Addr},
+    sync::{Once, RwLock},
+};
 
 pub struct LinuxInfo {
     uts: PlatformInfo,
-    os_release: RwLock<FxHashMap<Arc<str>, Arc<str>>>,
+    os_release: RwLock<FxHashMap<ArcStr, ArcStr>>,
 }
 
 static OS_RELEASE: Once = Once::new();
+impl Default for LinuxInfo {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl LinuxInfo {
     pub fn new() -> Self {
         Self {
@@ -56,32 +61,32 @@ impl LinuxInfo {
     }
 }
 impl OSInfo for LinuxInfo {
-    fn os(&self) -> Option<String> {
+    fn os(&self) -> Option<ArcStr> {
         //Todo: check for lsb_release
         self.get_os_release();
-        Some(
+        Some(ArcStr::from(
             (self.os_release).read().unwrap().get("NAME")?.to_string()
                 + (self.os_release)
                     .read()
                     .unwrap()
                     .get("VERSION")
-                    .map_or(String::new(), |x| " ".to_string() + x + " ")
+                    .map_or(ArcStr::new(), |x| arcstr::format!(" {x} "))
                     .as_ref()
                 + &self.uts.machine().to_string_lossy(),
-        )
+        ))
     }
 
-    fn hostname(&self) -> Option<Arc<str>> {
-        Some(Arc::from(self.uts.nodename().to_str()?))
+    fn hostname(&self) -> Option<ArcStr> {
+        Some(ArcStr::from(self.uts.nodename().to_str()?))
     }
 
-    fn displays(&self) -> Vec<Arc<str>> {
-        || -> anyhow::Result<Vec<Arc<str>>> {
+    fn displays(&self) -> Vec<ArcStr> {
+        || -> anyhow::Result<Vec<ArcStr>> {
             let mut res = Vec::new();
             let mut paths = glob("/sys/class/drm/card*-*/modes")?;
             while let Some(Ok(path)) = paths.next() {
                 res.push(match fs::read_to_string(path)?.split_once('\n') {
-                    Some(x) => Arc::from(x.0),
+                    Some(x) => ArcStr::from(x.0),
                     None => continue,
                 });
             }
@@ -91,21 +96,21 @@ impl OSInfo for LinuxInfo {
         .unwrap_or_default()
     }
 
-    fn machine(&self) -> Option<String> {
+    fn machine(&self) -> Option<ArcStr> {
         fs::read_to_string("/sys/class/dmi/id/product_name")
             .ok()
-            .map(|x| x.trim().to_string())
+            .map(|x| ArcStr::from(x.trim()))
     }
 
-    fn kernel(&self) -> Option<String> {
+    fn kernel(&self) -> Option<ArcStr> {
         //.utsname.machine()
-        Some(self.uts.release().to_string_lossy().to_string())
+        Some(ArcStr::from(self.uts.release().to_string_lossy()))
     }
 
     #[allow(clippy::similar_names)]
-    fn gpus(&self) -> Vec<Arc<str>> {
-        || -> anyhow::Result<Vec<Arc<str>>> {
-            let mut res: Vec<Arc<str>> = Vec::new();
+    fn gpus(&self) -> Vec<ArcStr> {
+        || -> anyhow::Result<Vec<ArcStr>> {
+            let mut res: Vec<ArcStr> = Vec::new();
             let mut paths = glob("/sys/class/drm/card?/device")?;
             while let Some(Ok(card)) = paths.next() {
                 let path = card.join("vendor");
@@ -127,7 +132,7 @@ impl OSInfo for LinuxInfo {
                     .name()
                     .replace("Advanced Micro Devices, Inc. [AMD/ATI]", "AMD")
                     .replace("Intel Corporation", "Intel");
-                res.push(Arc::from(vendor + " " + device.name()));
+                res.push(arcstr::format!("{vendor} {}", device.name()));
             }
             Ok(res)
         }()
@@ -135,26 +140,26 @@ impl OSInfo for LinuxInfo {
         .unwrap_or_default()
     }
 
-    fn theme(&self) -> Option<String> {
+    fn theme(&self) -> Option<ArcStr> {
         None
     }
 
-    fn wm(&self) -> Option<String> {
+    fn wm(&self) -> Option<ArcStr> {
         None
     }
 
-    fn de(&self) -> Option<String> {
+    fn de(&self) -> Option<ArcStr> {
         None
     }
 
-    fn shell(&self) -> Option<String> {
+    fn shell(&self) -> Option<ArcStr> {
         let ppid = std::os::unix::process::parent_id();
-        fs::read_to_string(lazy_format!("/proc/{ppid}/comm").to_string())
+        fs::read_to_string(format!("/proc/{ppid}/comm").to_string())
             .ok()
-            .map(|x| x.trim().to_string())
+            .map(|x| ArcStr::from(x.trim()))
     }
 
-    fn cpu(&self) -> Option<String> {
+    fn cpu(&self) -> Option<ArcStr> {
         let cpuinfo = fs::read_to_string("/proc/cpuinfo").ok()?;
         let model = cpuinfo
             .lines()
@@ -170,34 +175,37 @@ impl OSInfo for LinuxInfo {
             .trim();
 
         let model = model.split_once('@')?;
-        Some(model.0.to_string() + "(" + cores + ") @" + model.1)
+        Some(arcstr::format!("{} ({cores}) @ {})", model.0, model.1))
     }
 
-    fn username(&self) -> Option<Arc<str>> {
+    fn username(&self) -> Option<ArcStr> {
         unsafe {
             let uid = libc::getuid();
             let pwd = libc::getpwuid(uid);
-            CStr::from_ptr((*pwd).pw_name).to_str().ok().map(Arc::from)
+            CStr::from_ptr((*pwd).pw_name)
+                .to_str()
+                .ok()
+                .map(ArcStr::from)
         }
     }
 
-    fn sys_font(&self) -> Option<String> {
+    fn sys_font(&self) -> Option<ArcStr> {
         None
     }
 
-    fn cursor(&self) -> Option<String> {
+    fn cursor(&self) -> Option<ArcStr> {
         None
     }
 
-    fn terminal(&self) -> Option<String> {
+    fn terminal(&self) -> Option<ArcStr> {
         None
     }
 
-    fn term_font(&self) -> Option<String> {
+    fn term_font(&self) -> Option<ArcStr> {
         None
     }
     //todo: more decimal places
-    fn memory(&self) -> Option<String> {
+    fn memory(&self) -> Option<ArcStr> {
         let re = regex::Regex::new(r#"Mem(Total|Available):\W*(\d*)"#).unwrap();
         let mem = fs::read_to_string("/proc/meminfo").ok()?;
         let caps: (u64, u64) = re
@@ -205,23 +213,20 @@ impl OSInfo for LinuxInfo {
             .map(|x| str::parse::<u64>(x.get(2).unwrap().as_str()).unwrap())
             .collect_tuple()?;
 
-        Some(
-            lazy_format!(
-                "{} / {}",
-                bytecount_format((caps.0 - caps.1) << 10, 2),
-                bytecount_format(caps.0 << 10, 2),
-            )
-            .to_string(),
-        )
+        Some(arcstr::format!(
+            "{} / {}",
+            bytecount_format((caps.0 - caps.1) << 10, 2),
+            bytecount_format(caps.0 << 10, 2),
+        ))
     }
-    fn ip(&self) -> Vec<Arc<str>> {
+    fn ip(&self) -> Vec<ArcStr> {
         let mut ipv4_addrs = FxHashSet::<Ipv4Addr>::default();
         let mut ipv6_addrs = FxHashSet::<Ipv6Addr>::default();
         unsafe {
             let mut addrs = mem::MaybeUninit::<*mut libc::ifaddrs>::uninit();
             getifaddrs(addrs.as_mut_ptr());
             while let Some(addr) = addrs.assume_init().as_ref() {
-                if addr.ifa_addr == std::ptr::null_mut() {
+                if addr.ifa_addr.is_null() {
                     addrs = MaybeUninit::new(addr.ifa_next);
                     continue;
                 }
@@ -260,16 +265,20 @@ impl OSInfo for LinuxInfo {
         };
 
         vec![
-            Arc::from(ipv4_addrs.iter().fold(String::new(), |x, y| -> String {
+            ArcStr::from(
+                ipv4_addrs
+                    .iter()
+                    .map(|x| x.to_string())
+                    .collect::<Vec<String>>()
+                    .join(", "),
+            ),
+            /*ipv6_addrs.iter().fold(ArcStr::new(), |x, y| {
                 (if x.is_empty() { x } else { x + ", " }) + &y.to_string()
-            })), /*,
-                 ipv6_addrs.iter().fold(String::new(), |x, y| {
-                     (if x.is_empty() { x } else { x + ", " }) + &y.to_string()
-                 }),*/
+            }),*/
         ]
     }
-    fn disks(&self) -> Vec<(String, String)> {
-        (|| -> Option<Vec<(String,String)>> {
+    fn disks(&self) -> Vec<(ArcStr, ArcStr)> {
+        (|| -> Option<Vec<(ArcStr,ArcStr)>> {
             let mnt = fs::read_to_string("/proc/mounts").ok()?;
             let re = regex::Regex::new(r#"(^/dev/(loop|ram|fd))|(/var/snap)"#).unwrap();
             Some(mnt.par_lines()
@@ -286,7 +295,7 @@ impl OSInfo for LinuxInfo {
                 }
                 return Some(line.split_ascii_whitespace());
             })
-            .filter_map(|mut x| -> Option<(String, String)> {
+            .filter_map(|mut x| -> Option<(ArcStr, ArcStr)> {
                 let (Some(_name), Some(mount), Some(_filesystemm)) = (x.next(), x.next(), x.next()) else {
                     return None;
                 };
@@ -301,35 +310,39 @@ impl OSInfo for LinuxInfo {
                         return None;
                     }
                         // println!("Size Used: {size_used}, Block Size {block_size}");
-                    if let Some(bytes) = size_used.checked_mul(block_size){
-                        Some((lazy_format!("Disk ({mount})").to_string(), lazy_format!("{}/ {}", bytecount_format( bytes ,0),bytecount_format(total * block_size,0)).to_string()))
-                    }
-                    else{
-                        None
-                    }
+                    size_used.checked_mul(block_size).map( |bytes|{
+                        (
+                            arcstr::format!("Disk ({mount})"), 
+                            arcstr::format!("{}/ {}", 
+                            bytecount_format( bytes ,0),
+                            bytecount_format(total * block_size,0))
+                        )
+
+                    })
                 }
-            }).collect::<Vec<(String,String)>>())
+            }).collect::<Vec<(ArcStr,ArcStr)>>())
         })().unwrap_or_default()
     }
 
-    fn battery(&self) -> Option<String> {
+    fn battery(&self) -> Option<ArcStr> {
         None //todo: need to check /sys/class/power_supply on a laptop
     }
 
-    fn locale(&self) -> Option<String> {
+    fn locale(&self) -> Option<ArcStr> {
         std::env::var("LANG")
             .ok()
             .filter(|x| !x.is_empty())
             .or_else(|| std::env::var("LC_ALL").ok().filter(|x| !x.is_empty()))
             .or_else(|| std::env::var("LC_MESSAGES").ok().filter(|x| !x.is_empty()))
+            .map(ArcStr::from)
     }
-    fn uptime(&self) -> Option<String> {
+    fn uptime(&self) -> Option<ArcStr> {
         None
     }
-    fn icons(&self) -> Option<String> {
+    fn icons(&self) -> Option<ArcStr> {
         None
     }
-    fn id(&self) -> Arc<str> {
+    fn id(&self) -> ArcStr {
         self.get_os_release();
         self.os_release.read().unwrap().get("ID").unwrap().clone()
     }

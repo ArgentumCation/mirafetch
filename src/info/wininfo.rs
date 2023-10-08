@@ -61,7 +61,7 @@ impl WindowsInfo {
     }
 }
 impl OSInfo for WindowsInfo {
-    fn displays(&self) -> Vec<Arc<str>> {
+    fn displays(&self) -> Vec<ArcStr> {
         use std::sync::Mutex;
 
         use winsafe::{
@@ -190,8 +190,8 @@ impl OSInfo for WindowsInfo {
         None
     }
 
-    fn gpus(&self) -> Vec<Arc<str>> {
-        || -> Option<Vec<Arc<str>>> {
+    fn gpus(&self) -> Vec<ArcStr> {
+        || -> Option<Vec<ArcStr>> {
             self.get_hklm();
             let video: RegKey = self
                 .hklm
@@ -208,7 +208,7 @@ impl OSInfo for WindowsInfo {
                         video
                             .open_subkey(x.ok()?)
                             .map(|uuid| {
-                                uuid.enum_keys().find_map(|y| -> Option<Arc<str>> {
+                                uuid.enum_keys().find_map(|y| -> Option<ArcStr> {
                                     uuid.open_subkey(y.unwrap())
                                         .ok()?
                                         .get_value::<String, &str>("DriverDesc")
@@ -225,8 +225,8 @@ impl OSInfo for WindowsInfo {
         .unwrap_or_default()
     }
 
-    fn id(&self) -> Arc<str> {
-        || -> Option<Arc<str>> {
+    fn id(&self) -> ArcStr {
+        || -> Option<ArcStr> {
             let com_con = COMLibrary::new().ok()?;
             let wmi_con = WMIConnection::new(com_con).ok()?;
             let binding = wmi_con
@@ -257,7 +257,7 @@ impl OSInfo for WindowsInfo {
         )
     }
 
-    fn ip(&self) -> Vec<Arc<str>> {
+    fn ip(&self) -> Vec<ArcStr> {
         let mut res = Vec::new();
         unsafe {
             let size = Box::into_raw(Box::new(0x3FFF));
@@ -337,7 +337,7 @@ impl OSInfo for WindowsInfo {
         }
     }
 
-    fn hostname(&self) -> Option<Arc<str>> {
+    fn hostname(&self) -> Option<ArcStr> {
         GetComputerName().ok().map(|f| Arc::from(f.to_lowercase()))
     }
 
@@ -472,7 +472,7 @@ impl OSInfo for WindowsInfo {
         ))
     }
 
-    fn username(&self) -> std::option::Option<Arc<str>> {
+    fn username(&self) -> std::option::Option<ArcStr> {
         winsafe::GetUserName().ok().map(Arc::from)
     }
 }

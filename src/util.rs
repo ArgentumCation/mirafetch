@@ -15,10 +15,8 @@ use rkyv::{Archive, Deserialize};
 use rkyv_with::{ArchiveWith, DeserializeWith};
 use rustc_hash::FxHashMap;
 use std::fs;
-
-use std::sync::Arc;
-// use sysinfo::{ get_current_pid, CpuExt, ProcessExt, System, SystemExt, UserExt };
 use std::path::Path;
+use std::sync::Arc;
 
 /// .
 ///
@@ -27,22 +25,23 @@ use std::path::Path;
 /// This function will return an error if the icon cannot be found
 #[allow(dead_code)]
 pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
-    let proj_dirs = ProjectDirs::from("", "", "Mirafetch").unwrap();
+    let proj_dirs = ProjectDirs::from("", "", "Mirafetch").ok_or_else(|| {
+        anyhow!("Could not find a project directory for Mirafetch. Please report this as a bug.")
+    })?;
     let path = {
         if proj_dirs.data_dir().exists() {
             Ok(proj_dirs.data_dir().to_path_buf())
         } else {
+            // Dev environments only
+            // TODO: create data dir and add icons or throw an error or something
             std::env::current_exe().map(|x| x.parent().unwrap().join("data"))
         }
     }?
     .join(Path::new("icons.rkyv"));
-    // .join(Path::new("icons.bson"));
     let icon_name = &icon_name.to_ascii_lowercase();
-    // println!("{path:#?}");
     let binding = fs::read(path)?;
     let archived = check_archived_root::<Vec<AsciiArtRemote>>(&binding).unwrap();
-    let icons: Vec<AsciiArtRemote> = archived.deserialize(&mut Infallible).unwrap();
-    // let icons: Vec<AsciiArtRemote> = bson::from_slice(&binding).unwrap();
+    let icons: Vec<AsciiArtRemote> = archived.deserialize(&mut Infallible)?;
     icons
         .into_iter()
         .find(|item| item.names.contains(&icon_name.to_string()))
@@ -65,19 +64,19 @@ pub fn get_colorscheme(scheme_name: &str) -> anyhow::Result<Arc<[Color]>> {
             std::env::current_exe().map(|x| x.parent().unwrap().join("data"))
         }
     }?
-    // .join(Path::new("flags.bson"));
     .join(Path::new("flags.rkyv"));
     let binding = fs::read(path)?;
     let schemes: FxHashMap<String, Vec<(u8, u8, u8)>> =
         check_archived_root::<FxHashMap<String, Vec<(u8, u8, u8)>>>(&binding)?
-            .deserialize(&mut Infallible)?;
-    // (unsafe { archived_root::<FxHashMap<String, Vec<(u8, u8, u8)>>>(binding.as_slice()) })
-    //     .deserialize(&mut Infallible)?;
-    // let schemes: FxHashMap<String, Vec<(u8, u8, u8)>> = bson::from_slice(&binding).unwrap();
+            .deserialize(&mut Infallible)
+            .unwrap();
     Ok(schemes[scheme_name]
-        .clone()
-        .into_iter()
-        .map(|(r, g, b)| Color::Rgb { r, g, b })
+        .iter()
+        .map(|(r, g, b)| Color::Rgb {
+            r: r.to_owned(),
+            g: g.to_owned(),
+            b: b.to_owned(),
+        })
         .collect())
 }
 #[derive(
@@ -155,6 +154,7 @@ enum ColorRemote {
     ///
     /// Most UNIX terminals and Windows 10 supported only.
     /// See [Platform-specific notes](enum.Color.html#platform-specific-notes) for more info.
+    #[allow(clippy::used_underscore_binding)]
     AnsiValue(u8),
 }
 pub struct AsciiArt {

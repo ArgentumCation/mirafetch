@@ -8,9 +8,9 @@ use crate::{config::Orientation, util::AsciiArt};
 pub trait Colorizer {
     fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>>;
 }
-pub struct DefaultColorizer {}
+pub struct Default {}
 
-impl Colorizer for DefaultColorizer {
+impl Colorizer for Default {
     fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>> {
         let colors = &ascii_art.colors;
         ascii_art
@@ -23,12 +23,12 @@ impl Colorizer for DefaultColorizer {
     }
 }
 
-pub struct FlagColorizer {
+pub struct Flag {
     pub color_scheme: Arc<[Color]>,
     pub orientation: Orientation,
 }
 
-impl FlagColorizer {
+impl Flag {
     fn length_to_colors(&self, length: usize) -> Vec<Color> {
         let preset_len = self.color_scheme.len(); //6
         let center = preset_len / 2; // 4
@@ -62,7 +62,7 @@ impl FlagColorizer {
     }
 }
 
-impl Colorizer for FlagColorizer {
+impl Colorizer for Flag {
     fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>> {
         let txt: String = ascii_art
             .text
