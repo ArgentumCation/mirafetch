@@ -18,10 +18,10 @@ use mirafetch::{
     info::Info,
     util::{get_colorscheme, get_icon, AsciiArt},
 };
-use std::{cmp::max, fs, io::stdout, sync::Arc};
+use std::{cmp::max, fs, io::stdout, process::ExitCode, sync::Arc};
 mod util;
 
-fn main() -> anyhow::Result<()> {
+fn main() -> anyhow::Result<std::process::ExitCode> {
     // Load Settings
 
     // load from TOML
@@ -39,39 +39,27 @@ fn main() -> anyhow::Result<()> {
             };
             let config_file = fs::read_to_string(config_path)?;
             toml::from_str::<Config>(&config_file).map_err(|err| {
-                eprintln!("Error parsing config file: {err}");
-                std::process::exit(exitcode::CONFIG);
+                eprintln!("Invalid config: {err}");
+                anyhow!(exitcode::CONFIG)
             })
         })?;
 
     // Get Color Scheme from archive
-    let scheme: Option<Arc<[Color]>> = settings.scheme_name.as_ref().map_or_else(
-        || None,
-        |name| match get_colorscheme(name) {
-            Ok(name) => Some(name),
-            Err(err) => {
-                eprintln!("Error parsing colorscheme name: {err}");
-                std::process::exit(exitcode::CONFIG);
-            }
-        },
-    );
+    let scheme: Option<Arc<[Color]>> = settings
+        .scheme_name
+        .as_ref()
+        .map_or_else(|| None, |name| Some(get_colorscheme(name).unwrap()));
     let info = Info::default();
     let id: Box<str> = Box::from(info.id.as_ref());
     let info_vec = info.as_vec();
 
-    let logo: AsciiArt = match get_icon(settings.icon_name.as_ref().get_or_insert(&id)) {
-        Ok(icon) => icon,
-        Err(err) => {
-            eprintln!("Error parsing icon name: {err}");
-            std::process::exit(exitcode::CONFIG);
-        }
-    };
+    let logo: AsciiArt = get_icon(settings.icon_name.as_ref().get_or_insert(&id))?;
     let colored_logo = colorize_logo(&settings, &scheme, &logo)?;
 
     // Show system info
 
     display(colored_logo, info_vec, &logo)?;
-    Ok(())
+    Ok(ExitCode::from(exitcode::OK as u8))
 }
 
 fn colorize_logo(

@@ -36,14 +36,14 @@ mod tests {
     fn test_username() {
         assert_eq!(
             &AsRef::<str>::as_ref(FF_INFO.get("username").unwrap()).trim_matches('\0'),
-            &(MIRA_INFO.username.as_ref().unwrap().as_ref())
+            &(MIRA_INFO.username.as_ref().unwrap().as_str())
         );
     }
     #[test]
     fn test_hostname() {
         assert_eq!(
             &AsRef::<str>::as_ref(FF_INFO.get("hostname").unwrap()).trim(),
-            &(MIRA_INFO.hostname.as_ref().unwrap().as_ref())
+            &(MIRA_INFO.hostname.as_ref().unwrap().as_str())
         );
     }
     #[test]

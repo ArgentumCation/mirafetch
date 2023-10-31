@@ -203,7 +203,7 @@ impl Default for Info {
 }
 
 impl Info {
-    pub fn new() -> Self {
+    #[must_use] pub fn new() -> Self {
         Self::default()
     }
     #[must_use]
@@ -256,8 +256,8 @@ impl Info {
         .chain(self.disks)
         .chain(self.ip.into_iter().map(|x| (arcstr::literal!("IP"), x)))
         .collect();
-        res.push((ArcStr::new(), ArcStr::from(dark)));
-        res.push((ArcStr::new(), ArcStr::from(light)));
+        res.push((ArcStr::new(), dark));
+        res.push((ArcStr::new(), light));
         res
     }
 

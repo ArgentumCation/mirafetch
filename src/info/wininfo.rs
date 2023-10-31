@@ -1,11 +1,11 @@
 #![cfg(target_family = "windows")]
 
 // use crate::Color;
+use arcstr::ArcStr;
 use crossterm::style::{Color, Stylize};
 use itertools::Itertools;
 use rayon::prelude::{IntoParallelRefIterator, ParallelIterator};
 use rustc_hash::FxHashMap;
-
 use std::mem::size_of;
 use std::net::{Ipv4Addr, Ipv6Addr};
 use windows::Win32::System::SystemInformation::{
@@ -44,7 +44,7 @@ pub struct WindowsInfo {
     hklm: RwLock<Option<RegKey>>,
 }
 impl WindowsInfo {
-    pub fn new() -> Self {
+    #[must_use] pub fn new() -> Self {
         Self::default()
     }
 
@@ -72,24 +72,24 @@ impl OSInfo for WindowsInfo {
         let handle = HDC::NULL;
         handle
             .EnumDisplayMonitors(None, |_monitor, _hdc, rect| -> bool {
-                displays.lock().unwrap().push(Arc::from(format!(
+                displays.lock().unwrap().push(arcstr::format!(
                     "{}x{}",
                     rect.right - rect.left,
                     rect.bottom - rect.top
-                )));
+                ));
                 true
             })
             .ok();
         return displays.lock().unwrap().to_vec();
     }
 
-    fn machine(&self) -> Option<String> {
+    fn machine(&self) -> Option<ArcStr> {
         self.get_hklm();
         let subkey = (*self.hklm.read().unwrap())
             .as_ref()?
             .open_subkey(r#"HARDWARE\DESCRIPTION\System\BIOS"#)
             .ok()?;
-        let res = format!(
+        let res = arcstr::format!(
             "{} ({})",
             subkey
                 .get_value::<String, &str>("SystemProductName")
@@ -98,14 +98,14 @@ impl OSInfo for WindowsInfo {
             subkey
                 .get_value::<String, &str>("SystemFamily")
                 .ok()
-                .unwrap_or_default() // subkey.get_value::<String, &str>("SystemVersion").ok().unwrap_or_default(),
-                                     // subkey.get_value::<String, &str>("SystemSKU").ok().unwrap_or_default()
-                                     // subkey.get_value::<String, &str>("SystemManufacturer").ok().unwrap_or_default()
+                .unwrap_or_default() // subkey.get_value::<ArcStr, &str>("SystemVersion").ok().unwrap_or_default(),
+                                     // subkey.get_value::<ArcStr, &str>("SystemSKU").ok().unwrap_or_default()
+                                     // subkey.get_value::<ArcStr, &str>("SystemManufacturer").ok().unwrap_or_default()
         );
         Some(res)
     }
 
-    fn theme(&self) -> Option<String> {
+    fn theme(&self) -> Option<ArcStr> {
         let binding = RegKey::predef(HKEY_CURRENT_USER)
             .open_subkey(r#"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes"#)
             .ok()?
@@ -123,7 +123,7 @@ impl OSInfo for WindowsInfo {
                 .ok()?)
         .swap_bytes()
             >> 8;
-        Some(
+        Some(ArcStr::from(
             format!("{theme_name} (#{color:X})")
                 .on(Color::Rgb {
                     r: (color >> 16) as u8,
@@ -131,10 +131,10 @@ impl OSInfo for WindowsInfo {
                     b: (color & 0xff) as u8,
                 })
                 .to_string(),
-        )
+        ))
     }
 
-    fn kernel(&self) -> Option<String> {
+    fn kernel(&self) -> Option<ArcStr> {
         self.get_hklm();
         let current_version = self
             .hklm
@@ -150,20 +150,28 @@ impl OSInfo for WindowsInfo {
         let minor: u32 = current_version
             .get_value("CurrentMinorVersionNumber")
             .ok()?;
-        let build_number: String = current_version.get_value("CurrentBuildNumber").ok()?;
-        let version: String = current_version.get_value("DisplayVersion").ok()?;
+        let build_number: ArcStr = current_version
+            .get_value::<String, &str>("CurrentBuildNumber")
+            .ok()?
+            .into();
+        let version: ArcStr = current_version
+            .get_value::<String, &str>("DisplayVersion")
+            .ok()?
+            .into();
         let ubr: u32 = current_version.get_value("UBR").ok()?;
-        Some(format!("{major}.{minor}.{build_number}.{ubr} ({version})"))
+        Some(arcstr::format!(
+            "{major}.{minor}.{build_number}.{ubr} ({version})"
+        ))
     }
 
-    fn wm(&self) -> Option<String> {
+    fn wm(&self) -> Option<ArcStr> {
         if winsafe::DwmIsCompositionEnabled().ok()? {
-            return Some("Desktop Window Manager".to_owned());
+            return Some(arcstr::literal!("Desktop Window Manager"));
         }
-        Some("Internal".to_owned())
+        Some(arcstr::literal!("Internal"))
     }
 
-    fn de(&self) -> Option<String> {
+    fn de(&self) -> Option<ArcStr> {
         self.get_hklm();
         let current_version = self
             .hklm
@@ -180,12 +188,12 @@ impl OSInfo for WindowsInfo {
             .get_value("CurrentMinorVersionNumber")
             .ok()?;
         if major >= 10 {
-            return Some("Fluent".to_owned());
+            return Some(arcstr::literal!("Fluent"));
         } else if major >= 6 {
             if minor >= 2 {
-                return Some("Metro".to_owned());
+                return Some(arcstr::literal!("Metro"));
             }
-            return Some("Aero".to_owned());
+            return Some(arcstr::literal!("Aero"));
         }
         None
     }
@@ -213,9 +221,9 @@ impl OSInfo for WindowsInfo {
                                         .ok()?
                                         .get_value::<String, &str>("DriverDesc")
                                         .ok()
-                                        .map(Arc::from)
+                                        .map(ArcStr::from)
                                 })
-                                // .collect::<String>()
+                                // .collect::<ArcStr>()
                             })
                             .ok()?
                     })
@@ -232,7 +240,7 @@ impl OSInfo for WindowsInfo {
             let binding = wmi_con
                 .raw_query::<FxHashMap<String, String>>("SELECT Caption FROM Win32_OperatingSystem")
                 .ok()?;
-            Some(Arc::from(
+            Some(ArcStr::from(
                 binding
                     .first()?
                     .values()
@@ -246,14 +254,15 @@ impl OSInfo for WindowsInfo {
         .unwrap()
     }
 
-    fn uptime(&self) -> Option<String> {
+    fn uptime(&self) -> Option<ArcStr> {
         let uptime = time::Duration::milliseconds(GetTickCount64().try_into().ok()?).to_string();
         Some(
             uptime
-                .split_inclusive("m")
+                .split_inclusive('m')
                 .next()?
-                .replace("h", " hours, ")
-                .replace("m", " mins"),
+                .replace('h', " hours, ")
+                .replace('m', " mins")
+                .into(),
         )
     }
 
@@ -315,7 +324,7 @@ impl OSInfo for WindowsInfo {
             }
             let mut res = Vec::with_capacity(2);
             if !ipv4_addrs.is_empty() {
-                res.push(Arc::from(
+                res.push(ArcStr::from(
                     ipv4_addrs
                         .par_iter()
                         .map(std::string::ToString::to_string)
@@ -324,7 +333,7 @@ impl OSInfo for WindowsInfo {
                 ));
             }
             if !ipv6_addrs.is_empty() {
-                res.push(Arc::from(
+                res.push(ArcStr::from(
                     ipv6_addrs
                         .par_iter()
                         .map(std::string::ToString::to_string)
@@ -338,11 +347,13 @@ impl OSInfo for WindowsInfo {
     }
 
     fn hostname(&self) -> Option<ArcStr> {
-        GetComputerName().ok().map(|f| Arc::from(f.to_lowercase()))
+        GetComputerName()
+            .ok()
+            .map(|f| ArcStr::from(f.to_lowercase()))
     }
 
     #[allow(clippy::cast_possible_truncation)]
-    fn sys_font(&self) -> Option<String> {
+    fn sys_font(&self) -> Option<ArcStr> {
         let mut metrics = NONCLIENTMETRICS::default();
         let size = size_of::<NONCLIENTMETRICS>();
         unsafe {
@@ -354,43 +365,43 @@ impl OSInfo for WindowsInfo {
             )
             .unwrap();
         };
-        Some(metrics.lfMenuFont.lfFaceName())
+        Some(metrics.lfMenuFont.lfFaceName().into())
     }
 
-    fn cursor(&self) -> Option<String> {
+    fn cursor(&self) -> Option<ArcStr> {
         None
     }
 
-    fn terminal(&self) -> Option<String> {
+    fn terminal(&self) -> Option<ArcStr> {
         None
     }
 
-    fn term_font(&self) -> Option<String> {
+    fn term_font(&self) -> Option<ArcStr> {
         None
     }
 
-    fn memory(&self) -> Option<String> {
+    fn memory(&self) -> Option<ArcStr> {
         let mut state = MEMORYSTATUSEX::default();
         GlobalMemoryStatusEx(&mut state).ok()?;
-        Some(format!(
+        Some(arcstr::format!(
             "{} / {}",
             bytecount_format(state.ullTotalPhys - state.ullAvailPhys, 2),
             bytecount_format(state.ullTotalPhys, 2),
         ))
     }
 
-    fn disks(&self) -> Vec<(String, String)> {
+    fn disks(&self) -> Vec<(ArcStr, ArcStr)> {
         let q = GetLogicalDriveStrings();
         q.map_or(Vec::new(), |c| {
             c.par_iter()
                 .filter_map(|x| {
-                    Some((x.clone(), {
+                    Some((ArcStr::from(x), {
                         let var_name = 0xDEAD;
                         let mut total: Option<u64> = Some(var_name);
                         let var_name = 0xDEAD;
                         let mut free: Option<u64> = Some(var_name);
                         GetDiskFreeSpaceEx(Some(x), None, total.as_mut(), free.as_mut()).ok()?;
-                        format!(
+                        arcstr::format!(
                             "{} / {}",
                             bytecount_format(total? - free?, 0),
                             bytecount_format(total?, 0)
@@ -401,32 +412,33 @@ impl OSInfo for WindowsInfo {
         })
     }
 
-    fn battery(&self) -> Option<String> {
+    fn battery(&self) -> Option<ArcStr> {
         None
     }
 
-    fn locale(&self) -> Option<String> {
+    fn locale(&self) -> Option<ArcStr> {
         std::env::var("LANG")
             .ok()
             .filter(|x| !x.is_empty())
             .or_else(|| std::env::var("LC_ALL").ok().filter(|x| !x.is_empty()))
             .or_else(|| std::env::var("LC_MESSAGES").ok().filter(|x| !x.is_empty()))
+            .map(ArcStr::from)
     }
 
-    fn icons(&self) -> Option<String> {
+    fn icons(&self) -> Option<ArcStr> {
         None
     }
 
-    fn os(&self) -> Option<String> {
+    fn os(&self) -> Option<ArcStr> {
         let com_con = COMLibrary::new().ok()?;
         let wmi_con = WMIConnection::new(com_con).ok()?;
         let binding = wmi_con
             .raw_query::<FxHashMap<String, String>>("SELECT Caption FROM Win32_OperatingSystem")
             .ok()?;
-        binding.first()?.values().next().cloned()
+        binding.first()?.values().next().map(ArcStr::from)
     }
 
-    fn shell(&self) -> Option<String> {
+    fn shell(&self) -> Option<ArcStr> {
         None
         // let pid = get_current_pid().ok()?;
         // let parent_pid = s.process(pid)?.parent()?;
@@ -434,7 +446,7 @@ impl OSInfo for WindowsInfo {
         // Some(parent.replace(".exe", ""))
     }
 
-    fn cpu(&self) -> Option<String> {
+    fn cpu(&self) -> Option<ArcStr> {
         let mut length = 0; // Box::into_raw(Box::<u32>::default());
         let mut buf: Vec<u8>;
         // let mut info: Box<SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>;
@@ -464,15 +476,18 @@ impl OSInfo for WindowsInfo {
             .as_ref()?
             .open_subkey(r#"HARDWARE\DESCRIPTION\System\CentralProcessor\0"#)
             .ok()?;
-        let name: String = core0.get_value("ProcessorNameString").ok()?;
+        let name: ArcStr = core0
+            .get_value::<String, &str>("ProcessorNameString")
+            .ok()?
+            .into();
         let freq: u32 = core0.get_value("~MHz").ok()?;
-        Some(format!(
+        Some(arcstr::format!(
             "{name} ({core_count}) @ {:.2}GHz",
             freq as f32 / 1000.0
         ))
     }
 
     fn username(&self) -> std::option::Option<ArcStr> {
-        winsafe::GetUserName().ok().map(Arc::from)
+        winsafe::GetUserName().ok().map(ArcStr::from)
     }
 }

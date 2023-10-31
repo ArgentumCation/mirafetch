@@ -1,13 +1,13 @@
 use anyhow::anyhow;
+use archive::get_resource_dir;
 use crossterm::style::Color;
 use num::Unsigned;
 use rkyv::check_archived_root;
 
 use std::str::FromStr;
 
-use directories::ProjectDirs;
-use rkyv::with::ArchiveWith;
 
+use rkyv::with::ArchiveWith;
 use rkyv::with::DeserializeWith;
 use rkyv::with::Map;
 use rkyv::Infallible;
@@ -25,22 +25,13 @@ use std::sync::Arc;
 /// This function will return an error if the icon cannot be found
 #[allow(dead_code)]
 pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
-    let proj_dirs = ProjectDirs::from("", "", "Mirafetch").ok_or_else(|| {
-        anyhow!("Could not find a project directory for Mirafetch. Please report this as a bug.")
-    })?;
-    let path = {
-        if proj_dirs.data_dir().exists() {
-            Ok(proj_dirs.data_dir().to_path_buf())
-        } else {
-            // Dev environments only
-            // TODO: create data dir and add icons or throw an error or something
-            std::env::current_exe().map(|x| x.parent().unwrap().join("data"))
-        }
-    }?
-    .join(Path::new("icons.rkyv"));
+    let archived_icons_path = get_resource_dir().join(Path::new("icons.rkyv"));
+    if !archived_icons_path.exists() {
+        archive::archive_icons(&archived_icons_path)?;
+    }
+    let archived_icons = fs::read(archived_icons_path)?;
     let icon_name = &icon_name.to_ascii_lowercase();
-    let binding = fs::read(path)?;
-    let archived = check_archived_root::<Vec<AsciiArtRemote>>(&binding).unwrap();
+    let archived = check_archived_root::<Vec<AsciiArtRemote>>(&archived_icons).unwrap();
     let icons: Vec<AsciiArtRemote> = archived.deserialize(&mut Infallible)?;
     icons
         .into_iter()
@@ -56,18 +47,14 @@ pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
 /// This function will return an error if the colorscheme cannot be found
 #[allow(dead_code)]
 pub fn get_colorscheme(scheme_name: &str) -> anyhow::Result<Arc<[Color]>> {
-    let proj_dirs = ProjectDirs::from("", "", "Mirafetch").unwrap();
-    let path = {
-        if proj_dirs.data_dir().exists() {
-            Ok(proj_dirs.data_dir().to_path_buf())
-        } else {
-            std::env::current_exe().map(|x| x.parent().unwrap().join("data"))
-        }
-    }?
-    .join(Path::new("flags.rkyv"));
-    let binding = fs::read(path)?;
+    let archived_flags_path = get_resource_dir().join(Path::new("flags.rkyv"));
+    // if flags.rkyv not found
+    if !archived_flags_path.exists() {
+        archive::archive_flags(&archived_flags_path)?;
+    }
+    let archived_flags = fs::read(archived_flags_path)?;
     let schemes: FxHashMap<String, Vec<(u8, u8, u8)>> =
-        check_archived_root::<FxHashMap<String, Vec<(u8, u8, u8)>>>(&binding)?
+        check_archived_root::<FxHashMap<String, Vec<(u8, u8, u8)>>>(&archived_flags)?
             .deserialize(&mut Infallible)
             .unwrap();
     Ok(schemes[scheme_name]
