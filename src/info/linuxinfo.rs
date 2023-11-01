@@ -1,11 +1,13 @@
 #![cfg(target_os = "linux")]
 use crate::info::OSInfo;
 use crate::util::bytecount_format;
+use anyhow::anyhow;
 use arcstr::ArcStr;
 use glob::glob;
 use itertools::Itertools;
-use lazy_format::lazy_format;
-use libc::{getifaddrs, statvfs, AF_INET, AF_INET6, IFA_F_DEPRECATED, IFF_LOOPBACK, IFF_RUNNING};
+use libc::{
+    getifaddrs, statvfs, timespec, AF_INET, AF_INET6, IFA_F_DEPRECATED, IFF_LOOPBACK, IFF_RUNNING,
+};
 use pci_ids::Device;
 use platform_info::UNameAPI;
 use platform_info::{PlatformInfo, PlatformInfoAPI};
@@ -14,18 +16,11 @@ use rayon::{
     str::ParallelString,
 };
 use rustc_hash::{FxHashMap, FxHashSet};
-use std::{
-    alloc::Layout,
-    ffi::{CStr, CString},
-    fs,
-    mem::{self, MaybeUninit},
-    net::{Ipv4Addr, Ipv6Addr},
-    sync::{Once, RwLock},
-};
+use std::{sync::OnceLock, alloc::Layout, ffi::{CStr, CString}, fs, mem::{self, MaybeUninit}, net::{Ipv4Addr, Ipv6Addr}};
 
 pub struct LinuxInfo {
     uts: PlatformInfo,
-    os_release: RwLock<FxHashMap<ArcStr, ArcStr>>,
+    os_release: OnceLock<FxHashMap<ArcStr, ArcStr>>,
 }
 
 impl Default for LinuxInfo {
@@ -41,39 +36,67 @@ impl LinuxInfo {
         }
     }
 
-    fn get_os_release(&self) {
-        self.os_release.
-        OS_RELEASE.call_once(|| {
-            if self.os_release.read().unwrap().is_empty() {
-                let data = fs::read_to_string("/etc/os-release").ok().unwrap();
-                self.os_release
-                    .write()
-                    .unwrap()
-                    .par_extend(data.par_lines().map(|line| {
-                        let (x, y) = line.split_once('=').unwrap();
-                        (
-                            x.to_owned().into_boxed_str().into(),
-                            y.trim_matches('"').to_owned().into_boxed_str().into(),
-                        )
-                    }));
-            }
-        });
+    fn os_release(&self) -> &FxHashMap<ArcStr, ArcStr> {
+        self.os_release.get_or_init(|| {
+            let mut res = FxHashMap::default();
+            let data = fs::read_to_string("/etc/os-release").ok().unwrap();
+            res.par_extend(data.par_lines().map(|line| {
+                let (x, y) = line.split_once('=').unwrap();
+                (
+                    x.to_owned().into_boxed_str().into(),
+                    y.trim_matches('"').to_owned().into_boxed_str().into(),
+                )
+            }));
+            res
+        })
     }
 }
 impl OSInfo for LinuxInfo {
     fn os(&self) -> Option<ArcStr> {
-        //Todo: check for lsb_release
-        self.get_os_release();
-        Some(ArcStr::from(
-            (self.os_release).read().unwrap().get("NAME")?.to_string()
-                + (self.os_release)
-                    .read()
-                    .unwrap()
-                    .get("VERSION")
-                    .map_or(ArcStr::new(), |x| arcstr::format!(" {x} "))
-                    .as_ref()
-                + &self.uts.machine().to_string_lossy(),
-        ))
+        // Base name
+        let mut res = String::new();
+        if let Some(name) = self.os_release().get("NAME") {
+            res += name;
+        } else if let Some(name) = self.os_release().get("PRETTY_NAME") {
+            res += name;
+        } else if let Some(name) = self.os_release().get("ID") {
+            res += name;
+        } else {
+            return None;
+        }
+
+        // Codename
+        if let Some(codename) = self.os_release().get("VERSION_ID") {
+            if !res.contains(codename.as_str()) {
+                res += " ";
+                res += codename;
+            }
+        } else if let Some(codename) = self.os_release().get("VERSION_CODENAME") {
+            if !res.contains(codename.as_str()) {
+                res += " ";
+                res += codename;
+            }
+        }
+
+        // Version
+        if let Some(version) = self.os_release().get("VERSION_ID") {
+            if !res.contains(version.as_str()) {
+                res += " ";
+                res += version;
+            }
+        } else if let Some(version) = self.os_release().get("VERSION") {
+            if !res.contains(version.as_str()) {
+                res += " ";
+                res += version;
+            }
+        }
+
+        let arch = self.uts.machine();
+        if !res.contains(arch.to_str().unwrap()) {
+            res += " ";
+            res += arch.to_str().unwrap();
+        }
+        Some(ArcStr::from(res.trim()))
     }
 
     fn hostname(&self) -> Option<ArcStr> {
@@ -99,6 +122,31 @@ impl OSInfo for LinuxInfo {
     fn machine(&self) -> Option<ArcStr> {
         fs::read_to_string("/sys/class/dmi/id/product_name")
             .ok()
+            .or_else(|| fs::read_to_string("/sys/devices/virtual/dmi/id/product_name").ok())
+            .or_else(|| fs::read_to_string("/sys/firmware/devicetree/base/model").ok())
+            .or_else(|| fs::read_to_string("/sys/firmware/devicetree/base/banner-name").ok())
+            .or_else(|| fs::read_to_string("/sys/devices/virtual/dmi/id/product_family").ok())
+            .or_else(|| fs::read_to_string("/sys/class/dmi/id/product_family").ok())
+            .or_else(|| fs::read_to_string("/sys/devices/virtual/dmi/id/product_version").ok())
+            .or_else(|| fs::read_to_string("/sys/class/dmi/id/product_version").ok())
+            .or_else(|| fs::read_to_string("/sys/devices/virtual/dmi/id/product_sku").ok())
+            .or_else(|| fs::read_to_string("/sys/class/dmi/id/product_sku").ok())
+            .or_else(|| fs::read_to_string("/sys/devices/virtual/dmi/id/sys_vendor").ok())
+            .or_else(|| fs::read_to_string("/sys/class/dmi/id/sys_vendor").ok())
+            .or_else(|| {
+                std::env::var("WSL_DISTRO_NAME")
+                    .or_else(|_| std::env::var("WSL_DISTRO"))
+                    .or_else(|_| std::env::var("WSL_INTEROP"))
+                    .ok()
+                    .map(|_| "Windows Subsystem for Linux".to_string())
+            })
+            .map(|f| {
+                if f.starts_with("Standard PC") {
+                    String::from("KVM/QEMU") + &f
+                } else {
+                    f
+                }
+            })
             .map(|x| ArcStr::from(x.trim()))
     }
 
@@ -157,7 +205,7 @@ impl OSInfo for LinuxInfo {
 
     fn shell(&self) -> Option<ArcStr> {
         let ppid = std::os::unix::process::parent_id();
-        fs::read_to_string(format!("/proc/{ppid}/comm").to_string())
+        fs::read_to_string(format!("/proc/{ppid}/comm"))
             .ok()
             .map(|x| ArcStr::from(x.trim()))
     }
@@ -172,13 +220,25 @@ impl OSInfo for LinuxInfo {
             .trim();
         let cores = cpuinfo
             .lines()
-            .find(|x| x.starts_with("cpu cores"))?
+            .find(|x| x.starts_with("siblings"))?
             .split_once(':')?
             .1
             .trim();
 
-        let model = model.split_once('@')?;
-        Some(arcstr::format!("{} ({cores}) @ {})", model.0, model.1))
+        let freq: f32 = cpuinfo
+            .lines()
+            .find(|x| x.starts_with("cpu MHz"))?
+            .split_once(':')?
+            .1
+            .trim()
+            .parse()
+            .ok()?;
+        Some(arcstr::format!(
+            "{} ({}) @ {:.2} GHz)",
+            model,
+            cores,
+            freq / 1000.0
+        ))
     }
 
     fn username(&self) -> Option<ArcStr> {
@@ -211,9 +271,9 @@ impl OSInfo for LinuxInfo {
     fn term_font(&self) -> Option<ArcStr> {
         None
     }
-    //todo: more decimal places
+
     fn memory(&self) -> Option<ArcStr> {
-        let re = regex::Regex::new(r#"Mem(Total|Available):\W*(\d*)"#).unwrap();
+        let re = regex::Regex::new(r"Mem(Total|Available):\W*(\d*)").unwrap();
         let mem = fs::read_to_string("/proc/meminfo").ok()?;
         let caps: (u64, u64) = re
             .captures_iter(&mem)
@@ -276,15 +336,14 @@ impl OSInfo for LinuxInfo {
             ArcStr::from(
                 ipv4_addrs
                     .iter()
-                    .map(|x| x.to_string())
-                    .collect::<Vec<String>>()
+                    .map(std::string::ToString::to_string)
+                    .collect_vec()
                     .join(", "),
             ),
             /*ipv6_addrs.iter().fold(ArcStr::new(), |x, y| {
                 (if x.is_empty() { x } else { x + ", " }) + &y.to_string()
             }),*/
         ]
-
     }
 
     fn disks(&self) -> Vec<(ArcStr, ArcStr)> {
@@ -343,7 +402,29 @@ impl OSInfo for LinuxInfo {
     }
 
     fn battery(&self) -> Option<ArcStr> {
-        None //todo: need to check /sys/class/power_supply on a laptop
+        //TODO refactor this into a vector
+        Some(ArcStr::from(
+            glob::glob("/sys/class/power_supply/BAT*/")
+                .ok()?
+                .filter_map(|x| {
+                    x.map_err(|op| anyhow!(op))
+                        .and_then(|path| {
+                            let mut bat = fs::read_to_string(path.join("capacity"))?
+                                .trim()
+                                .to_string()
+                                + "% ";
+                            if let Ok(status) = fs::read_to_string(path.join("status")) {
+                                if !status.contains("Unknown") {
+                                    bat += &status;
+                                }
+                            }
+                            Ok(bat.trim().to_string())
+                        })
+                        .ok()
+                })
+                .collect_vec()
+                .join(", "),
+        ))
     }
 
     fn locale(&self) -> Option<ArcStr> {
@@ -355,9 +436,18 @@ impl OSInfo for LinuxInfo {
             .map(ArcStr::from)
     }
 
-    // TODO
     fn uptime(&self) -> Option<ArcStr> {
-        None
+        unsafe {
+            let time: *mut timespec = std::alloc::alloc(Layout::new::<timespec>()).cast();
+            libc::clock_gettime(libc::CLOCK_BOOTTIME, time);
+            Some(ArcStr::from(
+                (
+                    time::Duration::seconds(time.as_ref().unwrap().tv_sec)
+                    // + time::Duration::nanoseconds(time.as_ref().unwrap().tv_nsec)
+                )
+                .to_string(),
+            ))
+        }
     }
 
     // TODO
@@ -365,7 +455,7 @@ impl OSInfo for LinuxInfo {
         None
     }
     fn id(&self) -> ArcStr {
-        self.get_os_release();
-        self.os_release.read().unwrap().get("ID").unwrap().clone()
+        self.os_release();
+        self.os_release().get("ID").unwrap().clone()
     }
 }
