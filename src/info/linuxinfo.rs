@@ -28,7 +28,6 @@ pub struct LinuxInfo {
     os_release: RwLock<FxHashMap<ArcStr, ArcStr>>,
 }
 
-static OS_RELEASE: Once = Once::new();
 impl Default for LinuxInfo {
     fn default() -> Self {
         Self::new()
@@ -38,11 +37,12 @@ impl LinuxInfo {
     pub fn new() -> Self {
         Self {
             uts: PlatformInfo::new().unwrap(),
-            os_release: RwLock::default(),
+            os_release: OnceLock::default(),
         }
     }
 
     fn get_os_release(&self) {
+        self.os_release.
         OS_RELEASE.call_once(|| {
             if self.os_release.read().unwrap().is_empty() {
                 let data = fs::read_to_string("/etc/os-release").ok().unwrap();
@@ -140,14 +140,17 @@ impl OSInfo for LinuxInfo {
         .unwrap_or_default()
     }
 
+    // TODO
     fn theme(&self) -> Option<ArcStr> {
         None
     }
 
+    // TODO
     fn wm(&self) -> Option<ArcStr> {
         None
     }
 
+    // TODO
     fn de(&self) -> Option<ArcStr> {
         None
     }
@@ -189,18 +192,22 @@ impl OSInfo for LinuxInfo {
         }
     }
 
+    // TODO
     fn sys_font(&self) -> Option<ArcStr> {
         None
     }
 
+    // TODO
     fn cursor(&self) -> Option<ArcStr> {
         None
     }
 
+    // TODO
     fn terminal(&self) -> Option<ArcStr> {
         None
     }
 
+    // TODO
     fn term_font(&self) -> Option<ArcStr> {
         None
     }
@@ -219,6 +226,7 @@ impl OSInfo for LinuxInfo {
             bytecount_format(caps.0 << 10, 2),
         ))
     }
+
     fn ip(&self) -> Vec<ArcStr> {
         let mut ipv4_addrs = FxHashSet::<Ipv4Addr>::default();
         let mut ipv6_addrs = FxHashSet::<Ipv6Addr>::default();
@@ -276,52 +284,62 @@ impl OSInfo for LinuxInfo {
                 (if x.is_empty() { x } else { x + ", " }) + &y.to_string()
             }),*/
         ]
+
     }
+
     fn disks(&self) -> Vec<(ArcStr, ArcStr)> {
-        (|| -> Option<Vec<(ArcStr,ArcStr)>> {
+        (|| -> Option<Vec<(ArcStr, ArcStr)>> {
             let mnt = fs::read_to_string("/proc/mounts").ok()?;
             let re = regex::Regex::new(r#"(^/dev/(loop|ram|fd))|(/var/snap)"#).unwrap();
-            Some(mnt.par_lines()
-            .filter_map(|line| -> Option<std::str::SplitAsciiWhitespace<'_>> {
-                if re.is_match(line) {
-                    return None;
-                }
+            Some(
+                mnt.par_lines()
+                    .filter_map(|line| -> Option<std::str::SplitAsciiWhitespace<'_>> {
+                        if re.is_match(line) {
+                            return None;
+                        }
 
-                if line.starts_with("/rpool/") || line.starts_with("drvfs") {
-                    return Some(line.split_ascii_whitespace());
-                }
-                if !line.starts_with("/dev/") {
-                    return None;
-                }
-                return Some(line.split_ascii_whitespace());
-            })
-            .filter_map(|mut x| -> Option<(ArcStr, ArcStr)> {
-                let (Some(_name), Some(mount), Some(_filesystemm)) = (x.next(), x.next(), x.next()) else {
-                    return None;
-                };
-                unsafe {
-                    let buf: *mut statvfs = std::alloc::alloc(Layout::new::<statvfs>()).cast();
-
-                    statvfs(CString::new(mount).ok().unwrap().as_ptr(), buf);
-                    let total = (*buf).f_blocks ;
-                    let size_used = total.checked_sub((*buf).f_bavail )?;
-                    let block_size = (*buf).f_bsize;
-                    if size_used == 0 {
-                        return None;
-                    }
-                        // println!("Size Used: {size_used}, Block Size {block_size}");
-                    size_used.checked_mul(block_size).map( |bytes|{
-                        (
-                            arcstr::format!("Disk ({mount})"), 
-                            arcstr::format!("{}/ {}", 
-                            bytecount_format( bytes ,0),
-                            bytecount_format(total * block_size,0))
-                        )
-
+                        if line.starts_with("/rpool/") || line.starts_with("drvfs") {
+                            return Some(line.split_ascii_whitespace());
+                        }
+                        if !line.starts_with("/dev/") {
+                            return None;
+                        }
+                        return Some(line.split_ascii_whitespace());
                     })
-                }
-            }).collect::<Vec<(ArcStr,ArcStr)>>())
-        })().unwrap_or_default()
+                    .filter_map(|mut x| -> Option<(ArcStr, ArcStr)> {
+                        let (Some(_name), Some(mount), Some(_filesystemm)) =
+                            (x.next(), x.next(), x.next())
+                        else {
+                            return None;
+                        };
+                        unsafe {
+                            let buf: *mut statvfs =
+                                std::alloc::alloc(Layout::new::<statvfs>()).cast();
+
+                            statvfs(CString::new(mount).ok().unwrap().as_ptr(), buf);
+                            let total = (*buf).f_blocks;
+                            let size_used = total.checked_sub((*buf).f_bavail)?;
+                            let block_size = (*buf).f_bsize;
+                            if size_used == 0 {
+                                return None;
+                            }
+                            // println!("Size Used: {size_used}, Block Size {block_size}");
+                            size_used.checked_mul(block_size).map(|bytes| {
+                                (
+                                    arcstr::format!("Disk ({mount})"),
+                                    arcstr::format!(
+                                        "{}/ {}",
+                                        bytecount_format(bytes, 0),
+                                        bytecount_format(total * block_size, 0)
+                                    ),
+                                )
+                            })
+                        }
+                    })
+                    .collect::<Vec<(ArcStr, ArcStr)>>(),
+            )
+        })()
+        .unwrap_or_default()
     }
 
     fn battery(&self) -> Option<ArcStr> {
@@ -336,9 +354,13 @@ impl OSInfo for LinuxInfo {
             .or_else(|| std::env::var("LC_MESSAGES").ok().filter(|x| !x.is_empty()))
             .map(ArcStr::from)
     }
+
+    // TODO
     fn uptime(&self) -> Option<ArcStr> {
         None
     }
+
+    // TODO
     fn icons(&self) -> Option<ArcStr> {
         None
     }

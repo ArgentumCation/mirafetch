@@ -1,5 +1,6 @@
 use std::{fmt::Display, sync::Arc};
 
+use anyhow::anyhow;
 use arcstr::ArcStr;
 use crossterm::style::{Color, Stylize};
 
@@ -241,7 +242,12 @@ impl Info {
             (arcstr::literal!("Icon Theme"), self.icons),
         ]
         .into_iter()
-        .filter_map(|(x, y)| y.map(|z| (x, z)))
+        .map(|(x, y)| {
+            y.map(|z| (x.clone(), z))
+                .or(Some((x.clone(), arcstr::format!("> DUMMY {}", x.clone()))))
+                .unwrap()
+        }) // todo debugging
+        // .filter_map(|(x, y)| y.map(|z| (x, z)))
         .chain(
             self.resolution
                 .into_iter()

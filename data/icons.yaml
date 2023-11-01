@@ -3,7 +3,7 @@
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}           `;+ssssossossss+-`      
             .oys///oyhddddhyo///sy+.        
           /yo;+hNNNNNNNNNNNNNNNNh+;oy/      
@@ -24,7 +24,6 @@
           ;ys;/yNNNNNNNNNNNNNNNmy/;sy;      
             .+ys///osyhhhhys+///sy+.        
                 -/osssossossso/-            
-
 - name: ['AlmaLinux']
   width: 40
   colors:
@@ -33,7 +32,7 @@
     - !AnsiValue 4
     - !AnsiValue 2
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}         'c;.                      
     ${c1}        lkkkx, ..       ${c2}..   ,cc,
     ${c1}        okkkk;ckkx'  ${c2}.lxkkx.okkkkd
@@ -54,7 +53,6 @@
                     ;kkkkl...               
                     ;kkkkl                  
                      ,od;                   
-
 - name: ['Alpine']
   width: 40
   colors:
@@ -62,7 +60,7 @@
     - !AnsiValue 5
     - !AnsiValue 7
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}       .hddddddddddddddddddddddh.  
           ;dddddddddddddddddddddddddd;      
          /dddddddddddddddddddddddddddd/     
@@ -83,26 +81,24 @@
          /dddddddddddddddddddddddddddd/     
           ;dddddddddddddddddddddddddd;      
            .hddddddddddddddddddddddh.       
-
 - name: ['alpine_small']
   width: 12
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}   /\ /\
       /${c2}/ ${c1}\  \
      /${c2}/   ${c1}\  \
     /${c2}//    ${c1}\  \
     ${c2}//      ${c1}\  \
              \  
-
 - name: ['Alter']
   width: 43
   colors:
     - !AnsiValue 6
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}                      %,              
                         ^WWWw                  
                        'wwwwww                 
@@ -123,13 +119,12 @@
        8~~;~~;~~~~;~~~~_1ltltu          ,www   
       5~~;~~;~~;~~;~~;~~~_1ltq             N,, 
      g~;~~;~~~;~~;~~;~;~~~~1q                N,
-
 - name: ['Amazon']
   width: 40
   colors:
     - !AnsiValue 3
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}             `-/oydNNdyo;.`        
           `.;+shmMMMMMMMMMMMMMMmhs+;.`      
         -+hNNMMMMMMMMMMMMMMMMMMMMMMNNho-    
@@ -149,13 +144,12 @@
     .;+ydNMMMMMMMMMMMh    yMMMMMMMMMMMNdy+;.
          `.;+shNMMMMMh    yMMMMMNhs+;``     
                 `-+shy    shs+;`            
-
 - name: ['AmogOS']
   width: 29
   colors:
     - !AnsiValue 15
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}             ___________
                 /           \    
                /   ${c2}______${c1}    \
@@ -175,13 +169,12 @@
      \_________/   /            |
                    \         __/ 
                     \_______/    
-
 - name: ['Anarchy']
   width: 42
   colors:
     - !AnsiValue 7
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c2}..${c1}                              
                             ${c2}..${c1}      
                           ${c2};..${c1}       
@@ -210,13 +203,12 @@
                                     ${c2}.;${c1};
                                        ${c2}..${c1}
                                         ${c2}..${c1}
-
 - name: ['Android']
   width: 32
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}         -o          o-    
               +hydNNNNdyh+          
             +mMMMMMMMMMMMMm+        
@@ -235,26 +227,24 @@
               MMMMo  oMMMM          
               MMMMo  oMMMM          
               oNMm-  -mMNs          
-
 - name: ['android_small']
   width: 19
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}  ;,           ,;
        ';,.-----.,;'   
       ,'           ',  
      /    O     O    \ 
     |                 |
     '-----------------'
-
 - name: ['Antergos']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c2}              `.-/;;/-``           
                 .-/osssssssso/.             
                ;osyysssssssyyys+-           
@@ -274,14 +264,13 @@
     .smmmmddddddddhhhhhhhhhdddddddddmmmms.  
        `+ydmmmdddddddddddddddddddmmmmdy/.   
           `.;+ooyyddddddddddddyyso+;.`      
-
 - name: ['antiX']
   width: 31
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}                          
                         \          
              , - ~ ^ ~ - \        /
@@ -295,7 +284,6 @@
        ,                  /     ,\ 
          ,               /  , '   \
           ' - , _ _ _ ,  '         
-
 - name: ['aoscosretro_small']
   width: 18
   colors:
@@ -303,7 +291,7 @@
     - !AnsiValue 7
     - !AnsiValue 1
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c2}    _____   ${c1}_____${c2}
       -'     '-${c1}|     |${c2}
      /     ___ ${c1}|     |${c2}
@@ -313,14 +301,13 @@
       ${c3}|${c2}/_/  ${c3}|   ${c4}|   |
       ${c3}|     |   ${c4}|___|
       ${c3}|_____|    
-
 - name: ['AOSC OS']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c2}             .;+syhhhhys+;.        
              .ohNMMMMMMMMMMMMMMNho.         
           `+mMMMMMMMMMMmdmNMMMMMMMMm+`      
@@ -341,7 +328,6 @@
           `+mMMMMMMMMNmddMMMMMMMMMMm+`      
              .ohNMMMMMMMMMMMMMMNho.         
                  .;+syhhhhys+;.             
-
 - name: ['AOSC OS/Retro']
   width: 40
   colors:
@@ -349,7 +335,7 @@
     - !AnsiValue 7
     - !AnsiValue 1
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c2}          .........                
          ...................                
        .....................${c1}################${c2}
@@ -368,17 +354,15 @@
       ${c3}................        ${c4}###########
       ${c3}****************                 
       ${c3}################                 
-
 - name: ['Aperio GNU/Linux']
   width: 16
   colors:
     - !AnsiValue 255
-  art: |
+  art: |-
     ${c2}           
      _.._  _ ._.. _ 
     (_][_)(/,[  |(_)
        |   GNU/Linux
-
 - name: ['Aperture']
   width: 40
   colors:
@@ -386,7 +370,7 @@
     - !AnsiValue 6
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}              .,-;;//;;=,          
               . ;H@@@MM@M#H/.,+%;,          
            ,/X+ +M@@M@MM%=,-%HMMM@X/,       
@@ -407,14 +391,13 @@
            =%@M@M#@$-.=$@MM@@@M; %M%=       
              ,;+$+-,/H#MMMMMMM@= =,         
                    =++%%%%+/;-.             
-
 - name: ['Apricity']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c2}                                    ./o-
               ``...``              `;. -/;  
          `-+ymNMMMMMNmho-`      ;sdNNm/     
@@ -433,7 +416,6 @@
     MMMMMMMMMMMMMMMms;`                     
     MMMMMMMMMMNds/.                         
     dhhyys+/-`                              
-
 - name: ['Arch']
   width: 38
   colors:
@@ -441,7 +423,7 @@
     - !AnsiValue 6
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                   -`            
                       .o+`                
                      `ooo/                
@@ -461,14 +443,13 @@
       `+sso+;-`                 `.-/+oso; 
      `++;.                           `-/+/
      .`                                 `/
-
 - name: ['ArchBox']
   width: 41
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}              ...;+oh/;;;..         
              ..-/oshhhhhh`   `;;;;-.         
          .;/ohhhhhhhhhhhh`        `-;;;;.    
@@ -488,7 +469,6 @@
         `--/;`   /;     `hhhhhhhhhhhho/-     
                  -/;.   `hhhhhhs+;-`         
                     ;;;;/ho/-`               
-
 - name: ['Archcraft']
   width: 40
   colors:
@@ -498,7 +478,7 @@
     - !AnsiValue 3
     - !AnsiValue 4
     - !AnsiValue 5
-  art: |
+  art: |-
     ${c1}⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄${c1}⢰⡆${c1}⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄
     ${c2}⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄${c1}⢠⣿⣿⡄${c2}⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄
     ${c3}⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄${c1}⢀⣾⣿⣿⣿⡀${c3}⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄
@@ -519,7 +499,6 @@
     ${c6}⠄⠄${c1}⢠⣿⣿⣿⣿⣿⣿⣿⡿⠟⠋⠁${c6}⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄${c1}⠙⠻⣿⣿⣿⣿⣿⣿⣿⣿⡄${c6}⠄⠄
     ${c1}⠄${c1}⣠⣿⣿⣿⣿⠿⠛⠋⠁${c1}⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄${c1}⠉⠙⠻⢿⣿⣿⣿⣿⣆${c1}⠄
     ${c1}⡰⠟⠛⠉⠁${c2}⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄${c1}⠉⠙⠛⠿⢆
-
 - name: ['archcraft_ascii']
   width: 42
   colors:
@@ -529,7 +508,7 @@
     - !AnsiValue 3
     - !AnsiValue 4
     - !AnsiValue 5
-  art: |
+  art: |-
     ${c1}                   -o\               
                       ;ooo;                   
                      .ooooo.                  
@@ -550,7 +529,6 @@
       .+osossos+-`              `-+osososs+.  
      ;sss+=-;`                     `;-=+ssss; 
     ;=-;`                                `-=+;
-
 - name: ['archcraft_minimal']
   width: 40
   colors:
@@ -560,7 +538,7 @@
     - !AnsiValue 3
     - !AnsiValue 4
     - !AnsiValue 5
-  art: |
+  art: |-
     ${c1}                   ⢰⡆              
                       ⢠⣿⣿⡄                  
                      ⢀⣾⣿⣿⣿⡀                 
@@ -581,7 +559,6 @@
       ⢠⣿⣿⣿⣿⣿⣿⣿⡿⠟⠋⠁             ⠙⠻⣿⣿⣿⣿⣿⣿⣿⣿⡄  
      ⣠⣿⣿⣿⣿⠿⠛⠋⠁                    ⠉⠙⠻⢿⣿⣿⣿⣿⣆ 
     ⡰⠟⠛⠉⠁                              ⠉⠙⠛⠿⢆
-
 - name: ['ARCHlabs']
   width: 44
   colors:
@@ -589,7 +566,7 @@
     - !AnsiValue 6
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                     'c'               
                         'kKk,                   
                        .dKKKx.                  
@@ -611,7 +588,6 @@
        'xKK0koc,..         ${c4}'c, ${c1}    ..,cok0KKk,
       ,xko;'.             ${c4}.. ${c1}           .';okx;
      .,'.                                   .',.
-
 - name: ['ArchMerge']
   width: 40
   colors:
@@ -619,7 +595,7 @@
     - !AnsiValue 6
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                    y;             
                       sMN-                  
                      +MMMm`                 
@@ -640,13 +616,12 @@
       /NMMMNds+;.`             `-/oymMMMm.  
      +Mmy/.                          `;smN; 
     /+.                                  -o.
-
 - name: ['ArchStrike']
   width: 36
   colors:
     - !AnsiValue 8
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}                   *           
                       **.               
                      ****               
@@ -664,14 +639,13 @@
          ******${c2}/${c1}***  ${c2}////   ${c1}**${c2}/${c1}******
         ********${c2}/${c1}* ${c2}///      ${c1}*${c2}/${c1}********
       ,******     ${c2}// ______ /    ${c1}******,
-
 - name: ['arch_old']
   width: 35
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}             __               
              _=(SDGJT=_                
            _GTDJHGGFCVS)               
@@ -688,14 +662,13 @@
     ${c1}?KGHE ${c2}\_-#DASDFLSV='${c1}    'EF
     'EHTI                    !H        
      `0F'                    '!        
-
 - name: ['arch_small']
   width: 14
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}      /\ 
          /  \     
         /\   \    
@@ -703,13 +676,12 @@
       /   ,,   \  
      /   |  |  -\ 
     /_-''    ''-_\
-
 - name: ['ArcoLinux']
   width: 41
   colors:
     - !AnsiValue 7
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c2}                    /-              
                        ooo;                  
                       yoooo/                 
@@ -730,13 +702,12 @@
       ooooooooo-             ${c1}-ooooooooooooo.${c2}
      ooooooooo-                 ${c1}.-oooooooooo.${c2}
     ooooooooo.                     ${c1}-ooooooooo${c2}
-
 - name: ['arcolinux_small']
   width: 21
   colors:
     - !AnsiValue 7
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c2}          A     
              ooo         
             ooooo        
@@ -748,13 +719,12 @@
       ooooo  ${c1}<oooooooo>${c2}
      ooooo      ${c1}<oooooo>${c2}
     ooooo          ${c1}<oooo>${c2}
-
 - name: ['ArseLinux']
   width: 36
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                               
                           ⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
     ⠀⣶⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⣴⣶⠀⠀⠀⠀⠀
@@ -771,7 +741,6 @@
     ⠀⣿⡄⠀⠀⠀⠀⠈⠉⠉⠀⠀⠀⠀⣿⡇⠀⠀⠀⠀⠀⠀⢸⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
     ⠀⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⠇⠀⠀⠀⠀⠀⠀⠘⠿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
     ⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    
-
 - name: ['Artix']
   width: 39
   colors:
@@ -779,7 +748,7 @@
     - !AnsiValue 6
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                   '              
                       'o'                  
                      'ooo'                 
@@ -800,7 +769,6 @@
       'ooooi;'`                `'';ioxxo'  
      'i;'`                          '';io' 
     '`                                   `'
-
 - name: ['artix_small']
   width: 25
   colors:
@@ -808,7 +776,7 @@
     - !AnsiValue 6
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}            '       
                'A'           
               'ooo'          
@@ -822,13 +790,12 @@
       'ooxoo'`     .;ooxxo'  
      'io'`             `'oo' 
     '`                     `'
-
 - name: ['Arya']
   width: 40
   colors:
     - !AnsiValue 2
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                `oyyy/${c2}-yyyyyy+
     ${c1}               -syyyy/${c2}-yyyyyy+
     ${c1}              .syyyyy/${c2}-yyyyyy+
@@ -844,7 +811,6 @@
     ${c1}  .syyyyyy+`  ;yyyyyy/${c2}-yyyyy+-+syyyyyyyy
     ${c1} -syyyyyy/    ;yyyyyy/${c2}-yyys;.syyyyyyyyyy
     ${c1};syyyyyy/     ;yyyyyy/${c2}-yyo.;syyyyyyyyyyy
-
 - name: ['Asahi']
   width: 42
   colors:
@@ -855,7 +821,7 @@
     - !AnsiValue 7
     - !AnsiValue 6
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}                   ##  ${c2}**       
                     ${c1}*####${c2}****.      
                       ${c1}###${c2},          
@@ -874,13 +840,12 @@
                ${c3}.(((((((((${c5}@@@@(${c4}....
                    ${c3}/(((((${c5}@@#${c4}...
                       ${c3}.((${c4}&,         
-
 - name: ['Aster']
   width: 37
   colors:
     - !AnsiValue 6
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}                      ...''...  
     ${c1}                 .;oOXWMWNXXXNMMN0d;.
     ${c1}              .oXMWOo;..       ..;oO;
@@ -899,7 +864,6 @@
     ${c1}         xMMx                   
     ${c1}          ;XMN;                 
     ${c1}            ,.                  
-
 - name: ['AsteroidOS']
   width: 41
   colors:
@@ -907,7 +871,7 @@
     - !AnsiValue 208
     - !AnsiValue 202
     - !AnsiValue 214
-  art: |
+  art: |-
     ${c1}                    ***             
     ${c1}                   *****            
     ${c1}                **********          
@@ -925,12 +889,11 @@
     ${c4}                (#%%%%%%%#          
     ${c4}                   %%%%%            
     ${c4}                    %%%             
-
 - name: ['astOS']
   width: 41
   colors:
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c1}                oQA#$%UMn           
                     H       9                
                     G       #                
@@ -954,13 +917,12 @@
     %       &       G       U       @       @
     &       @       #       %       %       #
     !HGN@MNCf       t&$9#%HQr       ?@G#6S@QP
-
 - name: ['Astra Linux']
   width: 39
   colors:
     - !AnsiValue 160
     - !AnsiValue 231
-  art: |
+  art: |-
     ${c1}                   AA             
     ${c1}                  AaaA            
     ${c1}                 Aa${c2}/\${c1}aA 
@@ -983,13 +945,12 @@
     ${c1}       aA${c2}/\${c1}A${c2}\/${c1}Aa        aA${c2}\\${c1}A${c2}\\${c1}Aa
     ${c1}       A${c2}|/${c1}aaAa            aAaa${c2}\|${c1}A
     ${c1}      aAaa                    aaAa
-
 - name: ['Athena']
   width: 28
   colors:
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}    .          ..      
     ${c1}   ;####;     ####.    
     ${c1}  .################    
@@ -1014,13 +975,12 @@
     ${c1}                     ${c2}######${c1}
     ${c1}                        ${c2}####${c1}
     ${c1}                          ${c2}##${c1}
-
 - name: ['Bedrock']
   width: 38
   colors:
     - !AnsiValue 8
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}--------------------------------------
     --------------------------------------
     --------------------------------------
@@ -1038,14 +998,13 @@
     --------------------------------------
     --------------------------------------
     --------------------------------------
-
 - name: ['BigLinux']
   width: 43
   colors:
     - !AnsiValue 6
     - !AnsiValue 11
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}                                 ...  
                                   ;OWMMMNd.    
                                 ;NMMMMMMMMWc   
@@ -1065,13 +1024,12 @@
        kMMMMMMMMMMX.                           
         ;XMMMMMMK;                             
           ';MM;"      Made in Brazil           
-
 - name: ['Bitrig']
   width: 15
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}   `hMMMMN+
        -MMo-dMd`   
        oMN- oMN`   
@@ -1089,7 +1047,6 @@
     /MN/-------oNN;
     hMd.       .dMh
     sm/         /ms
-
 - name: ['BlackArch']
   width: 38
   colors:
@@ -1097,7 +1054,7 @@
     - !AnsiValue 1
     - !AnsiValue 0
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c3}                   00            
                        11                 
                       ====${c1}           
@@ -1119,14 +1076,13 @@
       `+sso+;-`        ${c3}//${c1}       `.-/+oso;
      `++;.             ${c3}//${c1}            `-/+/
      .`                ${c3}/${c1}                `/
-
 - name: ['blackPanther', 'blackpanther']
   width: 54
   colors:
     - !AnsiValue 1
     - !AnsiValue 11
     - !AnsiValue 12
-  art: |
+  art: |-
     ${c3}                         ........                
                       .,»╔╗╗╬▄▄╫█▀▓▄▄╬╗╗g≈,.              
                    ,j╗╬╣▓▓███████▌;»╙▀▀▀▀█▄▄╗j,           
@@ -1150,13 +1106,12 @@
                  `"╨▀█▄▄▄░`▐█████▄,       ,▄▄▀▀░`         
                     `"╙╩▀▀▀▀████████▓▌▌▌▀▀▀╨"``           
                         ``""░╚╨╝╝╝╝╨╨░""``                
-
 - name: ['BLAG']
   width: 33
   colors:
     - !AnsiValue 5
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}             d              
                 ,MK;                 
                 xMMMX;               
@@ -1174,14 +1129,13 @@
                OMMMK;                
                oWk,                  
                ;;                    
-
 - name: ['BlankOn']
   width: 40
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c2}        `./ohdNMMMMNmho+.` ${c1}       .+oo;`
     ${c2}      -smMMMMMMMMMMMMMMMMmy-`    ${c1}`yyyyy+
     ${c2}   `;dMMMMMMMMMMMMMMMMMMMMMMd/`  ${c1}`yyyyys
@@ -1199,13 +1153,12 @@
     ${c2}     ;yNMMMMMMMMMMMMMMMMMMNy;`   ${c1}`yyyyys
     ${c2}       .;sdNMMMMMMMMMMNds/.      ${c1}`yyyyyo
     ${c2}           `.;/++++/;.`           ${c1};oys+.
-
 - name: ['BlueLight']
   width: 40
   colors:
     - !AnsiValue 7
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}              oMMNMMMMMMMMMMMMMMMMMMMMMM
                   oMMMMMMMMMMMMMMMMMMMMMMMMM
                   oMMMMMMMMMMMMMMMMMMMMMMMMM
@@ -1225,14 +1178,13 @@
                   omdyyyyyyo....${c1}+mMMMMMMMMMM${c2}
                   ${c1}oMMM${c2}mdhyyo..${c1}+mMMMMMMMMMMMM
                   oNNNNNNm${c2}dso${c1}mMMMMMMMMMMMMMM
-
 - name: ['Bodhi']
   width: 40
   colors:
     - !AnsiValue 7
     - !AnsiValue 11
     - !AnsiValue 2
-  art: |
+  art: |-
     ${c1}|           ${c2},,mmKKKKKKKKWm,,  
      ${c1}'      ${c2},aKKP${c1}LL**********|L*${c2}TKp,
        ${c1}t  ${c2}aKP${c1}L**```          ```**L${c2}*Kp
@@ -1251,14 +1203,13 @@
          `Tp${c1}pLL,                ,|||${c2}p'L
             "Kpp${c1}LL++,.,    ,,|||$${c2}#K*   ${c1}'.
                ${c2}`"MKWpppppppp#KM"`        ${c1}`h,
-
 - name: ['bonsai']
   width: 27
   colors:
     - !AnsiValue 6
     - !AnsiValue 2
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c2}   ,####,             
        ${c2}#######,  ${c2},#####,
        ${c2}#####',#  ${c2}'######
@@ -1275,7 +1226,6 @@
      ##, ,##,',##, ,##  ,#,   ,
      # # #  # #''# #,,  # #   #
      '#' '##' #  #  ,,# '##;, #
-
 - name: ['BSD']
   width: 32
   colors:
@@ -1284,7 +1234,7 @@
     - !AnsiValue 4
     - !AnsiValue 3
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}             ,        ,    
                 /(        )`        
                 \ \___   / |        
@@ -1304,13 +1254,12 @@
              ${c5}______${c1}( (_  / \______/
            ${c5},'  ,-----'   |     
            `--{__________)          
-
 - name: ['BunsenLabs']
   width: 18
   colors:
     - Reset
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}        `++  
           -yMMs       
         `yMMMMN`      
@@ -1331,14 +1280,13 @@
               +MN;    
               mh.     
              -/       
-
 - name: ['CachyOS']
   width: 54
   colors:
     - !AnsiValue 2
     - !AnsiValue 8
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c3}           ${c2}.${c3}-------------------------; 
     ${c3}          .${c1}+=${c3}========================. 
     ${c3}         ;${c1}++${c3}===${c1}++===${c3}===============-       ;${c1}++${c3}-
@@ -1361,13 +1309,12 @@
     ${c3}          .===${c1}+${c3}==================${c1}+++++++;
     ${c3}           .-=======================${c1}+++;    
     ${c3}             ${c2}..........................     
-
 - name: ['Calculate']
   width: 53
   colors:
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}                              ......            
                                ,,+++++++,.               
                              .,,,....,,,${c2}+**+,,.${c1}
@@ -1388,7 +1335,6 @@
          ${c2}.,++*****+++${c1}*****************${c2}+++++,.${c1}
           ${c2},++++++**+++++${c1}***********${c2}+++++++++,${c1}
          ${c2}.,,,,++++,..  .,,,,,.....,+++,.,,${c1}     
-
 - name: ['CalinixOS']
   width: 52
   colors:
@@ -1398,7 +1344,7 @@
     - !AnsiValue 4
     - !AnsiValue 4
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c2}                                               
     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⠤⠔⠒⠒⠋⠉⠉⠉⠉⠓⠒⠒⠦⠤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  
     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠤⠒⠉⣁⣠⣤⣶⣶⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣤⣄⣈⠙⠲⢤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  
@@ -1425,7 +1371,6 @@
     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠓⢤⡈⠛⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⣁⠴⠊⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀  
     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠑⠢⢄⣉⠙⠛⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⠛⠋⣉⡤⠖⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  
     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠓⠒⠢⠤⠤⠤⠤⠤⠤⠤⠤⠖⠒⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-
 - name: ['CalinixOS_small']
   width: 38
   colors:
@@ -1435,7 +1380,7 @@
     - !AnsiValue 4
     - !AnsiValue 4
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c2}                                 
     ⠀⠀⠀⠀⠀⠀⠀⠀⣀⠤⠐⣂⣈⣩⣭⣭⣍⣀⣐⠀⠄⡀⠀⠀⠀⠀⠀⠀⠀⠀        
     ⠀⠀⠀⠀⠀⡀⠔⣨⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣅⠢⡀⠀⠀⠀⠀⠀        
@@ -1452,7 +1397,6 @@
     ⠀⠀⠀⠈⠊⡻⢿⣿⣿⣿⣿⣶⣤⣤⣤⣤⣤⣤⣶⣿⣿⣿⣿⡿⢟⠕⠁⠀⠀⠀        
     ⠀⠀⠀⠀⠀⠈⠢⢙⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⡩⠐⠁⠀⠀⠀⠀⠀        
     ⠀⠀⠀⠀⠀⠀⠀⠀⠈⠐⠂⠭⠉⠙⣛⣛⠋⠉⠭⠐⠂⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-
 - name: ['Carbs']
   width: 29
   colors:
@@ -1462,7 +1406,7 @@
     - !AnsiValue 4
     - !AnsiValue 4
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c2}             .......... 
               ..,;;ccccccc;;'..  
            ..,clllc;;;;;;;cllc,. 
@@ -1481,12 +1425,11 @@
             ..;cllllccccclllc;'. 
               ...',;;;;;;,,...   
                     .....        
-
 - name: ['CBL-Mariner']
   width: 38
   colors:
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}                    .            
                       ;-  .               
                     ;==. .=;              
@@ -1505,7 +1448,6 @@
     ;--------.                ;========-  
                         ..;;;--=========- 
                 ..;;---================-=-
-
 - name: ['CelOS']
   width: 54
   colors:
@@ -1513,7 +1455,7 @@
     - !AnsiValue 6
     - !AnsiValue 0
     - !AnsiValue 5
-  art: |
+  art: |-
     ${c4}                     .,cmmmmmmmmmmmc,.           
                     .,cmMMMMMMMMMMMMMMMMMMMMmc.           
                  .cMMMMMMMMMMMMMMMMMMMMMMMMMMMmc.         
@@ -1533,13 +1475,12 @@
                  `";MMMMMMMMMMMMMMMMMMMMMMMMM;'           
                     `";MMMMMMMMMMMMMMMMMMM;"              
                          "************"                   
-
 - name: ['Center']
   width: 30
   colors:
     - !AnsiValue 7
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c2}                .        
                     o,            
             .       d,       .    
@@ -1553,7 +1494,6 @@
             ;l,    .l;     ';'    
                    .o;            
                     l,            
-
 - name: ['CentOS']
   width: 36
   colors:
@@ -1562,7 +1502,7 @@
     - !AnsiValue 4
     - !AnsiValue 5
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                 ..            
                    .PLTJ.               
                   <><><><>              
@@ -1582,7 +1522,6 @@
     ${c2}              <><><><>         
                    'MKKM'               
                      ''                 
-
 - name: ['centos_small']
   width: 11
   colors:
@@ -1591,7 +1530,7 @@
     - !AnsiValue 4
     - !AnsiValue 5
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c2} ____${c1}^${c4}____
     ${c2} |\  ${c1}|${c4}  /|
     ${c2} | \ ${c1}|${c4} / |
@@ -1599,7 +1538,6 @@
     ${c3} | / ${c2}|${c1} \ |
     ${c3} |/__${c2}|${c1}__\|
     ${c2}     v
-
 - name: ['Chakra']
   width: 36
   colors:
@@ -1607,7 +1545,7 @@
     - !AnsiValue 5
     - !AnsiValue 7
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}     _ _ _        "kkkkkkkk.   
        ,kkkkkkkk.,    'kkkkkkkkk,       
        ,kkkkkkkkkkkk., 'kkkkkkkkk.      
@@ -1626,14 +1564,13 @@
                  ';kkkkkkkkkk'          
                    ';kkkkkk'            
                       "''"              
-
 - name: ['ChaletOS']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}             `.//+osso+/;``        
              `/sdNNmhyssssydmNNdo;`         
            ;hNmy+-`          .-+hNNs-       
@@ -1654,13 +1591,12 @@
           .+mMdo;`            `;smMd/`      
              -ohNNmhsoo++osshmNNh+.         
                 `./+syyhhyys+;``            
-
 - name: ['Chapeau']
   width: 32
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}               .-/-.       
                 ////////.           
               ////////${c2}y+${c1}//.
@@ -1679,12 +1615,11 @@
         `//////////${c2}++${c1}//////////
            `////////////////.       
                -////////-           
-
 - name: ['ChonkySealOS']
   width: 40
   colors:
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                  .-/-.            
                 .;-=++****++=-;.            
             .;=+*##%%%%%%%%%%##*+=;.        
@@ -1706,7 +1641,6 @@
           ;=*##%%%%%%%%%%%%%%%%%%##*=;      
             .;=+*##%%%%%%%%%%##*+=;.        
                 .;-=++****++=-;.            
-
 - name: ['Chrom']
   width: 35
   colors:
@@ -1715,7 +1649,7 @@
     - !AnsiValue 3
     - !AnsiValue 4
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c2}            .,;loool;,.       
             .,coooooooooooooc,.        
          .,lllllllllllllllllllll,.     
@@ -1734,13 +1668,12 @@
     ${c1}      ';;ccccccccc${c3}dOOOOOOOkx;.
     ${c1}        ..,;;cccc${c3}xOOOkkko;.
     ${c1}            ..,;${c3}dOkxl;.  
-
 - name: ['Cleanjaro']
   width: 25
   colors:
     - !AnsiValue 7
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}███████▌ ████████████████
     ███████▌ ████████████████
     ███████▌ ████████████████
@@ -1753,13 +1686,12 @@
     █████████████████████████
     █████████████████████████
     ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-
 - name: ['cleanjaro_small']
   width: 16
   colors:
     - !AnsiValue 7
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}█████ ██████████
     █████ ██████████
     █████           
@@ -1767,12 +1699,11 @@
     █████           
     ████████████████
     ████████████████
-
 - name: ['ClearOS']
   width: 40
   colors:
     - !AnsiValue 2
-  art: |
+  art: |-
     ${c1}             `.--;;;;;;--.`        
              .-;////////////////;-.         
           `-////////////////////////-`      
@@ -1793,7 +1724,6 @@
            .;;   `///;    ;///`   -;.       
                  `///;    ;///`             
                   `...    ...`              
-
 - name: ['Clear Linux OS', 'Clear_Linux']
   width: 26
   colors:
@@ -1801,7 +1731,7 @@
     - !AnsiValue 3
     - !AnsiValue 7
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}          BBB        
            BBBBBBBBB          
          BBBBBBBBBBBBBBB      
@@ -1822,13 +1752,12 @@
      WWWWWWWWWWWWWWWW         
           WWWWWWWWWW          
               WWW             
-
 - name: ['Clover']
   width: 40
   colors:
     - !AnsiValue 2
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}               `omo``omo`          
                  `oNMMMNNMMMNo`             
                `oNMMMMMMMMMMMMNo`           
@@ -1849,7 +1778,6 @@
                `oNMMMMMMMMMMMMNo`           
                  `oNMMMNNMMMNs`             
                    `omo``oNs`               
-
 - name: ['Cobalt']
   width: 40
   colors:
@@ -1858,7 +1786,7 @@
     - !AnsiValue 59
     - !AnsiValue 31
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c1}                          ///      
     ${c1}                  ,//////////////  
     ${c1}    ///////////////////////////////
@@ -1875,14 +1803,13 @@
           ******${c3}....${c4}***********************
             ****************************    
              *****                          
-
 - name: ['Condres']
   width: 40
   colors:
     - !AnsiValue 2
     - !AnsiValue 3
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}syyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy+${c3}.+.
     ${c1}`oyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy+${c3};++.
     ${c2}/o${c1}+oyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy/${c3}oo++.
@@ -1900,14 +1827,13 @@
     ${c2}/hhhhhdddddhhy${c1}./yo;${c3}+oooooo+++++++++++++/
     ${c2}/hhhhhhhhhhhhhy${c1};-.${c3}+sooooo+++++++++++///;
     ${c2};sssssssssssso++${c1}${c3}`;/;--------.````````
-
 - name: ['Container Linux by CoreOS', 'Container_Linux']
   width: 38
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                .....            
               .';;cccccccc;;'.            
             ';ccccclc${c3}lllllllll${c1}cc;.
@@ -1928,7 +1854,6 @@
            .;cccclccccccllllllccc,.       
               .';ccccclllccc;;..          
                     .....                 
-
 - name: ['CRUX']
   width: 24
   colors:
@@ -1936,7 +1861,7 @@
     - !AnsiValue 5
     - !AnsiValue 7
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}         odddd     
           oddxkkkxxdoo      
          ddcoddxxxdoool     
@@ -1955,7 +1880,6 @@
     ${c2}dkkkxkkk${c3}OKX${c2}NNNX0Oxx${c1}xc;cd
     ${c2} odxxdx${c3}xllod${c2}ddooxx${c1}dc;ldo
     ${c2}   lodd${c1}dolccc${c2}ccox${c1}xoloo
-
 - name: ['crux_small', 'KISS']
   width: 10
   colors:
@@ -1963,7 +1887,7 @@
     - !AnsiValue 5
     - !AnsiValue 7
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}    ___
        (${c3}.· ${c1}|
        (${c2}<> ${c1}|
@@ -1971,13 +1895,12 @@
      ( ${c3}/  \ ${c1}/|
     ${c2}_${c1}/\ ${c3}__)${c1}/${c2}_${c1})
     ${c2}\/${c1}-____${c2}\/
-
 - name: ['Crystal Linux']
   width: 34
   colors:
     - !AnsiValue 13
     - !AnsiValue 5
-  art: |
+  art: |-
     ${c1}                        mysssym
     ${c1}                      mysssym
     ${c1}                    mysssym  
@@ -1998,13 +1921,12 @@
     ${c1}             dysssym         
     ${c1}           dysssym           
     ${c1}         dysssym             
-
 - name: ['Cucumber']
   width: 40
   colors:
     - !AnsiValue 2
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}           `.-;//++++++//;-.`      
             `;/+//${c2};;--------${c1};;//+/;`
           -++/;${c2}----..........----${c1};/++-
@@ -2025,14 +1947,13 @@
           -/+/;${c2}----..........----${c1};/+/-
             `;/+//${c2};;--------;;;${c1}/+/;`
                `.-;//++++++//;-.`           
-
 - name: ['CutefishOS']
   width: 40
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}                     ___ww___      
     _              _wwMMM@M^^^^MMMMww_      
     M0w_       _wMMM~~             ~~MMm_   
@@ -2042,14 +1963,13 @@
     wMM~      ~~MMmw__             __w0M~   
     ~             ~~MM0MmwwwwwwwwwMMM~      
                         ~~~~^^~~~           
-
 - name: ['CuteOS']
   width: 35
   colors:
     - !AnsiValue 33
     - !AnsiValue 50
     - !AnsiValue 57
-  art: |
+  art: |-
     ${c2}                              
                            ${c3}1ua${c2}
                       ${c3}MMM1ua${c2} 
@@ -2065,14 +1985,13 @@
                          MMMMM         
                               MMM      
                                   M    
-
 - name: ['CyberOS']
   width: 33
   colors:
     - !AnsiValue 50
     - !AnsiValue 32
     - !AnsiValue 57
-  art: |
+  art: |-
     ${c3}             !M$EEEEEEEEEEEP
                 .MMMMM000000Nr.      
                 ${c3}&MMMMMM${c2}MMMMMMMMMMMMM9
@@ -2088,14 +2007,13 @@
                             ~MMMMMMM 
                               "RMMMM 
                                 .PMB 
-
 - name: ['dahlia']
   width: 40
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}                                   
                       .#.                   
                     *%@@@%*                 
@@ -2114,7 +2032,6 @@
             ,*****#&@@@@@@@&(*****,         
                    ,/%@@@%/.                
                       ,#,                   
-
 - name: ['DarkOs']
   width: 43
   colors:
@@ -2123,7 +2040,7 @@
     - !AnsiValue 5
     - !AnsiValue 3
     - !AnsiValue 2
-  art: |
+  art: |-
     ${c3}⠀⠀⠀⠀  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠢⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
     ${c1}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣶⠋⡆⢹⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
     ${c5}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡆⢀⣤⢛⠛⣠⣿⠀⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -2144,7 +2061,6 @@
     ${c4}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢢⣀⣿⡏⠀⣿⡿⠀⠀⠀⠀⠀⠀⠙⣦⠀⢧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
     ${c3}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠿⣧⣾⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣮⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
     ${c5}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
-
 - name: ['Darwin']
   width: 30
   colors:
@@ -2154,7 +2070,7 @@
     - !AnsiValue 1
     - !AnsiValue 5
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}                    c.'  
                      ,xNMM.       
                    .OMMMMo        
@@ -2172,14 +2088,13 @@
         ${c6}kMMMMMMMMMMMMMMMMMMMMMMd
          ;KMMMMMMMWXXWMMMMMMMk.   
            "cooc*"    "*coo'"     
-
 - name: ['Debian']
   width: 27
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c2}       _,met$$$$$gg.  
         ,g$$$$$$$$$$$$$$$P.    
       ,g$$P"        "\""Y$$.". 
@@ -2197,27 +2112,25 @@
            `Y$$b.              
               `"Y$b._          
                   `"\""        
-
 - name: ['debian_small']
   width: 9
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}  _____
      /  __ \ 
     |  /    |
     |  \___- 
     -_       
       --_    
-
 - name: ['Deepin']
   width: 38
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}             ............        
              .';;;;;.       .,;,.         
           .,;;;;;;;.       ';;;;;;;.      
@@ -2236,13 +2149,12 @@
           ,dkkkkkkkkkkkkko;.    .;o;      
             .;okkkkkdl;.    .,cl;.        
                 .,;cccccccc;,.            
-
 - name: ['DesaOS']
   width: 30
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}███████████████████████  
     ███████████████████████       
     ███████████████████████       
@@ -2259,13 +2171,12 @@
     ████████████████████████      
     ████████████████████████      
     ████████████████████████      
-
 - name: ['Devuan']
   width: 32
   colors:
     - !AnsiValue 5
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}   ..,,;;;;;;,..           
                `';ddd;;,.           
                      `'dPPd;,.      
@@ -2281,13 +2192,12 @@
     ;$$$$$$$$$$$$b;'`               
      `$$$$$bd;''`                   
        `'''`                        
-
 - name: ['DietPi']
   width: 30
   colors:
     - !AnsiValue 2
     - !AnsiValue 0
-  art: |
+  art: |-
     ${c1}  ;=+******+-    -+******+=;
      =#-;;-;;;;-=#;-#=-;;;;-;;-#= 
      ;%-;;--==-;;-%%-;;-==--;;-%; 
@@ -2307,14 +2217,13 @@
         -#@@@@@@@@@@@@@@@@@@#-    
            -*%@@@@@@@@@@%*-       
               .+%@@@@%+.          
-
 - name: ['DracOS']
   width: 40
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}       `-;/-                       
               -os;                          
                 -os/`                       
@@ -2328,14 +2237,13 @@
             `;sy;        `.    `/yyyyys;    
                ./o/.`           .oyyso+oo;` 
                   ;+oo+//;;;;///;-.`     `.`
-
 - name: ['DragonFly']
   width: 31
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c2},--,           ${c1}|           ${c2},--,
     ${c2}|   `-,       ${c1},^,       ${c2},-'   |
     ${c2} `,    `-,   ${c3}(/ \)   ${c2},-'    ,'
@@ -2351,14 +2259,13 @@
                   | |              
                   | |              
                   `|'              
-
 - name: ['dragonfly_old']
   width: 41
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}                   .-.              
                      ${c3} ()${c1}I${c3}()   
                 ${c1} "==.__;-;__.=="        
@@ -2376,14 +2283,13 @@
                      ${c1}  /=\              
                        \=/                   
                         ^                    
-
 - name: ['dragonfly_small']
   width: 9
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c2}   ,${c1}_${c2},
     ('-_${c1}|${c2}_-')
      >--${c1}|${c2}--<
@@ -2391,13 +2297,12 @@
         ${c1}|
         |    
         |    
-
 - name: ['Drauger']
   width: 40
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                  -``-             
                     `;+``+;`                
                    `/++``++/.               
@@ -2414,13 +2319,12 @@
      `/++-                            -++/` 
     .;-.`..............................`.-;.
     `.-/++++++++++++++++++++++++++++++++/-.`
-
 - name: ['Droidian']
   width: 27
   colors:
     - !AnsiValue 2
     - !AnsiValue 10
-  art: |
+  art: |-
     ${c2}       _,met$$$$$gg.  
        ,g$$$$$$$$$$$$$$$$P.    
      ,$$P'              `$$$.  
@@ -2436,14 +2340,13 @@
          `$$b.                 
            `Y$$b.              
               `"Y$b._          
-
 - name: ['Elementary']
   width: 35
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c2}         eeeeeeeeeeeeeeeee    
           eeeeeeeeeeeeeeeeeeeeeee      
         eeeee  eeeeeeeeeeee   eeeee    
@@ -2461,28 +2364,26 @@
         eeeee                 eeeee    
           eeeeeee         eeeeeee      
              eeeeeeeeeeeeeeeee         
-
 - name: ['elementary_small']
   width: 11
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c2}  _______
      / ____  \ 
     /  |  /  /\
     |__\ /  / |
     \   /__/  /
      \_______/ 
-
 - name: ['Elive']
   width: 41
   colors:
     - !AnsiValue 7
     - !AnsiValue 6
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}                                    
                  *@${c2},,&(%%%..%*.         
              ${c1}(@${c2}&%/##############((/${c1}*,
@@ -2501,14 +2402,13 @@
          .,,*******,${c3},,../##(${c2}%&${c1}&${c2}#******${c1},${c2}.
             ,*${c1},${c2},,,,,,,,,,,,,,,,,,,${c1},${c2}..
                 *//${c1}/,,${c2},,,,,,,${c1},..${c2}
-
 - name: ['EncryptOS']
   width: 32
   colors:
     - !AnsiValue 2
     - !AnsiValue 5
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c2}                  *******  
     ${c2}                ***       **.
     ${c2}                **         **
@@ -2522,14 +2422,13 @@
     ${c2}             ,,,,,,,     ,,,,,,,
     ${c2}             ,,,,,,,,,,,,,,,,,,,
     ${c2}                 ,,,,,,,,,,,,.
-
 - name: ['EndeavourOS']
   width: 40
   colors:
     - !AnsiValue 1
     - !AnsiValue 5
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}                     ./${c2}o${c3}.
     ${c1}                   ./${c2}sssso${c3}-
     ${c1}                 `;${c2}osssssss+${c3}-
@@ -2545,13 +2444,12 @@
     ${c1} `..-+${c2}oosssssssssssssssssssssssso${c3}+++++/`
        ./++++++++++++++++++++++++++++++/;.  
       `;;;;;;;;;;;;;;;;;;;;;;;;;------``    
-
 - name: ['Endless']
   width: 40
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}           `;+yhmNMMMMNmhy+;`      
             -odMMNhso//////oshNMMdo-        
           /dMMh+.              .+hMMd/      
@@ -2572,13 +2470,12 @@
           /dMMh+.              .+hMMd/      
             -odMMNhso//////oshNMMdo-        
                `;+yhmNMMMMNmhy+;`           
-
 - name: ['Enso']
   width: 41
   colors:
     - !AnsiValue 8
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                                    
                      .;--==--;.              
                 ;=*#%%%%%%%#####*+-.         
@@ -2599,13 +2496,12 @@
            .+%%%%%%%%%%%%%.       .-==;      
              .=#%%%%%%%%%%=   ..;--;.        
                 .-+#%%%%%+                   
-
 - name: ['EuroLinux']
   width: 35
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                __            
              -wwwWWWWWWWWWwww-         
             -WWWWWWWWWWWWWWWWWWw-      
@@ -2624,13 +2520,12 @@
         wWWWWWWWWWWWWWWWw              
            WWWWWWWWWWWWWw              
                wWWWWWWWw               
-
 - name: ['EvolutionOS']
   width: 38
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}\e[1;32m      dddddddddddddddddddddddd
       .dddd''''''''''''''''''''''dddd.    
       dd;   dddddddddddddddddddd;   dd;   
@@ -2649,14 +2544,13 @@
       dddd;.'''  '''''''''''''''  dddd;   
          dddddddddddddddddddddddddd;;'    
           '''''''''''''''''''''''''\e[0m  
-
 - name: ['Exherbo']
   width: 42
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c2} ,                                   
     OXo.                                      
     NXdX0;    .cok0KXNNXXK0ko;.               
@@ -2679,13 +2573,12 @@
               'dXMMXkl;,.        .,o0MMNo'    
                  ';d0XWMMMMWNNNNMMMNOl'       
                        ';okKXWNKkl'           
-
 - name: ['Exodia Predator OS', 'exodia-predator', 'Predator']
   width: 36
   colors:
     - !AnsiValue 5
     - !AnsiValue 5
-  art: |
+  art: |-
     ${c1}-                                  ;
     ${c1}+;                                ;+
     ${c1}++.                              .++
@@ -2710,13 +2603,12 @@
     ${c1}         =+.            .+=    
     ${c1}         =-              -=    
     ${c1}         ;                ;    
-
 - name: ['Fedora']
   width: 38
   colors:
     - !AnsiValue 12
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}             .',;;;;;;,'.        
              .';;cccccccccccc;;,.         
           .;cccccccccccccccccccccc;.      
@@ -2736,14 +2628,13 @@
     ;cccccccccccccccccccccccccccc;'.      
     .;cccccccccccccccccccccc;;,..         
       ';;cccccccccccccc;;;,.              
-
 - name: ['Fedora_old', 'RFRemix']
   width: 34
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}          /;-------------;\  
            ;-------------------;;     
          ;-----------${c2}/shhOHbmp${c1}---;\
@@ -2761,12 +2652,11 @@
     ;---${c2};sdNMMMMNds;${c1}------------;
     ;------${c2};;//;${c1}-------------;;
     ;---------------------;//         
-
 - name: ['fedora_small']
   width: 16
   colors:
     - !AnsiValue 12
-  art: |
+  art: |-
     ${c1}        ,'''''.
            |   ,.  |
            |  |  '_'
@@ -2776,12 +2666,11 @@
     |  ',_,'  |     
      '.     ,'      
        '''''        
-
 - name: ['FemboyOS']
   width: 40
   colors:
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
     MMMMWKkxkKWMMMMMMMMMMMMMMMMMMMMWKkxkKWMM
     MMMMXo. .;xKWMMMMMMMMMMMMMMMMMMXo. .oXMM
@@ -2802,14 +2691,13 @@
     MMMMMMMMMMMN0ocxXWNkl;,;xXWMMMMMMMMMMMMM
     MMMMMMMMMMMMMWNWMMMWWNNNWMMMMMMMMMMMMMMM
     MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
-
 - name: ['Feren']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1} `----------`                      
      ;+ooooooooo+.                          
     -o+oooooooooo+-                         
@@ -2826,14 +2714,13 @@
                  `-++++++---;;;;/////.      
                `.;///+++.             `     
               `.........                    
-
 - name: ['Finnix']
   width: 33
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}            ,,;;;;;;,,      
             ,;*%S########S%*;,       
           ;?#################S?;     
@@ -2851,14 +2738,13 @@
          ,+%##################%;     
             ;+?S##########S?+;       
                 ,;;++++;;,           
-
 - name: ['Floflis']
   width: 44
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     \e[96m              ,▄▄▄▌▓▓███▓▓▌▄▄▄,       
              ,▄▒▓███████████████████▓▄▄         
            ▄▓███████████████████████████▌       
@@ -2878,14 +2764,13 @@
               ,▄████████████████████▌,          
               ╝▀████████████████████▓▀'         
                  `╙▀▀▓▓███████▓▀▀╩'             
-
 - name: ['FreeBSD', 'HardenedBSD']
   width: 32
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c2}```                        ${c1}`
       ${c2}` `.....---...${c1}....--.```   -/
       ${c2}+o   .--`         ${c1}/y;`      +.
@@ -2901,26 +2786,24 @@
          ${c2}`;`                  ${c1}`;`
            .--             `--.     
               .---.....----.        
-
 - name: ['freebsd_small']
   width: 13
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}/\,-'''''-,/\
     \_)       (_/
     |           |
     |           |
      ;         ; 
       '-_____-'  
-
 - name: ['FreeMiNT']
   width: 32
   colors:
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}          ##               
               ##         #########  
                         ####      ##
@@ -2936,14 +2819,13 @@
         ##      ##    ####  ####    
         ##    ##  ##    ##  ##  ####
           ####  ##          ##  ##  
-
 - name: ['Frugalware']
   width: 48
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}          `++/;;-.`                        
              /o+++++++++/;;-.`                      
             `o+++++++++++++++o++/;;-.`              
@@ -2967,13 +2849,12 @@
                    ``.;/+osyysssssssssssssh.        
                             `-;/+osyyssssyo         
                                     .-;+++`         
-
 - name: ['Funtoo']
   width: 46
   colors:
     - !AnsiValue 5
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}   .dKXXd                         .      
       ;XXl;;.                      .OXo           
     .'OXO''  .''''''''''''''''''''';XNd..'oco.lco,
@@ -2984,14 +2865,13 @@
       kXX  xN0;.       KNN' oNNNX' ,XNk           
       kXX  xNNXNNNNNNNNXNNNNNNNNXNNOxXNX0Xl       
       ...  ......................... .;cc;.       
-
 - name: ['GalliumOS']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}sooooooooooooooooooooooooooooooooooooo+;
     yyooooooooooooooooooooooooooooooooo+/;;;
     yyysoooooooooooooooooooooooooooo+/;;;;;;
@@ -3011,7 +2891,6 @@
     yyyyyyo+;-..........................;//;
     yyyo+;-..............................-//
     o/;-...................................;
-
 - name: ['Garuda']
   width: 48
   colors:
@@ -3021,7 +2900,7 @@
     - !AnsiValue 7
     - !AnsiValue 2
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c3}                                           
                          .%;888;8898898;            
                        x;XxXB%89b8;b8%b88;          
@@ -3040,7 +2919,6 @@
             dx88                   .t@x.            
               d;SS@8ba89aa67a853Sxxad.              
                 .d988999889889899dd.                
-
 - name: ['garuda_small']
   width: 14
   colors:
@@ -3050,19 +2928,18 @@
     - !AnsiValue 7
     - !AnsiValue 2
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c3}     .----.
        .'   ${c6},${c3}  '.
     ${c4} .'    ${c6}'${c3}-----|
     '${c5}.   -----,
       '.____.'    
-
 - name: ['Gentoo']
   width: 35
   colors:
     - !AnsiValue 5
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}         -/oyddmdhs+;.        
          -o${c2}dNMMMMMMMMNNmhy+${c1}-`
        -y${c2}NMMMMMMMMMMMNNNmmdhy${c1}+-
@@ -3081,13 +2958,12 @@
     /h${c2}MMNNNNNNNNMNdhs++/${c1}-`   
     `/${c2}ohdmmddhys+++/;${c1}.`      
       `-//////;--.                     
-
 - name: ['gentoo_small']
   width: 11
   colors:
     - !AnsiValue 5
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1} _-----_
     (       \  
     \    0   \ 
@@ -3095,12 +2971,11 @@
      /      _/ 
     (     _-   
     \____-     
-
 - name: ['GhostBSD']
   width: 20
   colors:
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}           ,gggggg.
             ,agg9*   .g)
           .agg* ._.,gg* 
@@ -3114,12 +2989,11 @@
         .gga*           
       .gga*             
      (ga*               
-
 - name: ['glaucus']
   width: 40
   colors:
     - !AnsiValue 5
-  art: |
+  art: |-
     ${c1}             ,,        ,d88P       
                ,d8P    ,ad8888*             
              ,888P    d88888*     ,,ad8888P*
@@ -3132,7 +3006,6 @@
      *8888888888888888888888888888888*      
       Y888888888P* `*``*888888888888*       
        *^888^*            *Y888P**          
-
 - name: ['gNewSense']
   width: 50
   colors:
@@ -3140,7 +3013,7 @@
     - !AnsiValue 5
     - !AnsiValue 7
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}                     ..,,,,..                
                    .oocchhhhhhhhhhccoo.               
             .ochhlllllllc hhhhhh ollllllhhco.         
@@ -3153,12 +3026,11 @@
         ochllc.            ++++            .cllhco    
            `+occooo+.                .+ooocco+'       
                   `+oo++++      ++++oo+'              
-
 - name: ['GNOME']
   width: 41
   colors:
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}                               ,@@@@@@@@,
                      @@@@@@      @@@@@@@@@@@@
             ,@@.    @@@@@@@    *@@@@@@@@@@@@ 
@@ -3180,13 +3052,12 @@
               ,@@@@@@@@@@@@@@@@@@@@&         
                   &@@@@@@@@@@@@@@            
                          ...                 
-
 - name: ['GNU']
   width: 35
   colors:
     - Reset
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}    _-`````-,           ,- '- .
       .'   .- - |          | - -.  `.  
      /.'  /                     `.   \ 
@@ -3205,7 +3076,6 @@
                    ''/''/''            
                      '/'/'             
                       `;               
-
 - name: ['GoboLinux']
   width: 26
   colors:
@@ -3213,20 +3083,19 @@
     - !AnsiValue 4
     - !AnsiValue 6
     - !AnsiValue 2
-  art: |
+  art: |-
     ${c1}  _____       _      
      / ____|     | |          
     | |  __  ___ | |__   ___  
     | | |_ |/ _ \| '_ \ / _ \ 
     | |__| | (_) | |_) | (_) |
      \_____|\___/|_.__/ \___/ 
-
 - name: ['GrapheneOS']
   width: 46
   colors:
     - !AnsiValue 7
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}                        B?               
                             G~                    
                             G~&                   
@@ -3250,14 +3119,13 @@
                             B~                    
                             G!                    
                             #                     
-
 - name: ['Grombyang']
   width: 35
   colors:
     - !AnsiValue 4
     - !AnsiValue 2
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}            eeeeeeeeeeee      
              eeeeeeeeeeeeeeeee         
           eeeeeeeeeeeeeeeeeeeeeee      
@@ -3276,7 +3144,6 @@
         eeeee   ${c3}Grombyang OS ${c1}  eeee
           eeeeeeeeeeeeeeeeeeeeeee      
              eeeeeeeeeeeeeeeee         
-
 - name: ['Guix']
   width: 34
   colors:
@@ -3285,7 +3152,7 @@
     - !AnsiValue 6
     - !AnsiValue 1
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c1} ..                             `.
      `--..```..`           `..```..--`
        .-;///-;;;.       `-;;;///;-.  
@@ -3296,7 +3163,6 @@
                  -+++-;;;.            
                   ;+/;;;-             
                   `-....`             
-
 - name: ['guix_small']
   width: 18
   colors:
@@ -3305,7 +3171,7 @@
     - !AnsiValue 6
     - !AnsiValue 1
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c1}|.__          __.|
     |__ \        / __|
        \ \      / /   
@@ -3313,7 +3179,6 @@
          \ \  / /     
           \ \/ /      
            \__/       
-
 - name: ['Haiku']
   width: 37
   colors:
@@ -3321,7 +3186,7 @@
     - !AnsiValue 3
     - !AnsiValue 7
     - !AnsiValue 2
-  art: |
+  art: |-
     ${c3}                                
                                          
                MMMM              MMMM    
@@ -3336,13 +3201,12 @@
                MMMM              MMMM    
                MMMM              MMMM    
                "\"\""              "\"\""
-
 - name: ['haiku_small']
   width: 17
   colors:
     - !AnsiValue 2
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c1}       ,^,  
           /   \      
     *--_ ;     ; _--*
@@ -3351,7 +3215,6 @@
     .-'"         "'-.
      '-.__.   .__.-' 
            |_|       
-
 - name: ['HamoniKR']
   width: 47
   colors:
@@ -3361,7 +3224,7 @@
     - !AnsiValue 1
     - !AnsiValue 3
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                                          
                          cO0Ox.                    
                       .ldddddddo.                  
@@ -3386,14 +3249,13 @@
                       .cooooooooooop.              
                       .cooooooooop.                
                        .cooooop'                   
-
 - name: ['HarDClanZ']
   width: 39
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}          ........;;;;....        
             ;;################;;..         
           ;########################;.      
@@ -3413,12 +3275,11 @@
           ``;##;.${c2}@@@@@@@@@@@@${c1}^## # ;
              ; ##  ${c2}\@@@;@@@/ ${c1};; # ;
                      ${c2} VVV             
-
 - name: ['Hash']
   width: 27
   colors:
     - !AnsiValue 123
-  art: |
+  art: |-
     ${c1}                      
                                
           +   ######   +       
@@ -3434,13 +3295,12 @@
       #####   ######   #####   
         ###   ######   ###     
           ~   ######   ~       
-
 - name: ['Huayra']
   width: 38
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c2}                     `           
                 .       .       `         
            ``    -      .      .          
@@ -3458,13 +3318,12 @@
     ;;`                    `;;`..`        
                               .` `..      
                                     ``    
-
 - name: ['Hybrid']
   width: 39
   colors:
     - !AnsiValue 4
     - !AnsiValue 12
-  art: |
+  art: |-
     ${c1}   /                          ${c2}#
        ${c1}////&                      ${c2}#####
        ${c1}/////                      ${c2}######
@@ -3481,7 +3340,6 @@
        ${c1}/////                      ${c2}######
        ${c1}/////                      ${c2}#########
        ${c1}////&                       ${c2}########
-
 - name: ['HydroOS']
   width: 45
   colors:
@@ -3490,7 +3348,7 @@
     - !AnsiValue 3
     - !AnsiValue 4
     - !AnsiValue 5
-  art: |
+  art: |-
     ${c1}                                        
       _    _           _            ____   _____ 
      | |  | |         | |          / __ \ / ____|
@@ -3500,12 +3358,11 @@
      |_|  |_|\__, |\__,_|_|  \___/ \____/|_____/ 
               __/ |                              
              |___/                               
-
 - name: ['Hyperbola']
   width: 38
   colors:
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c1}                     WW          
                          KX              W
                         WO0W          NX0O
@@ -3522,12 +3379,11 @@
        N00KNW                   KOW       
      NKXN                       W0W       
     WW                           W        
-
 - name: ['hyperbola_small']
   width: 12
   colors:
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c1}    |`__.`/
         \____/  
         .--.    
@@ -3535,12 +3391,11 @@
       /  ___ \  
      / .`   `.\ 
     /.`      `.\
-
 - name: ['iglunix', 'iglu']
   width: 18
   colors:
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c1}     |       
          |        |   
                   |   
@@ -3553,13 +3408,12 @@
      \    /        /  
       \  /        /   
        \/________/    
-
 - name: ['instantOS']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}                                   
          'cx0XWWMMWNKOd;'.                  
       .;kNMMMMMMMMMMMMMWNKd'                
@@ -3581,13 +3435,12 @@
                                cXMMMMMMMMMM0
                                 ;0WMMMMMMNx,
                                  .o0NMWNOc. 
-
 - name: ['IRIX']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}           ./ohmNd/  +dNmho/-      
          `;+ydNMMMMMMMM.-MMMMMMMMMdyo;.     
        `hMMMMMMNhs/sMMM-;MMM+/shNMMMMMMh`   
@@ -3607,12 +3460,11 @@
             .omMMMMMMMM-`NMMMMMMMmo.        
               `;hMMMMMM. NMMMMMh/`          
                  .odNm+  /dNms.             
-
 - name: ['Itc']
   width: 48
   colors:
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}....................-==============+...    
     ${c1}....................-==============;...    
     ${c1}...;===========-....-==============;...    
@@ -3624,7 +3476,6 @@
     ${c1}..+-;+-.+;;*;+;;+;-++;;++-.;-.*.;++;++.    
     ${c1}..;-;-++++;-;;--;+;;-;;.;++-++;++--;-;.    ⠀⠀⠀⠀⠀
     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀                                      
-
 - name: ['januslinux', 'janus', 'Ataraxia Linux', 'Ataraxia']
   width: 52
   colors:
@@ -3632,7 +3483,7 @@
     - !AnsiValue 5
     - !AnsiValue 6
     - !AnsiValue 2
-  art: |
+  art: |-
     ${c1}               'l;                             
             loooooo                                     
               loooo coooool                             
@@ -3657,14 +3508,13 @@
                            ;oooool,    coool;, looool;, 
                            looool;      ooooooooooooooo;
                            cooolc        .ooooooooooool 
-
 - name: ['Kaisen']
   width: 40
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}                          `        
                       `;+oyyho.             
                  `+;`sdddddd/               
@@ -3683,13 +3533,12 @@
           ;sydds           -hddddddd`    /  
            .+shd-      `;ohddddddddd`       
                     `;+ooooooooooooo;       
-
 - name: ['Kali']
   width: 48
   colors:
     - !AnsiValue 4
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c1}..............                             
                 ..,;;ccc,.                          
               ......''';lxO.                        
@@ -3711,13 +3560,12 @@
                                                 c   
                                                 .'  
                                                  .  
-
 - name: ['kali_small', 'kalilinux_small', 'kali_linux_small']
   width: 14
   colors:
     - !AnsiValue 4
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c1}     -#. #
           @###    
       -######     
@@ -3734,14 +3582,13 @@
            -#     
             @     
             ;     
-
 - name: ['KaOS']
   width: 35
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                     ..       
       .....         ..OSSAAAAAAA..     
      .KKKKSS.     .SSAAAAAAAAAAA.      
@@ -3758,13 +3605,12 @@
            .K      ..SSSASSSS.. ..SSA. 
                      .SSS.AAKAKSSKA.   
                         .SSS....S..    
-
 - name: ['KDE']
   width: 40
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}             `..---+/---..`        
              `---.``   ``   `.---.`         
           .--.`        ``        `-;-.      
@@ -3784,14 +3630,13 @@
           .-;.`        ``        `-;-.      
              `---.``   ``   `.---.`         
                  `..---+/---..`             
-
 - name: ['Kibojoe']
   width: 40
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c3}           ./+oooooo+/.            
                -/+ooooo+/;.`                
               ${c1}`${c3}yyyo${c2}+++/++${c3}osss${c1}.
@@ -3805,14 +3650,13 @@
     `NMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMd. 
     ods+/;-----;//+oyydmNMMMMMMMMMMMMMMMMMN-
     `                     .-;+osyhhdmmNNNmdo
-
 - name: ['Kogaion']
   width: 29
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}            ;;      ,;  
                ;;;     ,;;       
              ,;;;;     ;;;;      
@@ -3833,14 +3677,13 @@
             ';;;;;;;; ;;;;;;     
                ';;;;; ;;;;       
                  ';;; ;;         
-
 - name: ['Korora']
   width: 29
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c2}                ____________
                  _add55555555554${c1};
                _w?'${c1}``````````'${c2})k${c1};
@@ -3857,13 +3700,12 @@
     ;m,________.aa7^${c1}`       
     ;#baaaaaaas!J'${c1}`         
      ```````````                 
-
 - name: ['KrassOS', 'Krass']
   width: 49
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                  ${c2}**@@@@@@@@@@@*       
                  ${c2},@@@@%${c1}(((((((((((((${c2}%@@@@,
               ${c2}#@@&${c1}(((((((((((((((((((((((${c2}&@@%
@@ -3883,14 +3725,13 @@
                ${c2}@@@&${c1}********************${c2}/@@@@
                    ${c2}&@@@@&${c1}(//***//(${c2}&@@@@&
     ${c1}                  ${c2}**@@@@@@@@@@@*       
-
 - name: ['KSLinux']
   width: 24
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1} K   K U   U RRRR   ooo
      K  K  U   U R   R o   o
      KKK   U   U RRRR  o   o
@@ -3902,14 +3743,13 @@
       SSS  AAAAA W W W AAAAA
          S A   A WW WW A   A
       SSS  A   A W   W A   A
-
 - name: ['Kubuntu']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}           `.;/ossyyyysso/;.       
             .;oyyyyyyyyyyyyyyyyyyo;`        
           -oyyyyyyyo${c2}dMMy${c1}yyyyyyysyyyyo-
@@ -3930,13 +3770,12 @@
           -oyyyyyyy${c2}dMMy${c1}yyyyyysosyyyyo-
             ./oyyyyyyyyyyyyyyyyyyo/.        
                `.;/oosyyyysso/;.`           
-
 - name: ['LangitKetujuh']
   width: 38
   colors:
     - !AnsiValue 4
     - !AnsiValue 2
-  art: |
+  art: |-
     ${c1}                                 
     . 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMML7
     MM.   'MMMMMMMMMMMMMMMMMMMMMMMMMMML7L7
@@ -3950,13 +3789,12 @@
     ;;;;;7L7L7L7L7L7;;;;;;;;;;;;;;;.   ';;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;. '
     ${c2}                                 
-
 - name: ['LangitKetujuh_old']
   width: 46
   colors:
     - !AnsiValue 7
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}                                         
        L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L
           'L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L
@@ -3972,13 +3810,12 @@
        L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L.   
        L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L7L
     ${c2}                                         
-
 - name: ['LaxerOS']
   width: 40
   colors:
     - !AnsiValue 7
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c2}                                   
                         /.                  
                      `;//;-                 
@@ -4000,14 +3837,13 @@
     .;;//////////////////////////////////;;.
     ////////////////////////////////////////
     .;////////////////////////////////////;.
-
 - name: ['LEDE']
   width: 18
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}     _________
         /        /\   
        /  LE    /  \  
@@ -4017,7 +3853,6 @@
       \    LE  \    / 
        \  DE    \  /  
         \________\/   
-
 - name: ['LibreELEC']
   width: 40
   colors:
@@ -4026,7 +3861,7 @@
     - !AnsiValue 7
     - !AnsiValue 14
     - !AnsiValue 13
-  art: |
+  art: |-
     ${c1}          ;+ooo/.      ${c2}./ooo+;
     ${c1}        ;+ooooooo/.  ${c2}./ooooooo+;
     ${c1}      ;+ooooooooooo;${c2};ooooooooooo+;
@@ -4047,13 +3882,12 @@
     ${c4}        -+oooooo+;    ${c5};+oooooo+-
     ${c4}          -+oo+;        ${c5};+oo+-
     ${c4}            ..            ${c5}..  
-
 - name: ['Linspire', 'Freespire', 'Lindows']
   width: 63
   colors:
     - !AnsiValue 4
     - !AnsiValue 2
-  art: |
+  art: |-
     ${c2}                                                   __^    
     ${c2}                                                __/    \  
     ${c2}   MMy        dMy                            __/        \ 
@@ -4066,14 +3900,13 @@
     ${c2}dMMy       dMM dMM  dMM ${c1}dMM  MMy dMMMMMy dMM  dMM     MMy   MM
     ${c2}MMMMMMMMMM MMy MMy  MMy ${c1}dMMMyyy MMy     MMy  MMy      dMMMMMMy
     ${c2}                                ${c1}dy                   
-
 - name: ['Linux']
   width: 21
   colors:
     - Reset
     - !AnsiValue 8
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c2}        #####   
     ${c2}       #######  
     ${c2}       ##${c1}O${c2}#${c1}O${c2}##
@@ -4086,13 +3919,12 @@
     ${c3}######${c2}#${c1}#######${c2}#${c3}######
     ${c3}#######${c2}#${c1}#####${c2}#${c3}#######
     ${c3}  #####${c2}#######${c3}#####
-
 - name: ['linuxlite_small']
   width: 6
   colors:
     - !AnsiValue 3
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}   /\
       /  \
      / ${c2}/ ${c1}/
@@ -4100,13 +3932,12 @@
     \ ${c2}\ ${c1}\
      \_${c2}\${c1}_\
     ${c2}    \
-
 - name: ['linuxmint_small']
   width: 13
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1} ___________
     |_          \
       | ${c2}| _____ ${c1}|
@@ -4114,13 +3945,12 @@
       | ${c2}| | | | ${c1}|
       | ${c2}\__${c2}___/ ${c1}|
       \_________/
-
 - name: ['Linux Lite', 'Linux_Lite']
   width: 18
   colors:
     - !AnsiValue 3
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}          ,xXc
           .l0MMMMMO   
        .kNMMMMMWMMMN, 
@@ -4141,13 +3971,12 @@
          ';. .; .'    
                   ..  
                     . 
-
 - name: ['Linux Mint', 'LinuxMint', 'mint']
   width: 40
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c2}             ...-;;;;;-...         
     ${c2}          .-MMMMMMMMMMMMMMM-.      
           .-MMMM${c1}`..-;;;;;;;-..`${c2}MMMM-.
@@ -4167,13 +3996,12 @@
            '.-MMMM${c1}``--;;;;;--``${c2}MMMM-.'
     ${c2}            '-MMMMMMMMMMMMM-'      
     ${c2}               ``-;;;;;-``         
-
 - name: ['Linux Mint Old', 'LinuxMintOld', 'mint_old']
   width: 35
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}MMMMMMMMMMMMMMMMMMMMMMMMMmds+.
     MMm----;;-;//////////////oymNMd+`  
     MMd      ${c2}/++                ${c1}-sNMd;
@@ -4190,12 +4018,11 @@
           `/dMNmy+/;-------------;/yMMM
              ./ydNMMMMMMMMMMMMMMMMMMMMM
                 .MMMMMMMMMMMMMMMMMMM   
-
 - name: ['Live Raizo', 'Live_Raizo']
   width: 34
   colors:
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}             `......`        
             -+shmNMMMMMMNmhs/.        
          ;smMMMMMmmhyyhmmMMMMMmo-     
@@ -4216,13 +4043,12 @@
           ;yddh+`hMMMMMMN ;yddy/`     
                  .hMMMMd;             
                    `..`               
-
 - name: ['LMDE']
   width: 28
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c2}          `.-;;---..   
     ${c1}      .;++++ooooosssoo;.
         .+o++;;.      `.;oos+.  
@@ -4240,14 +4066,13 @@
     ${c1}     ${c2}.${c1}+/.    
     ${c1}       ${c2}.${c1};+-. 
               `--.``            
-
 - name: ['Lubuntu']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}           `.;/ossyyyysso/;.       
             `.;yyyyyyyyyyyyyyyyyy;.`        
           .;yyyyyyyyyyyyyyyyyyyyyyyy;.      
@@ -4268,14 +4093,13 @@
           .;yyyyyyy${c2}my${c1}yyyyyyyyyyyyyyy;.
             `.;yyyy${c2}s${c1}yyyyyyyyyyyyy;.`
                `.;/oosyyyysso/;.`           
-
 - name: ['Lunar']
   width: 39
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}`-.                                 `-.
       -ohys/-`                    `;+shy/` 
          -omNNdyo/`          ;+shmNNy/`    
@@ -4289,7 +4113,6 @@
              |  |   _ _ ___ ___ ___        
              |  |__| | |   | .'|  _|       
              |_____|___|_|_|__,|_|         
-
 - name: ['mac', 'Darwin']
   width: 30
   colors:
@@ -4299,7 +4122,7 @@
     - !AnsiValue 1
     - !AnsiValue 5
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}                    c.'  
                      ,xNMM.       
                    .OMMMMo        
@@ -4317,7 +4140,6 @@
         ${c6}kMMMMMMMMMMMMMMMMMMMMMMd
          ;KMMMMMMMWXXWMMMMMMMk.   
            "cooc*"    "*coo'"     
-
 - name: ['mac_small']
   width: 12
   colors:
@@ -4326,7 +4148,7 @@
     - !AnsiValue 1
     - !AnsiValue 5
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}       .;'
         _ ;'_   
     ${c2} .'`_`-'_``.
@@ -4335,13 +4157,12 @@
     ;_______;   
     ${c4} ;_______`-;
     ${c5}  `._.-._.'
-
 - name: ['Mageia']
   width: 24
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}        .°°.       
              °°   .°°.      
              .°°°. °°       
@@ -4361,13 +4182,12 @@
       .lO0Kc;,,,,,,;c0KOc.  
          ;d00KKKKKK00d;     
             .,KKKK,.        
-
 - name: ['mageia_small']
   width: 8
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}   *
         *   
        **   
@@ -4375,7 +4195,6 @@
     /      \
     \      /
      \____/ 
-
 - name: ['MagpieOS']
   width: 31
   colors:
@@ -4383,7 +4202,7 @@
     - !AnsiValue 1
     - !AnsiValue 3
     - !AnsiValue 5
-  art: |
+  art: |-
     ${c1}        ;00000     ;000Ol 
          .x00kk00;    O0kk00k;     
         l00;   ;00.  o0k   ;O0k.   
@@ -4404,13 +4223,12 @@
            ..          ${c4}dxl     .xx;
                         ;xxolldxd' 
                           ;oxdl.   
-
 - name: ['Mandriva', 'Mandrake']
   width: 39
   colors:
     - !AnsiValue 4
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c2}                        ``        
                            `-.             
     ${c1}      `               ${c2}.---   
@@ -4426,13 +4244,12 @@
     ${c1} /sss+.    ${c2}..`${c1}  `--`    ${c2}.;;;
     ${c1}  -ossso+/;;//+/-`        ${c2}.;`
     ${c1}    -/+ooo+/-.              ${c2}`
-
 - name: ['Manjaro']
   width: 28
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}██████████████████  ████████
     ██████████████████  ████████
     ██████████████████  ████████
@@ -4447,13 +4264,12 @@
     ████████  ████████  ████████
     ████████  ████████  ████████
     ████████  ████████  ████████
-
 - name: ['manjaro_small']
   width: 14
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}||||||||| ||||
     ||||||||| ||||
     ||||      ||||
@@ -4461,12 +4277,11 @@
     |||| |||| ||||
     |||| |||| ||||
     |||| |||| ||||
-
 - name: ['MassOS']
   width: 29
   colors:
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1} -+++/+++osyyhdmNNMMMMNdy/
      /MMMMMMMMMMMMMMMMMMMMMMMMm. 
      /MMMMMMMMMMMMMMMMMMMMMMMMMm 
@@ -4485,14 +4300,13 @@
       dMMMMMMN;MMMMMMMM-MMMMMMMMs
       `yNMMMMN;MMMMMMMM-MMMMMMMMs
         `;+oss.ssssssss.ssssssss/
-
 - name: ['MatuusOS']
   width: 42
   colors:
     - !AnsiValue 9
     - !AnsiValue 11
     - !AnsiValue 0
-  art: |
+  art: |-
     ${c2}                                     
     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -4514,13 +4328,12 @@
     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-
 - name: ['Maui']
   width: 40
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}             `.-;//////;--`        
              .;/oooooooooooooooo+;.         
           `;+ooooooooooooooooooooooo;`      
@@ -4541,7 +4354,6 @@
           `;+oooooooooooooooooooooo+;`      
              .;+oooooooooooooooo+;.         
                  `.-;//////;-.`             
-
 - name: ['Meowix']
   width: 34
   colors:
@@ -4549,7 +4361,7 @@
     - !AnsiValue 3
     - !AnsiValue 3
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}         #${c2}%            ${c3}&${c4}*
     ${c1}        ##${c2}%%          ${c3}&&${c4}**
     ${c1}       ##  ${c2}%%        ${c3}&&  ${c4}**
@@ -4560,14 +4372,13 @@
     ${c1}  ##            ${c2}%%            ${c4}**
     ${c1} ##                            ${c4}**
     ${c1}##                              ${c4}**
-
 - name: ['Mer']
   width: 45
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                         dMs            
                              .-`                 
                            `y`-o+`               
@@ -4595,14 +4406,13 @@
                          `hmm/                   
                              .;`                 
                              dMs                 
-
 - name: ['Minix']
   width: 40
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c2}   -sdhyo+;-`                -/syymm;
        sdyooymmNNy.     ``    .smNmmdysNd   
        odyoso+syNNmysoyhhdhsoomNmm+/osdm/   
@@ -4620,12 +4430,11 @@
            ../-yNMMy--/;;/-.sMMmos+.`       
                -+oyhNsooo+omy/```           
                   `;;ohdmds-`               
-
 - name: ['MIRACLE LINUX', 'MIRACLE_LINUX']
   width: 30
   colors:
     - !AnsiValue 29
-  art: |
+  art: |-
     ${c1}            ,A           
               .###                
          .#' .####   .#.          
@@ -4642,14 +4451,13 @@
              `;### '              
                '##                
                 ';                
-
 - name: ['MX']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 6
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c3}MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNMMMMMMMMM
     MMMMMMMMMMNs..yMMMMMMMMMMMMMm; +NMMMMMMM
     MMMMMMMMMN+    ;mMMMMMMMMMNo` -dMMMMMMMM
@@ -4667,14 +4475,13 @@
     MMNs`                   -          ;dMMM
     Mm;                                 `oMM
     MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
-
 - name: ['mx_small']
   width: 12
   colors:
     - !AnsiValue 4
     - !AnsiValue 6
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c3}    \\  /
          \\/    
           \\    
@@ -4682,12 +4489,11 @@
       /  \  /\  
      /    \/  \ 
     /__________\
-
 - name: ['Namib']
   width: 40
   colors:
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}          .;+shysyhhhhysyhs+;.     
            -/yyys              syyy/-       
          -shy                      yhs-     
@@ -4708,14 +4514,13 @@
          -shy                      yhs-     
            -/yyys              syyy/-       
               .;+shysyhyhhysyhs+;.          
-
 - name: ['NekOS']
   width: 37
   colors:
     - !AnsiValue 3
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                                
                             @@@@@        
                          @@@@@@@@@.      
@@ -4740,12 +4545,11 @@
        @@@        @@@@@@@@@@@@@@@        
        @@@@      @@@@@@@@@@@@@@@@@       
           @@@@@@@@@@@@@@@@@@@@@@@@       
-
 - name: ['Neptune']
   width: 40
   colors:
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}            ./+sydddddddys/-.      
             .+ymNNdyooo/;+oooymNNmy/`       
          `/hNNh/.`             `-+dNNy;`    
@@ -4763,13 +4567,12 @@
           .odNNy+-`           .;ohNNd/.     
              -+ymNNmdyyyyyyydmNNmy+.        
                  `-//sssssss//.             
-
 - name: ['NetBSD']
   width: 40
   colors:
     - !AnsiValue 5
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                     `-/oshdmNMNdhyo+;-`
     ${c2}y${c1}/s+;-``    `.-;+oydNMMMMNhs/-``
     ${c2}-m+${c1}NMMMMMMMMMMMMMMMMMMMNdhmNMMMmdhs+/-`
@@ -4787,13 +4590,12 @@
                 ;Ms                         
                  ;Ms                        
                   ;Ms                       
-
 - name: ['netbsd_small']
   width: 20
   colors:
     - !AnsiValue 5
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c2}\\${c1}\`-______,----__
     ${c2} \\        ${c1}__,---\`_
     ${c2}  \\       ${c1}\`.____
@@ -4801,14 +4603,13 @@
     ${c2}    \\         
          \\             
           \\            
-
 - name: ['Netrunner']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}           .;oydmMMMMMMmdyo;`      
             -smMMMMMMMMMMMMMMMMMMds-        
           +mMMMMMMMMMMMMMMMMMMMMMMMMd+      
@@ -4829,12 +4630,11 @@
           +dMMMMMMMMMMMMMMMMMMMMMMMMd/      
             -odMMMMMMMMMMMMMMMMMMdo-        
                `;+ydmNMMMMNmhy+-`           
-
 - name: ['Nitrux']
   width: 31
   colors:
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}`;/.                      
     `/yo                           
     `/yo                           
@@ -4853,13 +4653,12 @@
     `//+sssssso;.                  
     `+syyyy+;`                     
     ;+s+-                          
-
 - name: ['NixOS']
   width: 43
   colors:
     - !AnsiValue 4
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}          ▗▄▄▄       ${c2}▗▄▄▄▄    ▄▄▄▖
     ${c1}          ▜███▙       ${c2}▜███▙  ▟███▛
     ${c1}           ▜███▙       ${c2}▜███▙▟███▛
@@ -4880,13 +4679,12 @@
     ${c1}          ▟███▛▜███▙       ${c2}▜███▙ 
     ${c1}         ▟███▛  ▜███▙       ${c2}▜███▙
     ${c1}         ▝▀▀▀    ▀▀▀▀▘       ${c2}▀▀▀▘
-
 - name: ['nixos_old']
   width: 58
   colors:
     - !AnsiValue 4
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}              ____       ${c2}_______        ____    
     ${c1}             /####\      ${c2}\######\      /####\   
     ${c1}             ######\      ${c2}\######\    /#####/   
@@ -4915,13 +4713,12 @@
     ${c1}              ${c1}/#####/    \######\${c2}      \######
     ${c1}              ${c1}\####/      \######\${c2}      \####/
     ${c1}               ${c1}¯¯¯¯        ¯¯¯¯¯¯¯${c2}       ¯¯¯¯
-
 - name: ['nixos_small']
   width: 13
   colors:
     - !AnsiValue 4
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}  \\  \\ //
      ==\\__\\/ //
        //   \\// 
@@ -4929,7 +4726,6 @@
      //\\___//   
     // /\\  \\== 
       // \\  \\  
-
 - name: ['Nobara']
   width: 44
   colors:
@@ -4948,7 +4744,7 @@
       g: 185
       b: 11
 
-  art: |
+  art: |-
     ${c1}      ⢀⣤⣴⣶⣶⣶⣦⣤⡀⠀⣀⣠⣤⣴⣶⣶⣶⣶⣶⣶⣶⣶⣤⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         ⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀
         ⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀
@@ -4966,12 +4762,11 @@
         ${c2} ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠛⠉⠉⠛⠛⢿⣿⣿⠀⠀⠀⠀⠀⠸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀
         ${c2} ⠘⢿⣿⣿⣿⣿⣿⣿⣿⡿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⠀⠀⠀⠀⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿⠟⠁⠀
           ${c2} ⠈⠙⠛⠛⠛⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠛⠛⠛⠉⠁
-
 - name: ['NomadBSD']
   width: 33
   colors:
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}         _======__          
          (===============\           
        (===================\         
@@ -4985,12 +4780,11 @@
        (==\ \=====/ /==/   /===--    
     /================/  /===-        
     \===========/                    
-
 - name: ['Nurunner']
   width: 39
   colors:
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}                  ,xc             
                     ;00cxXl                
                   ;K0,   .xNo.             
@@ -5010,13 +4804,12 @@
                   cKk'    cXk.             
                     ;00;lXx.               
                       ,kd.                 
-
 - name: ['NuTyX']
   width: 48
   colors:
     - !AnsiValue 4
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                                      .    
                                         .           
                                      ...            
@@ -5040,7 +4833,6 @@
       .  .+. ..                                     
           -  .                                      
           .                                         
-
 - name: ['Obarun']
   width: 33
   colors:
@@ -5048,7 +4840,7 @@
     - !AnsiValue 6
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                    ,;;;;;; 
                     ;cooolc;,        
                  ,coool;             
@@ -5068,14 +4860,13 @@
         cooooooooooooloooooc         
          ;ooooooooooooool;           
            ;looooooolc;              
-
 - name: ['OBRevenge']
   width: 23
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}   __   __        
          _@@@@   @@@g_     
        _@@@@@@   @@@@@@    
@@ -5094,14 +4885,13 @@
        @@@@@@@@@@@@@@@@l   
         ^W@@@@@@@@@@@P     
            ^TMMMMTll       
-
 - name: ['OmniOS']
   width: 35
   colors:
     - !AnsiValue 15
     - !AnsiValue 3
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c1}                              
         ____   __  __  _   _  _        
        / __ \ |  \/  || \ | || |       
@@ -5111,7 +4901,6 @@
                          | |  | ||(__  
              ${c3}community${c2}   | |__| | ___)|
                   ${c3}edition${c2} \____/ |____/
-
 - name: ['OpenBSD']
   width: 39
   colors:
@@ -5120,7 +4909,7 @@
     - !AnsiValue 6
     - !AnsiValue 1
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c3}                                     _
                                         (_)
     ${c1}              |    .              
@@ -5144,7 +4933,6 @@
           / .-.\                           
           \ (  `\                          
            `.\                             
-
 - name: ['openbsd_small']
   width: 15
   colors:
@@ -5153,7 +4941,7 @@
     - !AnsiValue 6
     - !AnsiValue 1
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c1}      _____
         \-     -/  
      \_/         \ 
@@ -5161,14 +4949,13 @@
      |_  <   )  3 )
      / \         / 
         /-_____-\  
-
 - name: ['openEuler']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                 `.cc.`            
                  ``.cccccccc..`             
               `.cccccccccccccccc.`          
@@ -5192,14 +4979,13 @@
               ``.cccccccccccccc.``          
                   `.cccccccc.`              
                      `....`                 
-
 - name: ['OpenIndiana']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c2}                         .sy/      
                              .yh+           
                                             
@@ -5216,13 +5002,12 @@
     +-               `./oyys/.              
     h+`      `.-;+oyyyo/-`                  
     `/ossssysso+/-.`                        
-
 - name: ['openKylin']
   width: 33
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                            
                  /KKK]               
                 KKKKKKK`   ]KKKK\    
@@ -5241,13 +5026,12 @@
            \OOOOOOOOOOOOOOOOOOOOO`   
              [OOOOOOOOOOOOOOOO/`     
                 ,[OOOOOOOOO]         
-
 - name: ['openmamba']
   width: 40
   colors:
     - !AnsiValue 7
     - !AnsiValue 2
-  art: |
+  art: |-
     ${c1}                 `````             
                .-/+ooooooooo+/;-`           
             ./ooooooooooooooooooo+;.        
@@ -5269,12 +5053,11 @@
             .;ooooooooooooooooooo+;.        
                `-;/ooooooooo+/;.`           
                      ``````                 
-
 - name: ['OpenMandriva']
   width: 41
   colors:
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}                  ``````            
                 `-;/+++++++//;-.`            
              .;+++oooo+/;.``   ``            
@@ -5297,12 +5080,11 @@
             `;oyhhhhhhhhhhhhhhhhhhyo;`       
                 .;+syhhhhhhhhys+;-`          
                      ``....``                
-
 - name: ['OpenStage']
   width: 36
   colors:
     - !AnsiValue 2
-  art: |
+  art: |-
     ${c1}                 /(/           
                   .(((((((,             
                  /(((((((((/            
@@ -5320,13 +5102,12 @@
      /(((((((((((((((((((/.  /(((((((((/
      /(((((((((((((((((,   /(((((((((((/
          */(((((//*.      */((/(/(/*    
-
 - name: ['openSUSE', 'open SUSE', 'SUSE']
   width: 38
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c2}           .;ldkO0000Okdl;.      
            .;d00xl;^''''''^;ok00d;.       
          .d00l'                'o00d.     
@@ -5345,13 +5126,12 @@
          'l0Kk;.              .;xK0l'     
             'lkK0xl;;,,,,;;ldO0kl'        
                 '^;ldxkkkkxdl;^'          
-
 - name: ['openSUSE Leap', 'openSUSE_Leap']
   width: 40
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c2}                 `-++;`            
                    ./oooooo/-               
                 `;oooooooooooo;.            
@@ -5368,13 +5148,12 @@
                  ./oooooooooo/.             
                     -/oooo+;`               
                       `;/.                  
-
 - name: ['opensuse_small', 'suse_small']
   width: 11
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}  _______
     __|   __ \ 
          / .\ \
@@ -5382,13 +5161,12 @@
        _______|
        \_______
     __________/
-
 - name: ['openSUSE Tumbleweed', 'openSUSE_Tumbleweed']
   width: 52
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c2}                                     ......    
          .,cdxxxoc,.               .;kKMMMNWMMMNk;.     
         cKMMN0OOOKWMMXo. A        ;0MWk;'      ';OMMk.  
@@ -5402,14 +5180,13 @@
        *WMO;.    .;xNMMk'       NNNMKl.          .xWMx  
          ^ONMMNXMMMKx;          V  'xNMWKkxllox0NMWk'   
              '''''                    ';dOOXXKOxl'      
-
 - name: ['OpenWrt']
   width: 28
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1} _______               
     |       |.-----.-----.-----.
     |   -   ||  _  |  -__|     |
@@ -5419,14 +5196,13 @@
     |  |  |  |.----.|  |_       
     |  |  |  ||   _||   _|      
     |________||__|  |____|      
-
 - name: ['Open Source Media Center', 'osmc']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}            -+shdmNNNNmdhs+-       
             .+hMNho/;..``..;/ohNMh+.        
           ;hMdo.                .odMh;      
@@ -5447,13 +5223,12 @@
           ;hMdo.                .odMh;      
             .+hMNho/;..``..;/ohNMh+.        
                 -+shdmNNNNmdhs+-            
-
 - name: ['OPNsense']
   width: 40
   colors:
     - !AnsiValue 7
     - !AnsiValue 202
-  art: |
+  art: |-
     ${c1}    .'''''''''''''''''''''''''''''''''''
       oocc;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;cox
      ;00;                                o0O
@@ -5474,14 +5249,13 @@
      .;l'  ...........................   ;;;
      lOk'                                cdd
      ;lccccccccccccccccccccccccccccccccccc;.
-
 - name: ['Oracle']
   width: 35
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}                              
           `-/+++++++++++++++++/-.`     
        `/syyyyyyyyyyyyyyyyyyyyyyys/.   
@@ -5494,14 +5268,13 @@
       /yyyyo;-...............-;oyyyy/` 
        `/syyyyyyyyyyyyyyyyyyyyyyys+.   
          `.;/+ooooooooooooooo+/;.`     
-
 - name: ['orchid']
   width: 40
   colors:
     - !AnsiValue 255
     - !AnsiValue 127
     - !AnsiValue 127
-  art: |
+  art: |-
     ${c2}                  .==.             
                     .-${c3}#${c1}@@${c3}#${c2}-.
                   .-${c3}##${c1}@@@@${c3}##${c2}-.
@@ -5522,13 +5295,12 @@
                   .-${c3}##${c1}@@@@${c3}##${c2}-.
                     .-${c3}#${c1}@@${c3}#${c2}-.
                       .==.                  
-
 - name: ['orchid_small']
   width: 38
   colors:
     - !AnsiValue 255
     - !AnsiValue 127
-  art: |
+  art: |-
     ${c2}                       ;##;      
                          -#${c1}@@@@${c2}#-
                         #${c1}@@${c2}=..=${c1}@@${c2}#
@@ -5542,14 +5314,13 @@
                         #${c1}@@${c2}=..=${c1}@@${c2}#
                          -#${c1}@@@@${c2}#-
                            ;##;           
-
 - name: ['OS Elbrus']
   width: 30
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
        ██▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀██
        ██                       ██
@@ -5564,14 +5335,13 @@
        ██   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀██
        ██                       ██
        ███████████████████████████
-
 - name: ['PacBSD']
   width: 43
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}      ;+sMs.                          
       `;ddNMd-                         -o--`   
      -sMMMMh;                          `+N+``  
@@ -5596,14 +5366,13 @@
           `/hMMMMMMMMMMMNo-``    `.+yy+-`      
             `-/hmNMNMMMMMMmmddddhhy/-`         
                 `-+oooyMMMdsoo+/;.             
-
 - name: ['Panwah']
   width: 49
   colors:
     - !AnsiValue 7
     - !AnsiValue 1
     - !AnsiValue 0
-  art: |
+  art: |-
     ${c1}                                            
               HHH                                    
              HAAAH                             HHH   
@@ -5626,13 +5395,12 @@
                ${c1}OOOO${c3}GGGGGGG${c1}OOOO${c2}WWWWWWWWWW${c1}AAA${c2}WWWW
                 ${c1}OOO${c3}GGGGGGG${c1}OOO${c2}WWWWWWWWWWWW${c1}AAA${c2}W
                   ${c1}OOOOOOOOO                     
-
 - name: ['Parabola']
   width: 38
   colors:
     - !AnsiValue 5
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                          `.-.    `.
                        `.`  `;++.   `-+o+.
                  `` `;+/. `;+/.   `-+oooo+
@@ -5649,26 +5417,24 @@
                             /+-           
                            //`            
                           -.              
-
 - name: ['parabola_small']
   width: 15
   colors:
     - !AnsiValue 5
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}  __ __ __  _
     .`_//_//_/ / `.
               /  .`
              / .`  
             /.`    
            /`      
-
 - name: ['parch', 'Parch', 'PARCH']
   width: 30
   colors:
     - !AnsiValue 4
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}                         
                       +s;;;o-     
                   s/sssso+/-'+\   
@@ -5689,7 +5455,6 @@
            `+osssssssssssssss;/'  
              `\osssssssssso;+'    
                  `\+;so;+-`       
-
 - name: ['Pardus']
   width: 40
   colors:
@@ -5698,7 +5463,7 @@
     - !AnsiValue 6
     - !AnsiValue 1
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c1} .smNdy+-    `.;/osyyso+;.`    -+ydmNs.
     /Md- -/ymMdmNNdhso/;;/oshdNNmdMmy/. ;dM/
     mN.     oMdyy- -y          `-dMo     .Nm
@@ -5717,13 +5482,12 @@
         ./` .s/`s+sMdd+``+ddMs+s`/s. `/.    
             ; -y.  -hNmddmNy.  .y- ;        
              -+       `..`       +-         
-
 - name: ['Parrot']
   width: 39
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}  `;oho/-`                        
     `mMMMMMMMMMMMNmmdhy-                   
      dMMMMMMMMMMMMMMMMMMs`                 
@@ -5748,7 +5512,6 @@
                                d;          
                                -+          
                                 -          
-
 - name: ['Parsix']
   width: 40
   colors:
@@ -5756,7 +5519,7 @@
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c2}-/+/;.                             
                    ${c2}.syssssys.          
            ${c1}.--.    ${c2}ssssssssso${c1}   ..--.
@@ -5778,14 +5541,13 @@
            ${c1}`--`    ${c2}+sssssssso    ${c1}`--`
                     ${c2}+sssssy+`          
                      ${c2}`.;;-`            
-
 - name: ['PCBSD', 'TrueOS']
   width: 40
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}                       ..          
                             s.              
                             +y              
@@ -5813,14 +5575,13 @@
           /s+`.omy      /NMMMMMNh/.+s;      
             .+oo;-.     /mdhs+;;oo+.        
                 -/o+++++++++++/-            
-
 - name: ['PCLinuxOS']
   width: 37
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}            mhhhyyyyhhhdN       
             dyssyhhhhhhhhhhhssyhN        
          Nysyhhyo/;-.....-/oyhhhssd      
@@ -5840,7 +5601,6 @@
           dysyhhhso///;//+syhhhssh       
              dhyssyhhhhhhyssyyhN         
                   mddhdhdmN              
-
 - name: ['pearOS']
   width: 35
   colors:
@@ -5850,7 +5610,7 @@
     - !AnsiValue 1
     - !AnsiValue 5
     - !AnsiValue 4
-  art: |
+  art: |-
     \e[0;32m                  .+yh     
                      sMMMo             
                     sMMN+              
@@ -5872,14 +5632,13 @@
         `oNMMMMMMMMMMMMMMMMMMd-        
           `+hMMMMMMMMMMMMMms-          
               -/osyhhyso;. \e[0m       
-
 - name: ['Pengwin']
   width: 35
   colors:
     - !AnsiValue 5
     - !AnsiValue 5
     - !AnsiValue 13
-  art: |
+  art: |-
     ${c3}                     ...`     
     ${c3}                     `-///;-` 
     ${c3}                       .+${c2}ssys${c3}/
@@ -5895,13 +5654,12 @@
     ${c3}        ;${c2}yyyyy${c3}o     
     ${c3}         .+${c2}ooo${c3}+     
     ${c3}           `.;;/;.            
-
 - name: ['Pentoo']
   width: 38
   colors:
     - !AnsiValue 5
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c2}           `;oydNNMMMMNNdyo;`    
             ;yNMMMMMMMMMMMMMMMMNy;        
           ;dMMMMMMMMMMMMMMMMMMMMMMd;      
@@ -5922,14 +5680,13 @@
     MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
     MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
      MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM 
-
 - name: ['Peppermint']
   width: 42
   colors:
     - !AnsiValue 1
     - !AnsiValue 15
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}               PPPPPPPPPPPPPP        
     ${c1}           PPPP${c2}MMMMMMM${c1}PPPPPPPPPPP
     ${c1}         PPPP${c2}MMMMMMMMMM${c1}PPPPPPPP${c2}MM${c1}PP
@@ -5951,7 +5708,6 @@
     ${c1}         PP${c2}MM${c1}PPPPPPPP${c2}MMMMMMMMMM${c1}PPPP
     ${c1}           PPPPPPPPPP${c2}MMMMMMMM${c1}PPPP
     ${c1}               PPPPPPPPPPPPPP        
-
 - name: ['phyOS']
   width: 40
   colors:
@@ -5959,7 +5715,7 @@
     - !AnsiValue 33
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}            '                      
     .^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^.^^^^^.
      ;777777777777777777777777777777^~7777; 
@@ -5978,12 +5734,11 @@
                      ^7777.                 
                       ;77;                  
                        ..                   
-
 - name: ['PikaOS']
   width: 56
   colors:
     - !AnsiValue 11
-  art: |
+  art: |-
     ${c1} /🐦🐦🐦$ /🐦/🐦                /🐦🐦🐦  /🐦🐦🐦              
     | 🐦__  $|__| 🐦               /🐦__  🐦/🐦__  🐦             
     | 🐦  \ 🐦/$| 🐦   /🐦 /🐦🐦🐦| 🐦  \ $| 🐦  \__/                
@@ -5992,7 +5747,6 @@
     | 🐦     | $| 🐦_  🐦 /🐦__  $| 🐦  | 🐦/🐦  \ 🐦               
     | 🐦     | $| 🐦 \  $|  🐦🐦🐦|  🐦🐦🐦|  🐦🐦🐦/                  
     |__/     |__|__/  \__/\_______/\______/ \______/       .
-
 - name: ['Pisi']
   width: 39
   colors:
@@ -6001,7 +5755,7 @@
     - !AnsiValue 6
     - !AnsiValue 1
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c1}   \Fv/!-                      `;?lzC
     ${c1}   Q!;;=zFx!  ${c2}`;v6WBCicl;`  ${c1},vCC\!;;#.
     ${c1}  ,%;;;,'` ${c2}+#%@@FQ@@.   ,cF%i${c1}``-',;;a?
@@ -6021,7 +5775,6 @@
            'xopE|      ${c2}`'${c1}     `ledoz-
         `;=>>+`${c2}`^llci/|==|/iclc;`${c1}'>>>>;
        `^`+~          ${c2}````${c1}          !!-^
-
 - name: ['PNM Linux', 'WHPNM Linux']
   width: 40
   colors:
@@ -6029,7 +5782,7 @@
     - !AnsiValue 9
     - !AnsiValue 15
     - !AnsiValue 202
-  art: |
+  art: |-
     ${c1}                                   
                    ``.---..` `--`           
                 ``.---........-;.${c2}-;;`${c1}
@@ -6050,13 +5803,12 @@
          ${c4}.;+o+/;-${c1};+oo+///++o+/;-${c4};/+ooo/;.
            ${c4}+oo/;o-            +oooooso.`
            ${c4}.`   `             `/  .-//-
-
 - name: ['popos_small', 'pop_os_small']
   width: 17
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}______      
     \   _ \        __
      \ \ \ \      / /
@@ -6065,13 +5817,12 @@
         \ \    _     
        __\_\__(_)_   
       (___________)` 
-
 - name: ['Pop!_OS', 'popos', 'pop_os']
   width: 39
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}             /////////////        
              /////////////////////         
           ///////${c2}*767${c1}////////////////
@@ -6092,13 +5843,12 @@
           ///////////////////////////      
              /////////////////////         
                  /////////////             
-
 - name: ['Porteus']
   width: 34
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}             `.-;;;-.`       
              -+ydmNNNNNNNmdy+-        
           .+dNmdhs+//////+shdmdo.     
@@ -6122,13 +5872,12 @@
                .sy`                   
                  .+;                  
                     `                 
-
 - name: ['PostMarketOS']
   width: 36
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                 /\            
                     /  \                
                    /    \               
@@ -6147,13 +5896,12 @@
       /          \ \                 \  
      /           / /                  \ 
     /___________/ /____________________\
-
 - name: ['postmarketos_small']
   width: 18
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}        /\   
            /  \       
           /    \      
@@ -6163,13 +5911,12 @@
       /   / ____/  \  
      /    \ \       \ 
     /_____/ /________\
-
 - name: ['Profelis SambaBOX', 'SambaBOX']
   width: 40
   colors:
     - !AnsiValue 3
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}                                   
                         #                   
                    *////#####               
@@ -6190,13 +5937,12 @@
              ,/(((((((((##########/.        
                  .((((((#######             
                       ((##*                 
-
 - name: ['Proxmox']
   width: 44
   colors:
     - !AnsiValue 7
     - !AnsiValue 202
-  art: |
+  art: |-
     ${c1}         .;//;`              `;//;.    
            `hMMMMMMd/          /dMMMMMMh`       
             `sMMMMMMMd;      ;mMMMMMMMs`        
@@ -6217,12 +5963,11 @@
     ${c1}        `sMMMMMMMm;      ;dMMMMMMMs`   
            `hMMMMMMd/          /dMMMMMMh`       
              `;//;`              `;//;`         
-
 - name: ['PuffOS']
   width: 34
   colors:
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}                             
                   _,..._,m,           
                 ,/'      '"";         
@@ -6236,13 +5981,12 @@
      _; (#\"//     \"/#)  ;  ,/       
     @##\ \##/   =   `"=" ,;mm/        
     `\##>.____,...,____,<####@        
-
 - name: ['Puppy', 'Quirky Werewolf', 'Precise Puppy']
   width: 36
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}           `-/osyyyysosyhhhhhyys+-
       -ohmNNmh+/hMMMMMMMMNNNNd+dMMMMNM+ 
      yMMMMNNmmddo/NMMMNNNNNNNNNo+NNNNNy 
@@ -6261,14 +6005,13 @@
           /dMMMMMMMMMMMMMMMMMMNdy/`     
             .+hNMMMMMMMMMNmdhs/.        
                 .;/+ooo+/;-.            
-
 - name: ['PureOS']
   width: 40
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}dmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmd
     dNm//////////////////////////////////mNd
     dNd                                  dNd
@@ -6281,27 +6024,25 @@
     dNd                                  dNd
     dNm//////////////////////////////////mNd
     dmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmd
-
 - name: ['pureos_small']
   width: 15
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1} _____________
     |  _________  |
     | |         | |
     | |         | |
     | |_________| |
     |_____________|
-
 - name: ['Q4OS']
   width: 38
   colors:
     - !AnsiValue 4
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}           .;*****  ;=====.      
             ${c1}.;********  ;========.   
          ${c1} .***********  ;===========.
@@ -6321,7 +6062,6 @@
           ${c1};###########         ${c2}.=====;
             ${c1}.#########           ${c2}.=;
                 ${c1}.#####               
-
 - name: ['Qubes']
   width: 39
   colors:
@@ -6329,7 +6069,7 @@
     - !AnsiValue 5
     - !AnsiValue 7
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}               `..--..`           
                 `.----------.`             
             `..----------------..`         
@@ -6351,7 +6091,6 @@
              .-;///////ssssssssssssssssss/`
                 `.;////ssss+/+ssssssssssss.
                     `--//-    `-/osssso/.  
-
 - name: ['Qubyt']
   width: 32
   colors:
@@ -6359,7 +6098,7 @@
     - !AnsiValue 5
     - !AnsiValue 0
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}    ########################${c2}(${c3}ooo
     ${c1}    ########################${c2}(${c3}ooo
     ${c1}###${c2}(${c3}ooo                  ${c1}###${c2}(${c3}ooo
@@ -6375,13 +6114,12 @@
     ${c1}################${c2}(${c3}oo    oo${c2}((((${c3}o
     ${c2}(((((((((((((((((${c3}ooo     ooooo
       oooooooooooooooooo        o   
-
 - name: ['Quibian']
   width: 40
   colors:
     - !AnsiValue 3
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}            `.--;;;;;;;;--.`       
             `.-;;;-..``   ``..-;;-.`        
           .;;;;-`   .${c2}+${c1};``       `.-;;.`
@@ -6400,13 +6138,12 @@
       `;;;;;;;;;;;;;;-                `.`   
         .;;;;;;;;;;;;-               ``     
           `.--;;;;;-.                       
-
 - name: ['Radix']
   width: 25
   colors:
     - !AnsiValue 1
     - !AnsiValue 2
-  art: |
+  art: |-
     ${c2}                .;oyhdmNo
                  `/yhyoosdms`
                 -o+/ohmmho-  
@@ -6425,13 +6162,12 @@
         `+mMMMMMMMy.         
           .yNMMMm+`          
            `;yd+.            
-
 - name: ['Raspbian']
   width: 35
   colors:
     - !AnsiValue 2
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}  `.;;///+;/-.        --///+//-;``
      `+oooooooooooo;   `+oooooooooooo; 
       /oooo++//ooooo;  ooooo+//+ooooo. 
@@ -6455,13 +6191,12 @@
           `...`  `...--..`  `...`      
                 .;;;;;;;;;;            
                  `.-;;;;-`             
-
 - name: ['Raspbian_small']
   width: 14
   colors:
     - !AnsiValue 2
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}   ..    ,.
       ;oo; .;oo;  
       'o\o o/o;   
@@ -6471,12 +6206,11 @@
      ;;; ;;;; ;;; 
      ';,  ''  ,;' 
        ' ~;;~ '   
-
 - name: ['ravynOS']
   width: 39
   colors:
     - !AnsiValue 15
-  art: |
+  art: |-
     ${c1}                ..oooo..          
                .o$$$$$$$$$$$$$$o.          
             od$$$$$$$$$$$$$$$$$$$$$o       
@@ -6497,14 +6231,13 @@
                            $$$$$$$*°       
                           d$$$$*°          
                            °               
-
 - name: ['Reborn OS', 'Reborn']
   width: 44
   colors:
     - !AnsiValue 0
     - !AnsiValue 4
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}          .======================.     
              ${c1}.#${c2}#*********${c1}%%${c2}*********#${c1}%;
             ${c1};%${c2}#**********${c1}%%${c2}**********#${c1}%-
@@ -6525,12 +6258,11 @@
             ${c1};%${c2}#**********${c1}%%${c2}**********#${c1}%-
              ${c1};%${c2}#*********${c1}%%${c2}*********#${c1}%;
               ${c1}.======================.     
-
 - name: ['Redcore']
   width: 39
   colors:
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                 RRRRRRRRR        
                    RRRRRRRRRRRRR           
             RRRRRRRRRR      RRRRR          
@@ -6547,12 +6279,11 @@
          RR   RRRRRRRRRRRRRRRRR    RRR     
            RR   RRRRRRRRRRRRRR   RR        
              R       RRRR      RR          
-
 - name: ['Redhat', 'Red Hat', 'rhel']
   width: 40
   colors:
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}           .MMM..;MMMMMMM          
               MMMMMMMMMMMMMMMMMM            
               MMMMMMMMMMMMMMMMMMMM.         
@@ -6571,14 +6302,13 @@
              MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM 
                 `MMMMMMMMMMMMMMMMMMMMMMMM;  
                     ``MMMMMMMMMMMMMMMMM'    
-
 - name: ['redhat_old', 'rhel_old']
   width: 40
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}             `.-..........`        
                 `////////;;.`-/.            
                 -; ....-////////.           
@@ -6595,14 +6325,13 @@
      MMMM   MMMMMMMMMMMMMNdyNMMh`     hyhMMM
       MMMMMMMMMMMMMMMMyoNNNMMM+.   MMMMMMMM 
        MMNMMMNNMMMMMNM+ mhsMNyyyyMNMMMMsMM  
-
 - name: ['Red Star', 'Redstar']
   width: 42
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}                    ..               
                       .oK0l                   
                      ;0KKKKd.                 
@@ -6621,13 +6350,12 @@
            ;cccc;;;;;...';;;;;,,,,,,.         
            ,;;;;;;;;;,'.  ..',,,,'''.         
             ........          ......          
-
 - name: ['Refracted Devuan', 'Refracted_Devuan']
   width: 39
   colors:
     - !AnsiValue 8
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c2}                             A    
                                 VW         
                                VVW\        
@@ -6646,7 +6374,6 @@
                 VWW                        
                 Wh.                        
                 V/                         
-
 - name: ['Regata']
   width: 40
   colors:
@@ -6656,7 +6383,7 @@
     - !AnsiValue 5
     - !AnsiValue 3
     - !AnsiValue 2
-  art: |
+  art: |-
     ${c1}            ddhso+++++osydd        
             dho/.`hh${c2}.;/+/;.${c1}hhh`;+yd
           do-hhhhhh${c2}/sssssss+`${c1}hhhhh./yd
@@ -6677,12 +6404,11 @@
           h+.hhhhhh${c6}+sssssss+${c1}hhhhhh`/yd
             dho;.hhh${c6}.;+++/.${c1}hhh`-+yd
                 ddhso+++++osyhd             
-
 - name: ['Regolith']
   width: 40
   colors:
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                                   
                      ``....```              
                 `.;/++++++/;;-.`            
@@ -6702,12 +6428,11 @@
              -/+++++++++++++++++++++/.      
                .;/+++++++++++++++/-`        
                   `.-;;//////;-.            
-
 - name: ['RhaymOS']
   width: 39
   colors:
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                                  
                         ###                
                        #####               
@@ -6723,12 +6448,11 @@
       ###################################  
      ##################################### 
     #######################################
-
 - name: ['rocky']
   width: 35
   colors:
     - !AnsiValue 35
-  art: |
+  art: |-
     ${c1}          __wgliliiligw_,     
            _williiiiiiliilililw,       
          _%iiiiiilililiiiiiiiiiii_     
@@ -6748,12 +6472,11 @@
                 _gllilililiililii~     
                giliiiiiiiiiiiiT`       
               -^~$ililili@~~'          
-
 - name: ['rocky_small']
   width: 25
   colors:
     - !AnsiValue 2
-  art: |
+  art: |-
     ${c1}    `-/+++++++++/-.`
      `-+++++++++++++++++-`   
     .+++++++++++++++++++++.  
@@ -6766,14 +6489,13 @@
      .+++-`   ./+++++++++;`  
       `-`   ./+++++++++++-   
            -+++++++++;-.`    
-
 - name: ['Rosa']
   width: 39
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}           ROSAROSAROSAROSAR      
             ROSA               AROS        
           ROS   SAROSAROSAROSAR   AROS     
@@ -6794,14 +6516,13 @@
          AROS   AROSAROSAROSARO   AROS     
             ROSA               SARO        
                ROSAROSAROSAROSAR           
-
 - name: ['Sabayon']
   width: 35
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}            ...........       
              ..             ..         
           ..                   ..      
@@ -6820,14 +6541,13 @@
          ..                     ..     
             ..               ..        
               ...............          
-
 - name: ['sabotage']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c2} .|'''.|      |     '||''|.    ..|''||
      ||..  '     |||     ||   ||  .|'    || 
       ''|||.    |  ||    ||'''|.  ||      ||
@@ -6839,7 +6559,6 @@
        ||      |  ||   ||    ....  ||''|    
        ||     .''''|.  '|.    ||   ||       
       .||.   .|.  .||.  ''|...'|  .||.....| 
-
 - name: ['Sailfish']
   width: 31
   colors:
@@ -6847,7 +6566,7 @@
     - !AnsiValue 5
     - !AnsiValue 7
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}                 _a@b     
                   _#b (b           
                 _@@   @_         _,
@@ -6861,7 +6580,6 @@
               _@_#@^               
            _a@a*^                  
        ,a@*^                       
-
 - name: ['SalentOS']
   width: 40
   colors:
@@ -6869,7 +6587,7 @@
     - !AnsiValue 1
     - !AnsiValue 3
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                 ``..``            
             .-;+oshdNMMMMMMNdhyo+;-.`       
       -oydmMMMMMMMMMMMMMMMMMMMMMMMMMMNdhs/  
@@ -6890,7 +6608,6 @@
     ${c2}          .+hMMMMMM${c4}hh${c3}MMMMMMdo;
     ${c2}             `;smMM${c4}yy${c3}MMNy/`
                      ${c2}.- ${c4}`${c3};.  
-
 - name: ['Salient OS', 'SalientOS', 'salientos']
   width: 40
   colors:
@@ -6898,7 +6615,7 @@
     - !AnsiValue 6
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}              00xxxx0              
               00xxxxxx0                     
            0xxxxxxxxx         000000        
@@ -6919,12 +6636,11 @@
             0xxxxxxx0         xxxxxx0       
                             0xxx00          
                           x00               
-
 - name: ['Salix']
   width: 61
   colors:
     - !AnsiValue 2
-  art: |
+  art: |-
     ${c1}              __s_aaaaaaaaauuoXSSSSSSSS;                
               ._xSSSSSSSSSSSSSSSSSSSSSSSSSS;                     
             _aSSSSSSSSSSSSSSSSSSSSSSSSSSSSS;                     
@@ -6945,14 +6661,13 @@
      XSSSSSSSSSSSSSSSSSSSSSSSSSSSS"`                             
      SSSSSSSSSSSSSSSSSSSSSSSSS!"`                                
     -"\"\""\"\""\"\""\"\""\"\""\"\""\"\""`                       
-
 - name: ['Sasanqua']
   width: 42
   colors:
     - !AnsiValue 5
     - !AnsiValue 1
     - !AnsiValue 5
-  art: |
+  art: |-
     ${c1}                                     
                                               
                          __,_                 
@@ -6973,14 +6688,13 @@
            Ü         ╙L     ¿¿∩ª     ╓P       
             ª≡,__      *ⁿ┤ⁿÑⁿ^µ     √ª        
                   ⁿ≡,,__√╝*    "ⁿⁿ*"          
-
 - name: ['Scientific']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                 =/;;/-            
                     +;    //                
                    /;      /;               
@@ -7001,14 +6715,13 @@
                    ;/      #=               
                     //    +;                
                      '////'                 
-
 - name: ['semc']
   width: 21
   colors:
     - !AnsiValue 2
     - !AnsiValue 8
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}            /\  
          ______/  \      
         /      |()| ${c2}E M C
@@ -7018,14 +6731,13 @@
     |_______/ / ${c3}"${c1}  \
                   ${c3}" 
                 "        
-
 - name: ['Septor']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}ssssssssssssssssssssssssssssssssssssssss
     ssssssssssssssssssssssssssssssssssssssss
     ssssssssssssssssssssssssssssssssssssssss
@@ -7046,13 +6758,12 @@
     yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
-
 - name: ['Serene']
   width: 43
   colors:
     - !AnsiValue 6
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}              __---''''''---__        
               .                      .         
             ;                          ;       
@@ -7073,13 +6784,12 @@
             ;_..--''                   ;       
               .                     _ .        
                 `''---______---''-``           
-
 - name: ['SharkLinux']
   width: 36
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                              `;shd/
                               `;yNMMMMs 
                            `-smMMMMMMN. 
@@ -7095,12 +6805,11 @@
           .hNMMNNNNMMMMMMMMMMMMMMMd     
         .oNNNNNNNNNNMMMMMMMMMMMMMMMo    
      `;+syyssoo++++ooooossssssssssso;   
-
 - name: ['ShastraOS']
   width: 37
   colors:
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}                          ..,;;,'.
                            ';oo.     ;o; 
                          ;o,           ol
@@ -7120,13 +6829,12 @@
                cd.           'xo         
                ;o,         'ld           
                 .oc'...';lo              
-
 - name: ['Siduction']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}                _aass,             
                    jQh; =$w                 
                    QWmwawQW                 
@@ -7147,13 +6855,12 @@
                    mQms_vmQ.                
                    ]WQQQQQP                 
                     -?T??"                  
-
 - name: ['SkiffOS']
   width: 49
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c2}                                            
                  ,@@@@@@@@@@@w,_                     
       ${c2}====~~~,,.${c2}A@@@@@@@@@@@@@@@@@W,_      
@@ -7164,12 +6871,11 @@
             ${c1}`'||LLL{{""${c2}@$B@@@@@@@@@@@@@@@p${c1}||
                 ${c1}`~=|||||||||||L"${c2}$@@@@@@@@@@@
                        ${c1}````'"\"\""\"\""${c2}'"\"\""\"\"\""
-
 - name: ['Slackel']
   width: 40
   colors:
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}              _aawmmmmmwwaaaaas,,,_.
                .ammmmm###mmmmmmm###BQmm##mws
              .am###mmBmBmBmBmBmBmmmmm#mmmm#2
@@ -7192,14 +6898,13 @@
      )ZmBmBmmmBmBmmBmB##!`                  
       -4U#mBmWmBmBm##2"                     
         -!!XU##US*?"-                       
-
 - name: ['Slackware']
   width: 44
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                  ;;;;;;;              
                 ;;;;;;;;;;;;;;;;;;;             
              ;;;;;;;;;;;;;;;;;;;;;;;;;          
@@ -7221,14 +6926,13 @@
             ;;;;;;;;;;;;;;;;;;;;;;;;;;;;        
                ;;;;;;;;;;;;;;;;;;;;;;           
                     ;;;;;;;;;;;;                
-
 - name: ['slackware_small']
   width: 13
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}   ________
       /  ______| 
       | |______  
@@ -7236,13 +6940,12 @@
        ______| | 
     | |________/ 
     |____________
-
 - name: ['SliTaz']
   width: 39
   colors:
     - !AnsiValue 3
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}        @    @(               @   
           @@   @@                  @    @/ 
          @@   @@                   @@   @@ 
@@ -7260,13 +6963,12 @@
     @    @@     @@@@@@@@@@@@      @@   @   
           @      @@@@@@@@@.     #@         
            @      ,@@@@@       @           
-
 - name: ['SmartOS']
   width: 35
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     yyyys             oyyyyyyyyyyyyyyyy
@@ -7284,13 +6986,12 @@
     yyyyyyyyyyyyyyyy              yyyyy
     yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
-
 - name: ['Soda']
   width: 37
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c2}                 @&&&&${c1}        *'*,
                    ${c2}@@@@@@@&&&${c1}  **     '*,
                   ${c2}@@@@@@@@@@@&&&&   
@@ -7306,14 +7007,13 @@
         ${c2}@@@@@@@@@@@@@@@@@@          
             @@@@@@@@@@@@                 
                @@@@@@@                   
-
 - name: ['Solus']
   width: 39
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c2}            -```````````          
               `-+/------------.`           
            .---;mNo---------------.        
@@ -7334,14 +7034,13 @@
           `;+ssssssssssssssssssss+-        
              `-/+ssssssssssso+/-`          
                   `.-----..`               
-
 - name: ['Source Mage', 'Source_Mage']
   width: 30
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c2}       ;ymNMNho.         
     .+sdmNMMMMMMMMMMy`            
     .-;;/yMMMMMMMMMMMm-           
@@ -7363,13 +7062,12 @@
                      `NMMMMMMMMMd;
                       -dMMMMMMMMMo
                         -shmNMMms.
-
 - name: ['Sparky']
   width: 44
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                                       
                .            `-;-`               
               .o`       .-///-`                 
@@ -7391,12 +7089,11 @@
                          ./+/-`        `        
                        `-;-.                    
                        ``                       
-
 - name: ['Star']
   width: 40
   colors:
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                   ./              
                       `yy-                  
                      `y.`y`                 
@@ -7416,13 +7113,12 @@
                h  -o/`   `/o;  s;           
               -s/o;`       `;o/+/           
               /s-             -yo           
-
 - name: ['SteamOS']
   width: 35
   colors:
     - !AnsiValue 5
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}              .,,,,.          
             .,'onNMMMMMNNnn',.         
          .'oNMANKMMMMMMMMMMMNNn'.      
@@ -7441,13 +7137,12 @@
           '*##################*'       
              ''*##########*''          
                   ''''''               
-
 - name: ['Stock Linux']
   width: 35
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                              
                                        
                   #G5J5G#              
@@ -7469,14 +7164,13 @@
           &#G5JJJJJJY5YJJJJJJ5G#&      
               &BPYJJJJJJJYPB&          
                   #G5J5G#              
-
 - name: ['Sulin']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c2}                                   
                              /\          /\ 
                             ( \\        // )
@@ -7498,13 +7192,12 @@
          | |  | |        | ||               
          |_|  |_|        |_||               
          \_\  \_\        \_\                
-
 - name: ['SunOS']
   width: 36
   colors:
     - !AnsiValue 3
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                 `-     `      
               `--    `+-    .;          
                .+;  `++;  -/+-     .    
@@ -7513,26 +7206,24 @@
       ``   ./;`                .; `..`.-
     ``./+/;-                     -+++;- 
         -/+`                      ;.    
-
 - name: ['sunos_small', 'solaris_small']
   width: 25
   colors:
     - !AnsiValue 3
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}       .   .;   .   
        .   ;;  ;;  ;;   .    
        .;. ..      .. .;.    
     ..  ..             ..  ..
      .;,                 ,;. 
-
 - name: ['SwagArch']
   width: 43
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c2}        .;ldkOKXXNNNNXXK0Oxoc,.       
        ,lkXMMNK0OkkxkkOKWMMMMMMMMMM;           
      'K0xo  ..,;;c;.     `'lKMMMMM0            
@@ -7548,13 +7239,12 @@
     ${c2} `';ldxO0KXXXXXK0Okdo${c1}cccc.     ;cccccccc.
                         ;ccc;'     `cccccccc;, 
                                        ''      
-
 - name: ['t2']
   width: 13
   colors:
     - !AnsiValue 7
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c2}        
     TTTTTTTTTT   
         tt   ${c1}222${c2}
@@ -7562,13 +7252,12 @@
         tt     ${c1}2${c2}
         tt    ${c1}2${c2}
         tt  ${c1}22222${c2}
-
 - name: ['Tails']
   width: 29
   colors:
     - !AnsiValue 5
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}      ``                
       ./yhNh                     
     syy/Nshh         `;o/        
@@ -7588,14 +7277,13 @@
              -oNMMMMMMMMMMmy+.`  
                `;yNMMMds/.`      
                   .//`           
-
 - name: ['TeArch']
   width: 40
   colors:
     - !AnsiValue 39
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}          @@@@@@@@@@@@@@           
           @@@@@@@@@              @@@@@@     
          @@@@@                     @@@@@    
@@ -7617,7 +7305,6 @@
        @@@@@@@&@@@@@@@#  #@@@@@@@@@@@@@@@@  
           @@@@@@@@@@@@@@@@@@@@@@@@@@@@@     
               @@@@@@@@@@@@@@@@@@@@@         
-
 - name: ['TorizonCore']
   width: 60
   colors:
@@ -7626,7 +7313,7 @@
     - !AnsiValue 4
     - !AnsiValue 8
     - !AnsiValue 5
-  art: |
+  art: |-
     ${c2}                          `.;;-.                       
                            `-;//////;-.                         
                          `;////////////;.                       
@@ -7656,13 +7343,12 @@
                         `-;///;.````.;///;-`                    
                            `-;////////;-`                       
                               `-;;;;-`                          
-
 - name: ['Trisquel']
   width: 37
   colors:
     - !AnsiValue 4
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}                         ,o$$$o.
                           ,o$$Y"\""Y$$b  
         ,o$$$$$$o.       ,$$'   ,   Y$$b 
@@ -7680,7 +7366,6 @@
                   '$$$.       .$$'       
                    'a$$$o._.o$$a'        
                       'a$$$$a'           
-
 - name: ['Twister']
   width: 46
   colors:
@@ -7689,7 +7374,7 @@
     - !AnsiValue 4
     - !AnsiValue 5
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c3}.......................${c4}.......${c5}.,;ccllllcc;.${c4}...
     ${c3}.......................${c5}.,;cldxkO0KXNNNWNNNX0x;
     ${c3}.................${c5}.,;ldkOOKK0OkkkkkOKWMMMMMMMNo
@@ -7713,12 +7398,11 @@
     ${c3}................${c5};lco;;;;;;;'${c4}..................
     ${c3}..............${c5}.';ggggol'`${c4}.....................
     ${c3}.............${c5}';oo;''${c3}...${c4}.......................
-
 - name: ['Ubuntu']
   width: 43
   colors:
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                             ....     
                   .',;clooo;  .;looooo;.       
                .;looooooooc  .oooooooooo'      
@@ -7740,14 +7424,13 @@
                .';loooooo;  ,oooooooooc        
                    ..';;;c'  .;loooo;'         
                                  .             
-
 - name: ['Ubuntu Budgie', 'Ubuntu-Budgie']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c2}           ./oydmMMMMMMmdyo/.      
             ;smMMMMMMMMMMMhs+;++yhs;        
          `omMMMMMMMMMMMN+`        `odo`     
@@ -7768,13 +7451,12 @@
          `omMMMMMMMMy.            ;dmo`     
             ;smMMMMMMMh+-`   `.;ohs;        
                ./oydmMMMMMMdhyo/.           
-
 - name: ['Ubuntu Cinnamon', 'Ubuntu-Cinnamon']
   width: 40
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}            .-/+oooooooo+/-.       
             `;+oooooooooooooooooo+;`        
           -+oooooooooooooooooooooooo+-      
@@ -7795,7 +7477,6 @@
           -+oooooooooooooooooooooooo+-      
             `;+oooooooooooooooooo+;`        
                 .-/+oooooooo+/-.            
-
 - name: ['Ubuntu-GNOME']
   width: 33
   colors:
@@ -7803,7 +7484,7 @@
     - !AnsiValue 5
     - !AnsiValue 7
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c3}          ./o.              
             .oooooooo                
           .oooo```soooo              
@@ -7820,14 +7501,13 @@
     ${c4}       `soooo.     .oooo`   
              `\/oooooooooo`          
                 ``\/oo``             
-
 - name: ['Ubuntu Kylin', 'Ubuntu-Kylin']
   width: 40
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}            .__=liiiiiii=__,       
             ._=liiliii|i|i|iiilii=_.        
           _=iiiii|ii|i|ii|i|inwwwzii=,      
@@ -7848,13 +7528,12 @@
           -<|i|ii|i|ii|i|i|ii3${c2}TTT${c1}t|i>`
              ~<|ii|ii|iiiii|i|||i>~         
                 -~~<|ii|i||i>~~`            
-
 - name: ['Ubuntu MATE', 'Ubuntu-MATE']
   width: 40
   colors:
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}            .;/+oossssoo+/;.`      
             `;+ssssssssssssssssss+;`        
           -+sssssssssssssss${c2}y${c1}ssssssss+-
@@ -7875,14 +7554,13 @@
           -+sssssssssssssss${c2}y${c1}ssssssss+-
             `;+ssssssssssssssssss+;`        
                 .;/+oossssoo+/;.            
-
 - name: ['Ubuntu_old', 'i3buntu']
   width: 40
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}            .-/+oossssoo+\-.       
             ´;+ssssssssssssssssss+;`        
           -+ssssssssssssssssssyyssss+-      
@@ -7903,14 +7581,13 @@
           -+sssssssssssssssss${c2}yyy${c1}ssss+-
             `;+ssssssssssssssssss+;`        
                 .-\+oossssoo+/-.            
-
 - name: ['ubuntu_old02']
   width: 35
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}                         ./+o+-
     ${c2}                 yyyyy- ${c1}-yyyyyy+
     ${c2}              ${c2};//+//////${c1}-yyyyyyo
@@ -7929,12 +7606,11 @@
     ${c1}              /osyyyyyyo${c3}++ooo+++/
     ${c1}                  ````` ${c3}+oo+++o;
     ${c3}                         `oo++.
-
 - name: ['ubuntu_small']
   width: 22
   colors:
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}       ..;,; .,;,.
         .,lool; .ooooo,   
        ;oo;;    .coool.   
@@ -7946,13 +7622,12 @@
         lo;;.   ;oooo; .  
          ';ooo; cooooc    
             '''  ''''     
-
 - name: ['Ubuntu Studio', 'Ubuntu-Studio']
   width: 40
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}              ..-;;;;;;-.`         
              `.;+++++++++++${c2}ooo${c1}++;.`
            ./+++++++++++++${c2}sMMMNdyo${c1}+/.
@@ -7973,13 +7648,12 @@
            ./+++++++++++++${c2}hMMMNdyo${c1}+/.
              `.;+++++++++++${c2}sso${c1}++;.
                   ..-;;;;;;-..              
-
 - name: ['Ubuntu Sway', 'Ubuntu-Sway']
   width: 40
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}            .-/+oossssoo+\-.       
             ´;+ssssssssssssssssss+;`        
           -+ssssssssssssssssss${c2}yy${c1}ssss+-
@@ -8000,13 +7674,12 @@
           -+sssssssssssssssss${c2}yy${c1}sss+-
             `;+ssssssssssssssssss+;`        
                 .-\+oossssoo+/-.            
-
 - name: ['Ubuntu Touch']
   width: 23
   colors:
     - !AnsiValue 3
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                  
          ###############   
        ##               ## 
@@ -8015,13 +7688,12 @@
       ##       ${c2}###${c1}       ##
        ##               ## 
          ###############   
-
 - name: ['Ultramarine Linux', 'ultramarine']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}            .cd0NNNNNNNXOdc.       
             .;xKNNNNNNNNNNNNNNNNKd;.        
           ,dXNNNNNNNNNNNNNNNNNNNNNNNd,      
@@ -8042,7 +7714,6 @@
           .cKW${c2}MMMMMMMMMMMMMMMMMMMM${c1}WKc.
              'oOXWWW${c2}MMMMMMMM${c1}WWWXOl.
                  ;lkXNNNNNNXkl'             
-
 - name: ['unicodearch']
   width: 38
   colors:
@@ -8050,7 +7721,7 @@
     - !AnsiValue 6
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}                   ▄             
                       ▟█▙                 
                      ▟███▙                
@@ -8070,13 +7741,12 @@
        ▟██████▀▀▀              ▀▀██████▙  
       ▟███▀▘                       ▝▀███▙ 
      ▟▛▀                               ▀▜▙
-
 - name: ['Univalent']
   width: 36
   colors:
     - !AnsiValue 6
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}                               
        UUUUUUU                   UUUUUUU
        UUUUUUU                   UUUUUUU
@@ -8096,13 +7766,12 @@
            UUUUUUUAAAAAAAAAAAUUUUUUU    
               UUUUUUUUUUUUUUUUUUU       
                  UUUUUUUUUUUUU          
-
 - name: ['Univention']
   width: 40
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}         ./osssssssssssssssssssssso+-
            `ohhhhhhhhhhhhhhhhhhhhhhhhhhhhy; 
            shhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh-
@@ -8123,14 +7792,13 @@
     -hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhho       
      ;yhhhhhhhhhhhhhhhhhhhhhhhhhhhh+`       
        -+ossssssssssssssssssssss+;`         
-
 - name: ['Uos']
   width: 54
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}                                                 
                             .......                       
                         ..............                    
@@ -8152,7 +7820,6 @@
                     .....................                 
                         .............                     
                             ......                        
-
 - name: ['UrukOS']
   width: 39
   colors:
@@ -8161,7 +7828,7 @@
     - !AnsiValue 7
     - !AnsiValue 12
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c3}          ;${c4};;;;;;;;;;;;;;    ${c5}.
              ${c3}=#${c4}*============.   ${c5};#;
             ${c3}=##%${c4}+----------.   ${c5}.###;
@@ -8182,14 +7849,13 @@
             ${c3}=###+${c4}--------------${c5}####;
              ${c3}=#+${c4}=================-${c5};
               ${c3};${c4};;;;;;;;;;;;;;;;;;.
-
 - name: ['uwuntu']
   width: 52
   colors:
     - !AnsiValue 225
     - !AnsiValue 206
     - !AnsiValue 52
-  art: |
+  art: |-
     ${c1}                                  &&           
                                    &&&&&&&&             
        ,                  *&&&&&&  &&&&&&&&(            
@@ -8210,13 +7876,12 @@
      ${c2}%%%%%     %%${c1}                     #&&&&&( 
     ${c2}&%.      %%%${c1}                              
       ${c2}%%%%%%%                                      
-
 - name: ['Vanilla']
   width: 39
   colors:
     - !AnsiValue 11
     - !AnsiValue 15
-  art: |
+  art: |-
     ${c1}                                  
                                            
                       .OO.                 
@@ -8237,13 +7902,12 @@
          OOOO${c2}II${c1}OOOOOOOI   IOOOOOO${c2}II${c1}OOOO
         IOO${c2}II${c1}OOOOOOOO;     ;OOOOOOOO${c2}II${c1}OOI
        IOOOOOOOOOOII         IIOOOOOOOOOOI 
-
 - name: ['Venom']
   width: 34
   colors:
     - !AnsiValue 8
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1}                             
        `-`                            
         -yys+/-`                      
@@ -8264,13 +7928,12 @@
                 -/+osyyyyso.`+yyyyy/  
                               .-/+syo`
                                     `.
-
 - name: ['venom_small']
   width: 20
   colors:
     - !AnsiValue 8
     - !AnsiValue 4
-  art: |
+  art: |-
     ${c1} ++**          
       *===**====+*      
        *====*   +===+   
@@ -8282,7 +7945,6 @@
        +===+   *===+=*  
           *+====**===*  
                    **++ 
-
 - name: ['VNux']
   width: 28
   colors:
@@ -8291,7 +7953,7 @@
     - !AnsiValue 15
     - !AnsiValue 1
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}              `        
                ^[XOx~.          
             ^_nwdbbkp0ti'       
@@ -8312,14 +7974,13 @@
     ?QOZmqqqpb${c2}t[run/?!${c1}0pwqqQj-,
      ^;l<{nUUv>      ^x00J("    
                        ^"       
-
 - name: ['Void']
   width: 58
   colors:
     - !AnsiValue 8
     - !AnsiValue 2
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                        ..........                   
                        .;;;;;;;;;;;;;;;;;;..                  
                    ..;;;;;;;;;;;;;;;;;;;;;;;;;.               
@@ -8345,13 +8006,12 @@
     ${c3}                ';|||||||||||||||||||||||''          
     ${c3}                   '';||||||||||||||;''              
     ${c3}                          ''''''                     
-
 - name: ['void_small']
   width: 13
   colors:
     - !AnsiValue 2
     - !AnsiValue 8
-  art: |
+  art: |-
     ${c1}    _______
      _ \______ - 
     | \  ___  \ |
@@ -8359,14 +8019,13 @@
     | | \___/ | |
     | \______ \_|
      -_______\   
-
 - name: ['VzLinux']
   width: 41
   colors:
     - !AnsiValue 1
     - !AnsiValue 7
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c2}                 ${c1}.;;;;;;;;.${c2}
         `/////`      ${c1};zzzzzzzz${c2}        ;/////-
          VVVVVu`         ${c1}-zzz`${c2}       /VVVVV.
@@ -8387,13 +8046,12 @@
                       oVVVVVVd`              
                        sVVVVV.               
                         ----.                
-
 - name: ['wii-linux-ngx', 'whiite-linux', 'gc-linux']
   width: 67
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}'''''''            `~;;`            -''''''   ~kQ@@g\      ,EQ@@g/
     h@@@@@@'          o@@@@@9`         `@@@@@@D  `@@@@@@@=     @@@@@@@?
     '@@@@@@X         o@@@@@@@D         v@@@@@@;   R@@@@@@,     D@@@@@@_
@@ -8410,7 +8068,6 @@
           `Q@@@@@@@@@'       `Q@@@@@@@@@-         z@@@@@Q      v@@@@@Q 
            ;@@@@@@@@|         ;@@@@@@@@=          z@@@@@Q      v@@@@@Q 
             '2#@@Q6;           ,eQ@@QZ~           /QQQQQg      \QQQQQN 
-
 - name: ['Windows']
   width: 36
   colors:
@@ -8418,7 +8075,7 @@
     - !AnsiValue 2
     - !AnsiValue 4
     - !AnsiValue 3
-  art: |
+  art: |-
     ${c1}        ,.=;!!t3Z3z.,          
            ;tt;;;tt333EE3               
     ${c1}       Et;;;ztt33EEEL${c2} @Ee.,      ..,
@@ -8435,7 +8092,6 @@
     ${c3}{3=*^```"*4E3)${c4} ;EEEtttt;;;;;tZ`
     ${c3}             `${c4} ;EEEEtttt;;;;z7
                      "VEzjt;;;z>*`      
-
 - name: ['Windows95']
   width: 40
   colors:
@@ -8445,7 +8101,7 @@
     - !AnsiValue 2
     - !AnsiValue 1
     - !AnsiValue 0
-  art: |
+  art: |-
     ${c6}                           ___     
                           .--=+++++=-;.     
        .              _ *%@@@@@@@@@@@@@@*   
@@ -8464,13 +8120,12 @@
         *;+;.__ ;+# @@@ @%#=+"\"\""\""+==%#@
          "+.-#+ +%* %+" "             ";@   
               " "                           
-
 - name: ['[Windows 10]', 'on Windows 10', 'Windows 8', 'Windows 10', 'windows10', 'windows8']
   width: 35
   colors:
     - !AnsiValue 6
     - !AnsiValue 7
-  art: |
+  art: |-
     ${c1}                                ..,
                         ....,,;;+ccllll
           ...,,+;;  cllllllllllllllllll
@@ -8490,13 +8145,12 @@
            `' \*;;  ;ccllllllllllllllll
                            ````''*;;cll
                                      ``
-
 - name: ['[Windows 11]', 'on Windows 11', 'Windows 11', 'windows11']
   width: 34
   colors:
     - !AnsiValue 4
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}                             
     ################  ################
     ################  ################
@@ -8513,14 +8167,13 @@
     ################  ################
     ################  ################
     ################  ################
-
 - name: ['Wrt']
   width: 28
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1} _______               
     |       |.-----.-----.-----.
     |   -   ||  _  |  -__|     |
@@ -8530,7 +8183,6 @@
     |  |  |  |.----.|  |_       
     |  |  |  ||   _||   _|      
     |________||__|  |____|      
-
 - name: ['XFerience']
   width: 37
   colors:
@@ -8538,7 +8190,7 @@
     - !AnsiValue 6
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}           ``--;;;;;;;-.`       
             .-/+++ooooooooo+++;-`        
          `-/+oooooooooooooooooo++;.      
@@ -8558,14 +8210,13 @@
            `;/++ooooooooooooo++/-`       
               `.-//++++++//;-.`          
                    ``````                
-
 - name: ['Xubuntu']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 7
     - !AnsiValue 1
-  art: |
+  art: |-
     ${c1}           `.;/ossyyyysso/;.       
             `.yyyyyyyyyyyyyyyyyyyy.`        
           `yyyyyyyyyyyyyyyyyyyyyyyyyy`      
@@ -8586,13 +8237,12 @@
           `yyyyyyyyyyyyyyyyyyyyyyyyyy`      
             `.yyyyyyyyyyyyyyyyyyyy.`        
                `.;/oosyyyysso/;.`           
-
 - name: ['yiffOS']
   width: 38
   colors:
     - !AnsiValue 93
     - !AnsiValue 92
-  art: |
+  art: |-
     ${c1}            NK                   
                  NxKXW                    
                  WOlcoXW                  
@@ -8612,13 +8262,12 @@
                               WXOxdddddddd
                                     NX0ddd
                                       WN0d
-
 - name: ['Zorin']
   width: 40
   colors:
     - !AnsiValue 4
     - !AnsiValue 6
-  art: |
+  art: |-
     ${c1}        `osssssssssssssssssssso`   
            .osssssssssssssssssssssso.       
           .+oooooooooooooooooooooooo+.      

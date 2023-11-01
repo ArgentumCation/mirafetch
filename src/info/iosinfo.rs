@@ -4,7 +4,8 @@ use crate::info::OSInfo;
 
 pub struct IosInfo {}
 impl IosInfo {
-    #[must_use] pub fn new() -> Self {
+    #[must_use]
+    pub fn new() -> Self {
         Self {}
     }
 }
