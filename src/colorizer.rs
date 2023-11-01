@@ -17,7 +17,11 @@ impl Colorizer for Default {
             .art
             .par_iter()
             .map(|(idx, text)| -> StyledContent<String> {
-                text.clone().with(*colors.get((*idx as usize) - 1).unwrap())
+                text.clone().with(
+                    *colors
+                        .get((*idx as usize) - 1)
+                        .expect("Invalid color index"),
+                )
             })
             .collect::<Vec<StyledContent<String>>>()
     }

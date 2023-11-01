@@ -22,9 +22,37 @@ use std::{cmp::max, fmt::Display, fs, io::stdout, process::ExitCode, sync::Arc};
 mod util;
 
 fn main() -> anyhow::Result<std::process::ExitCode> {
-    // Load Settings
+    let settings = load_settings_file()?;
+    let scheme = get_colorscheme_from_settings(&settings);
 
-    // load from TOML
+    let info = Info::default();
+    let id = info.id.clone();
+    let info_vec = info.as_vec();
+    let logo: AsciiArt = get_icon(get_os_id(&settings, id.as_str()))?;
+    let colored_logo = colorize_logo(&settings, &scheme, &logo)?;
+
+    // Show system info
+    display(colored_logo, info_vec, &logo)?;
+
+    Ok(ExitCode::SUCCESS)
+}
+
+fn get_os_id<'a>(settings: &'a Config, default: impl Into<&'a str>) -> impl Into<&str> {
+    settings
+        .icon_name
+        .as_ref()
+        .map_or_else(|| default.into(), |name| name.as_ref())
+}
+
+fn get_colorscheme_from_settings(settings: &Config) -> Option<Arc<[Color]>> {
+    let scheme: Option<Arc<[Color]>> = settings
+        .scheme_name
+        .as_ref()
+        .map_or_else(|| None, |name| Some(get_colorscheme(name.as_ref())));
+    scheme
+}
+
+fn load_settings_file() -> Result<Config, anyhow::Error> {
     let proj_dir = ProjectDirs::from("", "", "Mirafetch");
     let settings = proj_dir
         .ok_or_else(|| {
@@ -43,28 +71,7 @@ fn main() -> anyhow::Result<std::process::ExitCode> {
                 anyhow!(exitcode::CONFIG)
             })
         })?;
-
-    // Get Color Scheme from archive
-    let scheme: Option<Arc<[Color]>> = settings
-        .scheme_name
-        .as_ref()
-        .map_or_else(|| None, |name| Some(get_colorscheme(name.as_ref())));
-    let info = Info::default();
-    let id = info.id.clone();
-    let info_vec = info.as_vec();
-
-    let logo: AsciiArt = get_icon(
-        settings
-            .icon_name
-            .as_ref()
-            .map_or_else(|| id.as_str(), |name| name.as_ref()),
-    )?;
-    let colored_logo = colorize_logo(&settings, &scheme, &logo)?;
-
-    // Show system info
-
-    display(colored_logo, info_vec, &logo)?;
-    Ok(ExitCode::SUCCESS)
+    Ok(settings)
 }
 
 fn colorize_logo(

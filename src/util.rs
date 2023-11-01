@@ -18,9 +18,9 @@ const FLAGS_FILE: &str = include_str!("../data/flags.toml");
 pub fn get_icon<'a>(icon_name: impl Into<&'a str>) -> anyhow::Result<AsciiArt> {
     let icon_name = &icon_name.into().to_ascii_lowercase();
     let icons = serde_yaml::from_str::<Vec<AsciiArtUnprocessed>>(ICON_FILE)
-        .unwrap()
+        .expect("Could not parse icons file")
         .into_iter()
-        .map(|x| TryInto::<AsciiArt>::try_into(x).unwrap());
+        .map(|x| TryInto::<AsciiArt>::try_into(x).expect("Could not parse icon"));
     icons
         .into_iter()
         .find(|item| item.name.contains(&icon_name.to_string()))
@@ -113,16 +113,17 @@ where
 {
     // let mut val = 0;
     let units = ["bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"];
-    // let i = f64::from_str(i.to_string().as_str()).unwrap();
     for val in [0u8, 1u8, 2u8, 3u8, 4u8, 5u8, 6u8] {
         if (i >> (10 * (val + 1))) == 0.into() {
             return format!(
                 "{:.precision$} {}",
                 if precision == 0 {
                     let tmp: T = i >> (10 * val);
-                    f64::from_str(tmp.to_string().as_str()).unwrap()
+                    f64::from_str(tmp.to_string().as_str())
+                        .unwrap_or_else(|_| panic!("Could not parse {tmp} into f64"))
                 } else {
-                    f64::from_str(i.to_string().as_str()).unwrap()
+                    f64::from_str(i.to_string().as_str())
+                        .unwrap_or_else(|_| panic!("Could not parse {i} into f64"))
                         / f64::powi(1024_f64, i32::from(val))
                 },
                 units[val as usize]
@@ -131,10 +132,12 @@ where
     }
     panic!("bytes: {i}, precision: {precision}")
 }
+
+// TODO move all this stuff into a private module or something
 #[derive(Serialize, Deserialize)]
 #[serde(remote = "Color")]
 // #[serde(with = "Vec::<ColorRemote>")]
-pub enum ColorRemote {
+enum ColorRemote {
     /// Resets the terminal color.
     Reset,
 

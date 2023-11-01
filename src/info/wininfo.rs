@@ -28,7 +28,7 @@ use winsafe::{
 use wmi::{COMLibrary, WMIConnection};
 
 use regex::Regex;
-use std::sync::{Arc, Once, RwLock};
+use std::sync::{Arc, OnceLock};
 
 use winreg::{
     enums::{HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE},
@@ -38,27 +38,20 @@ use winreg::{
 use crate::info::OSInfo;
 use crate::util::bytecount_format;
 
-static INIT: Once = Once::new();
 #[derive(Default)]
 pub struct WindowsInfo {
-    hklm: RwLock<Option<RegKey>>,
+    hklm: OnceLock<RegKey>,
 }
 impl WindowsInfo {
     #[must_use]
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            hklm: OnceLock::new(),
+        }
     }
 
-    fn get_hklm(&self) {
-        INIT.call_once(|| {
-            if self.hklm.read().unwrap().is_none() {
-                let _ = self
-                    .hklm
-                    .write()
-                    .unwrap()
-                    .insert(RegKey::predef(HKEY_LOCAL_MACHINE));
-            }
-        });
+    fn get_hklm(&self) -> &RegKey {
+        self.hklm.get_or_init(|| RegKey::predef(HKEY_LOCAL_MACHINE))
     }
 }
 impl OSInfo for WindowsInfo {
@@ -86,8 +79,8 @@ impl OSInfo for WindowsInfo {
 
     fn machine(&self) -> Option<ArcStr> {
         self.get_hklm();
-        let subkey = (*self.hklm.read().unwrap())
-            .as_ref()?
+        let subkey = self
+            .get_hklm()
             .open_subkey(r"HARDWARE\DESCRIPTION\System\BIOS")
             .ok()?;
         let res = arcstr::format!(
@@ -99,8 +92,7 @@ impl OSInfo for WindowsInfo {
             subkey
                 .get_value::<String, &str>("SystemFamily")
                 .ok()
-                .unwrap_or_default() // subkey.get_value::<ArcStr, &str>("SystemVersion").ok().unwrap_or_default(),
-                                     // subkey.get_value::<ArcStr, &str>("SystemSKU").ok().unwrap_or_default()
+                .unwrap_or_default() // subkey.get_value::<ArcStr, &str>("SystemSKU").ok().unwrap_or_default()
                                      // subkey.get_value::<ArcStr, &str>("SystemManufacturer").ok().unwrap_or_default()
         );
         Some(res)
@@ -136,15 +128,10 @@ impl OSInfo for WindowsInfo {
     }
 
     fn kernel(&self) -> Option<ArcStr> {
-        self.get_hklm();
         let current_version = self
-            .hklm
-            .read()
-            .unwrap()
-            .as_ref()?
+            .get_hklm()
             .open_subkey(r"SOFTWARE\Microsoft\Windows NT\CurrentVersion")
-            .ok()
-            .unwrap();
+            .ok()?;
         let major: u32 = current_version
             .get_value("CurrentMajorVersionNumber")
             .ok()?;
@@ -173,15 +160,10 @@ impl OSInfo for WindowsInfo {
     }
 
     fn de(&self) -> Option<ArcStr> {
-        self.get_hklm();
         let current_version = self
-            .hklm
-            .read()
-            .unwrap()
-            .as_ref()?
+            .get_hklm()
             .open_subkey(r"SOFTWARE\Microsoft\Windows NT\CurrentVersion")
-            .ok()
-            .unwrap();
+            .ok()?;
         let major: u32 = current_version
             .get_value("CurrentMajorVersionNumber")
             .ok()?;
@@ -201,12 +183,8 @@ impl OSInfo for WindowsInfo {
 
     fn gpus(&self) -> Vec<ArcStr> {
         || -> Option<Vec<ArcStr>> {
-            self.get_hklm();
             let video: RegKey = self
-                .hklm
-                .read()
-                .unwrap()
-                .as_ref()?
+                .get_hklm()
                 .open_subkey(r"SYSTEM\CurrentControlSet\Control\Video\")
                 .ok()?;
 
@@ -449,9 +427,8 @@ impl OSInfo for WindowsInfo {
     }
 
     fn cpu(&self) -> Option<ArcStr> {
-        let mut length = 0; // Box::into_raw(Box::<u32>::default());
+        let mut length = 0;
         let mut buf: Vec<u8>;
-        // let mut info: Box<SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>;
         let mut core_count = 0;
         unsafe {
             GetLogicalProcessorInformationEx(RelationAll, None, &mut length);
@@ -472,10 +449,7 @@ impl OSInfo for WindowsInfo {
             }
         };
         let core0 = self
-            .hklm
-            .read()
-            .unwrap()
-            .as_ref()?
+            .get_hklm()
             .open_subkey(r"HARDWARE\DESCRIPTION\System\CentralProcessor\0")
             .ok()?;
         let name: ArcStr = core0

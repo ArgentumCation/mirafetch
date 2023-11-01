@@ -13,15 +13,19 @@ mod tests {
                 Command::new("fastfetch")
                     .args(["--pipe"])
                     .output()
-                    .unwrap()
+                    .expect("Failed to execute fastfetch")
                     .stdout
                     .as_slice(),
             )
             .to_string();
             let mut lines = output.lines();
-            let (x, y) = lines.next().unwrap().split_once('@').unwrap();
-            ff_tmp.insert("username".to_string(), x.into());
-            ff_tmp.insert("hostname".to_string(), y.into());
+            let (ff_username, ff_hostname) = lines
+                .next()
+                .expect("Could not parse username from fastfetch output")
+                .split_once('@')
+                .expect("Could not parse hostname from fastfetch output");
+            ff_tmp.insert("username".to_string(), ff_username.into());
+            ff_tmp.insert("hostname".to_string(), ff_hostname.into());
             lines.next();
             for line in lines {
                 if let Some((x, y)) = line.split_once(": ") {
