@@ -1,41 +1,29 @@
 use anyhow::anyhow;
-use archive::get_resource_dir;
 use crossterm::style::Color;
 use num::Unsigned;
-use rkyv::check_archived_root;
-
-use std::str::FromStr;
-
-
-use rkyv::with::ArchiveWith;
-use rkyv::with::DeserializeWith;
-use rkyv::with::Map;
-use rkyv::Infallible;
-use rkyv::{Archive, Deserialize};
-use rkyv_with::{ArchiveWith, DeserializeWith};
+use regex::Regex;
 use rustc_hash::FxHashMap;
-use std::fs;
-use std::path::Path;
-use std::sync::Arc;
+use serde::{Deserialize, Serialize};
+use serde_with::{serde_as, DeserializeAs};
+use std::{iter::zip, num::ParseIntError, str::FromStr, sync::Arc};
 
+const ICON_FILE: &str = include_str!("../data/icons.yaml");
+const FLAGS_FILE: &str = include_str!("../data/flags.toml");
 /// .
 ///
 /// # Errors
 ///
 /// This function will return an error if the icon cannot be found
 #[allow(dead_code)]
-pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
-    let archived_icons_path = get_resource_dir().join(Path::new("icons.rkyv"));
-    if !archived_icons_path.exists() {
-        archive::archive_icons(&archived_icons_path)?;
-    }
-    let archived_icons = fs::read(archived_icons_path)?;
-    let icon_name = &icon_name.to_ascii_lowercase();
-    let archived = check_archived_root::<Vec<AsciiArtRemote>>(&archived_icons).unwrap();
-    let icons: Vec<AsciiArtRemote> = archived.deserialize(&mut Infallible)?;
+pub fn get_icon<'a>(icon_name: impl Into<&'a str>) -> anyhow::Result<AsciiArt> {
+    let icon_name = &icon_name.into().to_ascii_lowercase();
+    let icons = serde_yaml::from_str::<Vec<AsciiArtUnprocessed>>(ICON_FILE)
+        .unwrap()
+        .into_iter()
+        .map(|x| TryInto::<AsciiArt>::try_into(x).unwrap());
     icons
         .into_iter()
-        .find(|item| item.names.contains(&icon_name.to_string()))
+        .find(|item| item.name.contains(&icon_name.to_string()))
         .map(std::convert::Into::into)
         .ok_or_else(|| anyhow!(format!("Could not find an icon for {icon_name}")))
 }
@@ -46,40 +34,107 @@ pub fn get_icon(icon_name: &str) -> anyhow::Result<AsciiArt> {
 ///
 /// This function will return an error if the colorscheme cannot be found
 #[allow(dead_code)]
-pub fn get_colorscheme(scheme_name: &str) -> anyhow::Result<Arc<[Color]>> {
-    let archived_flags_path = get_resource_dir().join(Path::new("flags.rkyv"));
-    // if flags.rkyv not found
-    if !archived_flags_path.exists() {
-        archive::archive_flags(&archived_flags_path)?;
-    }
-    let archived_flags = fs::read(archived_flags_path)?;
+pub fn get_colorscheme<'a>(scheme_name: impl Into<&'a str>) -> Arc<[Color]> {
     let schemes: FxHashMap<String, Vec<(u8, u8, u8)>> =
-        check_archived_root::<FxHashMap<String, Vec<(u8, u8, u8)>>>(&archived_flags)?
-            .deserialize(&mut Infallible)
-            .unwrap();
-    Ok(schemes[scheme_name]
+        toml::from_str(FLAGS_FILE).expect("Failed to parse flags.toml");
+    schemes
+        .get(scheme_name.into())
+        .expect("Failed to find scheme")
         .iter()
         .map(|(r, g, b)| Color::Rgb {
             r: r.to_owned(),
             g: g.to_owned(),
             b: b.to_owned(),
         })
-        .collect())
+        .collect()
 }
-#[derive(
-    serde::Serialize,
-    serde::Deserialize,
-    Archive,
-    ArchiveWith,
-    Debug,
-    DeserializeWith,
-    rkyv::Deserialize,
-    Clone,
-)]
-#[archive_with(from(Color))]
-#[archive(check_bytes)]
-#[allow(clippy::used_underscore_binding)]
-enum ColorRemote {
+pub struct AsciiArt {
+    pub name: Vec<String>,
+    pub colors: Vec<Color>,
+    pub width: u16,
+    pub art: Vec<(u8, String)>,
+}
+
+#[serde_as]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+struct AsciiArtUnprocessed {
+    pub name: Vec<String>,
+    #[serde_as(as = "Vec<ColorRemote>")]
+    pub colors: Vec<Color>,
+    pub width: u16,
+    pub art: String,
+}
+impl TryFrom<AsciiArtUnprocessed> for AsciiArt {
+    fn try_from(val: AsciiArtUnprocessed) -> anyhow::Result<Self> {
+        let regex = Regex::new(r"\$\{c(\d*)\}")?;
+        let color_idx: Vec<u8> = regex
+            .captures_iter(&val.art)
+            .map(|x| -> anyhow::Result<u8> {
+                str::parse(
+                    x.get(1)
+                        .ok_or_else(|| anyhow!("Invalid Ascii Art"))?
+                        .as_str(),
+                )
+                .map_err(|op: ParseIntError| anyhow!(op))
+            })
+            .map(std::result::Result::unwrap)
+            .collect();
+        let chunks = regex
+            .split(&val.art)
+            .map(std::borrow::ToOwned::to_owned)
+            .skip(1)
+            .collect::<Vec<String>>();
+        let ascii_art = (zip(color_idx, chunks)).collect();
+        Ok(Self {
+            name: val
+                .name
+                .clone()
+                .into_iter()
+                .map(|x| x.to_lowercase())
+                .collect(),
+            colors: val.colors.clone(),
+            width: val.width,
+            art: ascii_art,
+        })
+    }
+
+    type Error = anyhow::Error;
+}
+#[allow(dead_code, clippy::cast_precision_loss)]
+#[must_use]
+pub fn bytecount_format<T>(i: T, precision: usize) -> String
+where
+    T: Unsigned
+        + std::ops::Shr<u8, Output = T>
+        + std::fmt::Display
+        + PartialEq<T>
+        + From<u8>
+        + Copy,
+{
+    // let mut val = 0;
+    let units = ["bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"];
+    // let i = f64::from_str(i.to_string().as_str()).unwrap();
+    for val in [0u8, 1u8, 2u8, 3u8, 4u8, 5u8, 6u8] {
+        if (i >> (10 * (val + 1))) == 0.into() {
+            return format!(
+                "{:.precision$} {}",
+                if precision == 0 {
+                    let tmp: T = i >> (10 * val);
+                    f64::from_str(tmp.to_string().as_str()).unwrap()
+                } else {
+                    f64::from_str(i.to_string().as_str()).unwrap()
+                        / f64::powi(1024_f64, i32::from(val))
+                },
+                units[val as usize]
+            );
+        }
+    }
+    panic!("bytes: {i}, precision: {precision}")
+}
+#[derive(Serialize, Deserialize)]
+#[serde(remote = "Color")]
+// #[serde(with = "Vec::<ColorRemote>")]
+pub enum ColorRemote {
     /// Resets the terminal color.
     Reset,
 
@@ -141,103 +196,18 @@ enum ColorRemote {
     ///
     /// Most UNIX terminals and Windows 10 supported only.
     /// See [Platform-specific notes](enum.Color.html#platform-specific-notes) for more info.
-    #[allow(clippy::used_underscore_binding)]
     AnsiValue(u8),
 }
-pub struct AsciiArt {
-    pub names: Vec<String>,
-    pub colors: Vec<Color>,
-    pub width: u16,
-    pub text: Vec<(u8, String)>,
-}
-#[derive(
-    serde::Serialize,
-    serde::Deserialize,
-    rkyv::Serialize,
-    Archive,
-    Debug,
-    ArchiveWith,
-    Deserialize,
-    Clone,
-)]
-#[archive_with(from(AsciiArt))]
-#[archive(check_bytes)]
-struct AsciiArtRemote {
-    pub names: Vec<String>,
-    #[archive_with(from(Vec<Color>), via(Map<ColorRemote>))]
-    pub colors: Vec<ColorRemote>,
-    pub width: u16,
-    pub text: Vec<(u8, String)>,
-}
-// impl DeserializeUnsized<[[AsciiArtBak]], Infallible> for [AsciiArtBak] {}
-impl From<AsciiArtRemote> for AsciiArt {
-    fn from(other: AsciiArtRemote) -> Self {
-        Self {
-            names: other.names,
-            colors: other
-                .colors
-                .into_iter()
-                .map(std::convert::Into::into)
-                .collect(),
-            width: other.width,
-            text: other.text,
-        }
-    }
-}
-impl From<ColorRemote> for Color {
-    fn from(val: ColorRemote) -> Self {
-        match val {
-            ColorRemote::Reset => Self::Reset,
-            ColorRemote::Black => Self::Black,
-            ColorRemote::DarkGrey => Self::DarkGrey,
-            ColorRemote::Red => Self::Red,
-            ColorRemote::DarkRed => Self::DarkRed,
-            ColorRemote::Green => Self::Green,
-            ColorRemote::DarkGreen => Self::DarkGreen,
-            ColorRemote::Yellow => Self::Yellow,
-            ColorRemote::DarkYellow => Self::DarkYellow,
-            ColorRemote::Blue => Self::Blue,
-            ColorRemote::DarkBlue => Self::DarkBlue,
-            ColorRemote::Magenta => Self::Magenta,
-            ColorRemote::DarkMagenta => Self::DarkMagenta,
-            ColorRemote::Cyan => Self::Cyan,
-            ColorRemote::DarkCyan => Self::DarkCyan,
-            ColorRemote::White => Self::White,
-            ColorRemote::Grey => Self::Grey,
-            ColorRemote::Rgb { r, g, b } => Self::Rgb { r, g, b },
-            ColorRemote::AnsiValue(x) => Self::AnsiValue(x),
-        }
-    }
-}
 
-#[allow(dead_code, clippy::cast_precision_loss)]
-#[must_use]
-pub fn bytecount_format<T>(i: T, precision: usize) -> String
+impl<'de, T> DeserializeAs<'de, T> for ColorRemote
 where
-    T: Unsigned
-        + std::ops::Shr<u8, Output = T>
-        + std::fmt::Display
-        + PartialEq<T>
-        + From<u8>
-        + Copy,
+    T: From<Color>,
 {
-    // let mut val = 0;
-    let units = ["bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"];
-    // let i = f64::from_str(i.to_string().as_str()).unwrap();
-    for val in [0u8, 1u8, 2u8, 3u8, 4u8, 5u8, 6u8] {
-        if (i >> (10 * (val + 1))) == 0.into() {
-            return format!(
-                "{:.precision$} {}",
-                if precision == 0 {
-                    let tmp: T = i >> (10 * val);
-                    f64::from_str(tmp.to_string().as_str()).unwrap()
-                } else {
-                    f64::from_str(i.to_string().as_str()).unwrap()
-                        / f64::powi(1024_f64, i32::from(val))
-                },
-                units[val as usize]
-            );
-        }
+    fn deserialize_as<D>(deserializer: D) -> Result<T, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let color = Self::deserialize(deserializer)?;
+        Ok(T::from(color))
     }
-    panic!("bytes: {i}, precision: {precision}")
 }

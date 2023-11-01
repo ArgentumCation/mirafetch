@@ -203,7 +203,8 @@ impl Default for Info {
 }
 
 impl Info {
-    #[must_use] pub fn new() -> Self {
+    #[must_use]
+    pub fn new() -> Self {
         Self::default()
     }
     #[must_use]

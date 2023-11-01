@@ -1,58 +1,47 @@
 [package]
-name = "mirafetch"
-version = "0.1.0"
-edition = "2021"
-description = "A Rust reimplementation of Hyfetch wih a focus on speed"
-license-file = "LICENSE.md"
-repository = "https://github.com/ArgentumCation/mirafetch"
+name="mirafetch"
+version="0.1.0"
+edition="2021"
+description="A Rust reimplementation of Hyfetch wih a focus on speed"
+license-file="LICENSE.md"
+repository="https://github.com/ArgentumCation/mirafetch"
 
-include = ["/data", "/src", "build.rs"]
+include=["/data", "/src", "build.rs"]
 
 
 [dev-dependencies]
-cargo-semver-checks = "0.22.0"
-rkyv = { version = "0.7.42", features = ["validation"] }
+cargo-semver-checks="0.22.0"
 
-[build-dependencies]
-archive = { path = "archive" }
-serde_yaml = "0.9.22"
-rkyv = { version = "0.7.42", features = ["validation"] }
-serde = { version = "1.0.164", features = ["derive"] }
-toml = "0.7.6"
-regex = "*"
-bson = "*"
-directories = "5.0.1"
 
 [dependencies]
-archive = { path = "archive" }
-libc = "0.2.147"
-rayon = "1.7.0"
-regex = "1.8.4"
-rkyv = { version = "0.7.42", features = ["validation"] }
-serde = { version = "1.0.164", features = ["derive"] }
-time = "0.3.22"
-crossterm = "0.26.1"
-anyhow = "1.0.71"
-rkyv-with = "0.1.1"
-toml = "0.7.6"
-glob = "0.3.1"
-itertools = "0.11.0"
-rustc-hash = "1.1.0"
-lazy_format = "2.0.0"
-directories = "5.0.1"
-lazy_static = "1.4.0"
-exitcode = "1.1.2"
-num = "0.4.1"
-arcstr = "1.1.5"
+libc="0.2.147"
+rayon="1.7.0"
+regex="1.8.4"
+serde={version="1.0.164", features=["derive"]}
+time="0.3.22"
+crossterm="0.26.1"
+anyhow="1.0.71"
+toml="0.7.6"
+glob="0.3.1"
+itertools="0.11.0"
+rustc-hash="1.1.0"
+lazy_format="2.0.0"
+directories="5.0.1"
+lazy_static="1.4.0"
+exitcode="1.1.2"
+num="0.4.1"
+arcstr="1.1.5"
+serde_yaml = "0.9.27"
+serde_with = "3.4.0"
 
 [target.'cfg(target_os = "macos")'.dependencies]
-sysctl = "0.5.4"
-plist = "1.5.0"
+sysctl="0.5.4"
+plist="1.5.0"
 
 [target.'cfg(windows)'.dependencies]
-winreg = "0.50.0"
-wmi = "0.13.1"
-windows = { version = "*", features = [
+winreg="0.50.0"
+wmi="0.13.1"
+windows={version="*", features=[
     "Data_Xml_Dom",
     "Win32_Foundation",
     "Win32_Security",
@@ -66,49 +55,48 @@ windows = { version = "*", features = [
     "Win32_NetworkManagement_Ndis",
     "Win32_System_Wmi",
     "Win32_System_Com",
-] }
-winsafe = { version = "0.0.17", features = ["kernel", "user", "dwm"] }
+]}
+winsafe={version="0.0.17", features=["kernel", "user", "dwm"]}
 
 
 [target.'cfg(target_os = "linux")'.dependencies]
-platform-info = "2.0.1"
-pci-ids = "0.2.5"
+platform-info="2.0.1"
+pci-ids="0.2.5"
 
 [profile.release]
-lto = true
-panic = "abort"
+lto=true
+panic="abort"
 
 # The profile that 'cargo dist' will build with
 [profile.dist]
-inherits = "release"
-lto = "thin"
+inherits="release"
+lto="thin"
 
 [[bin]]
-name = "mirafetch"
-path = "src/main.rs"
+name="mirafetch"
+path="src/main.rs"
 
 [lib]
-name = "mirafetch"
-path = "src/lib.rs"
+name="mirafetch"
+path="src/lib.rs"
 
-[workspace]
-members = ["archive"]
+# [workspace]
 
 # Config for 'cargo dist'
 [workspace.metadata.dist]
 # The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
-cargo-dist-version = "0.3.1"
+cargo-dist-version="0.3.1"
 # CI backends to support
-ci = ["github"]
+ci=["github"]
 # The installers to generate for each app
-installers = ["shell", "powershell", "homebrew"]
+installers=["shell", "powershell", "homebrew"]
 # Target platforms to build apps for (Rust target-triple syntax)
-targets = [
+targets=[
     "x86_64-unknown-linux-gnu",
     "aarch64-apple-darwin",
     "x86_64-apple-darwin",
     "x86_64-pc-windows-msvc",
 ]
 # Publish jobs to run in CI
-pr-run-mode = "plan"
-include = ["data/icons.yaml", "data/flags.toml"]
+pr-run-mode="plan"
+include=["data/icons.yaml", "data/flags.toml"]

@@ -44,7 +44,8 @@ pub struct WindowsInfo {
     hklm: RwLock<Option<RegKey>>,
 }
 impl WindowsInfo {
-    #[must_use] pub fn new() -> Self {
+    #[must_use]
+    pub fn new() -> Self {
         Self::default()
     }
 
@@ -87,7 +88,7 @@ impl OSInfo for WindowsInfo {
         self.get_hklm();
         let subkey = (*self.hklm.read().unwrap())
             .as_ref()?
-            .open_subkey(r#"HARDWARE\DESCRIPTION\System\BIOS"#)
+            .open_subkey(r"HARDWARE\DESCRIPTION\System\BIOS")
             .ok()?;
         let res = arcstr::format!(
             "{} ({})",
@@ -107,14 +108,14 @@ impl OSInfo for WindowsInfo {
 
     fn theme(&self) -> Option<ArcStr> {
         let binding = RegKey::predef(HKEY_CURRENT_USER)
-            .open_subkey(r#"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes"#)
+            .open_subkey(r"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes")
             .ok()?
             .get_value::<String, &str>("CurrentTheme")
             .ok()?;
-        let re = Regex::new(r#".*\\(.*)\."#).unwrap();
+        let re = Regex::new(r".*\\(.*)\.").unwrap();
         let theme_name: &str = re.captures_iter(binding.as_str()).next()?.get(1)?.as_str();
         let dwm = RegKey::predef(HKEY_CURRENT_USER)
-            .open_subkey(r#"Software\Microsoft\Windows\DWM"#)
+            .open_subkey(r"Software\Microsoft\Windows\DWM")
             .ok()?;
         let color: u32 = (0x00ff_ffff
             & dwm
@@ -141,7 +142,7 @@ impl OSInfo for WindowsInfo {
             .read()
             .unwrap()
             .as_ref()?
-            .open_subkey(r#"SOFTWARE\Microsoft\Windows NT\CurrentVersion"#)
+            .open_subkey(r"SOFTWARE\Microsoft\Windows NT\CurrentVersion")
             .ok()
             .unwrap();
         let major: u32 = current_version
@@ -178,7 +179,7 @@ impl OSInfo for WindowsInfo {
             .read()
             .unwrap()
             .as_ref()?
-            .open_subkey(r#"SOFTWARE\Microsoft\Windows NT\CurrentVersion"#)
+            .open_subkey(r"SOFTWARE\Microsoft\Windows NT\CurrentVersion")
             .ok()
             .unwrap();
         let major: u32 = current_version
@@ -206,7 +207,7 @@ impl OSInfo for WindowsInfo {
                 .read()
                 .unwrap()
                 .as_ref()?
-                .open_subkey(r#"SYSTEM\CurrentControlSet\Control\Video\"#)
+                .open_subkey(r"SYSTEM\CurrentControlSet\Control\Video\")
                 .ok()?;
 
             Some(
@@ -267,16 +268,15 @@ impl OSInfo for WindowsInfo {
     }
 
     fn ip(&self) -> Vec<ArcStr> {
-        let mut res = Vec::new();
         unsafe {
             let size = Box::into_raw(Box::new(0x3FFF));
             let mut buf = Vec::<u8>::with_capacity(*size as usize);
-            let addrs: Option<*mut IP_ADAPTER_ADDRESSES_LH> = Some(buf.as_mut_ptr().cast());
+            let addrs: *mut IP_ADAPTER_ADDRESSES_LH = buf.as_mut_ptr().cast();
             while GetAdaptersAddresses(
                 u32::from(AF_UNSPEC.0),
                 GAA_FLAG_SKIP_ANYCAST | GAA_FLAG_SKIP_MULTICAST | GAA_FLAG_SKIP_DNS_SERVER,
                 None,
-                addrs,
+                Some(addrs),
                 size,
             ) == ERROR_BUFFER_OVERFLOW.0
             {
@@ -284,7 +284,8 @@ impl OSInfo for WindowsInfo {
             }
             let mut ipv4_addrs: Vec<Ipv4Addr> = Vec::new();
             let mut ipv6_addrs: Vec<Ipv6Addr> = Vec::new();
-            let mut adapter_current = addrs.unwrap().as_ref();
+            let mut adapter_current = addrs.as_ref();
+            let mut res = Vec::new();
             while let Some(adapter) = adapter_current {
                 let mut addr_current = (adapter).FirstUnicastAddress.as_ref();
                 while let Some(addr) = addr_current {
@@ -302,6 +303,7 @@ impl OSInfo for WindowsInfo {
                             }
                         }
                         AF_INET => {
+                            #[allow(clippy::cast_ptr_alignment)]
                             let ip_addr = Ipv4Addr::from(
                                 (*addr.Address.lpSockaddr.cast::<SOCKADDR_IN>())
                                     .sin_addr
@@ -474,7 +476,7 @@ impl OSInfo for WindowsInfo {
             .read()
             .unwrap()
             .as_ref()?
-            .open_subkey(r#"HARDWARE\DESCRIPTION\System\CentralProcessor\0"#)
+            .open_subkey(r"HARDWARE\DESCRIPTION\System\CentralProcessor\0")
             .ok()?;
         let name: ArcStr = core0
             .get_value::<String, &str>("ProcessorNameString")

@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{ops::Index, sync::Arc};
 
 use crossterm::style::{Color, StyledContent, Stylize};
 use rayon::prelude::*;
@@ -14,7 +14,7 @@ impl Colorizer for Default {
     fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>> {
         let colors = &ascii_art.colors;
         ascii_art
-            .text
+            .art
             .par_iter()
             .map(|(idx, text)| -> StyledContent<String> {
                 text.clone().with(*colors.get((*idx as usize) - 1).unwrap())
@@ -29,7 +29,7 @@ pub struct Flag {
 }
 
 impl Flag {
-    fn length_to_colors(&self, length: usize) -> Vec<Color> {
+    fn length_to_colors(&self, length: usize) -> impl Index<usize, Output = Color> {
         let preset_len = self.color_scheme.len(); //6
         let center = preset_len / 2; // 4
 
@@ -47,11 +47,13 @@ impl Flag {
             weights[preset_len - border - 1] += 1;
             border += 1;
         }
-        self.weights_to_colors(weights)
+        self.weights_to_colors(weights.into_par_iter())
     }
-    fn weights_to_colors(&self, weights: Vec<usize>) -> Vec<Color> {
+    fn weights_to_colors(
+        &self,
+        weights: impl IndexedParallelIterator<Item = usize>,
+    ) -> impl Index<usize, Output = Color> {
         weights
-            .into_par_iter()
             .enumerate()
             .flat_map(|(idx, weight)| {
                 let mut v: Vec<Color> = [self.color_scheme[idx]].repeat(weight);
@@ -64,12 +66,7 @@ impl Flag {
 
 impl Colorizer for Flag {
     fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>> {
-        let txt: String = ascii_art
-            .text
-            .clone()
-            .into_par_iter()
-            .map(|x| x.1)
-            .collect();
+        let txt: String = ascii_art.art.clone().into_par_iter().map(|x| x.1).collect();
 
         match self.orientation {
             Orientation::Horizontal => {

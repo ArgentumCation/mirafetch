@@ -18,7 +18,7 @@ use mirafetch::{
     info::Info,
     util::{get_colorscheme, get_icon, AsciiArt},
 };
-use std::{cmp::max, fs, io::stdout, process::ExitCode, sync::Arc};
+use std::{cmp::max, fmt::Display, fs, io::stdout, process::ExitCode, sync::Arc};
 mod util;
 
 fn main() -> anyhow::Result<std::process::ExitCode> {
@@ -48,25 +48,31 @@ fn main() -> anyhow::Result<std::process::ExitCode> {
     let scheme: Option<Arc<[Color]>> = settings
         .scheme_name
         .as_ref()
-        .map_or_else(|| None, |name| Some(get_colorscheme(name).unwrap()));
+        .map_or_else(|| None, |name| Some(get_colorscheme(name.as_ref())));
     let info = Info::default();
-    let id: Box<str> = Box::from(info.id.as_ref());
+    let id = info.id.clone();
     let info_vec = info.as_vec();
 
-    let logo: AsciiArt = get_icon(settings.icon_name.as_ref().get_or_insert(&id))?;
+    let logo: AsciiArt = get_icon(
+        settings
+            .icon_name
+            .as_ref()
+            .map_or_else(|| id.as_str(), |name| name.as_ref()),
+    )?;
     let colored_logo = colorize_logo(&settings, &scheme, &logo)?;
 
     // Show system info
 
     display(colored_logo, info_vec, &logo)?;
-    Ok(ExitCode::from(exitcode::OK as u8))
+    Ok(ExitCode::SUCCESS)
 }
 
 fn colorize_logo(
     settings: &Config,
     scheme: &Option<Arc<[Color]>>,
     logo: &AsciiArt,
-) -> Result<Vec<crossterm::style::StyledContent<String>>, anyhow::Error> {
+) -> Result<impl IntoIterator<Item = crossterm::style::StyledContent<impl Display>>, anyhow::Error>
+{
     let colorizer = scheme.as_ref().map_or_else(
         || Ok(Box::new(Default {}) as Box<dyn Colorizer>),
         |scheme| {
@@ -91,8 +97,8 @@ fn colorize_logo(
 ///
 /// This function will return an error if the terminal settings (eg color, cursor position) cannot be modified
 fn display(
-    icon: Vec<crossterm::style::StyledContent<String>>,
-    info: Vec<(ArcStr, ArcStr)>,
+    icon: impl IntoIterator<Item = crossterm::style::StyledContent<impl Display>>,
+    info: impl IntoIterator<Item = (ArcStr, ArcStr)>,
     logo: &AsciiArt,
 ) -> Result<(), anyhow::Error> {
     stdout().execute(Clear(All))?.execute(MoveTo(0, 0))?;
