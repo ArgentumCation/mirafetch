@@ -2,7 +2,6 @@ use std::{fmt::Display, sync::Arc};
 
 use arcstr::ArcStr;
 use crossterm::style::{Color, Stylize};
-use itertools::Itertools;
 use rayon::prelude::*;
 
 #[cfg(target_os = "ios")]

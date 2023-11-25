@@ -15,8 +15,8 @@ const FLAGS_FILE: &str = include_str!("../data/flags.toml");
 ///
 /// This function will return an error if the icon cannot be found
 #[allow(dead_code)]
-pub fn get_icon<'a>(icon_name: impl Into<&'a str>) -> anyhow::Result<AsciiArt> {
-    let icon_name = &icon_name.into().to_ascii_lowercase();
+pub fn get_icon<'a>(icon_name: &'a Box<str>) -> anyhow::Result<AsciiArt> {
+    let icon_name = &icon_name.to_ascii_lowercase();
     let icons = serde_yaml::from_str::<Vec<AsciiArtUnprocessed>>(ICON_FILE)
         .expect("Could not parse icons file")
         .into_iter()
