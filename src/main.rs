@@ -5,6 +5,7 @@
 
 use anyhow::{anyhow, Result};
 use arcstr::ArcStr;
+use clap::Parser;
 use crossterm::{
     cursor::{position, MoveTo, MoveToColumn, MoveToNextLine},
     style::{Color, PrintStyledContent, Stylize},
@@ -22,7 +23,8 @@ use std::{cmp::max, fmt::Display, fs, io::stdout, process::ExitCode, sync::Arc};
 mod util;
 
 fn main() -> anyhow::Result<std::process::ExitCode> {
-    let settings = load_settings_file()?;
+    let settings = Config::parse();
+    let settings = load_settings_file(settings)?;
     let scheme = get_colorscheme_from_settings(&settings);
 
     let info = Info::default();
@@ -52,7 +54,7 @@ fn get_colorscheme_from_settings(settings: &Config) -> Option<Arc<[Color]>> {
     scheme
 }
 
-fn load_settings_file() -> Result<Config, anyhow::Error> {
+fn load_settings_file(cmd_args: Config) -> Result<Config, anyhow::Error> {
     let proj_dir = ProjectDirs::from("", "", "Mirafetch");
     let settings = proj_dir
         .ok_or_else(|| {
@@ -71,7 +73,12 @@ fn load_settings_file() -> Result<Config, anyhow::Error> {
                 anyhow!(exitcode::CONFIG)
             })
         })?;
-    Ok(settings)
+    // Merge config file options with arguments
+    Ok(Config {
+        scheme_name: cmd_args.scheme_name.or(settings.scheme_name),
+        orientation: cmd_args.orientation.or(settings.orientation),
+        icon_name: cmd_args.icon_name.or(settings.icon_name),
+    })
 }
 
 fn colorize_logo(
