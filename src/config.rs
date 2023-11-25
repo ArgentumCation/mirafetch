@@ -1,7 +1,13 @@
-#[derive(Debug, serde::Serialize, serde::Deserialize, Default)]
+use clap::{Parser, ValueEnum};
+
+#[derive(Debug, serde::Serialize, serde::Deserialize, Default, Parser, Eq, PartialEq)]
+#[command(author, version, about, long_about = None)]
 pub struct Config {
+    #[arg(short, long)]
     pub scheme_name: Option<Box<str>>,
+    #[arg(short, long)]
     pub orientation: Option<Orientation>,
+    #[arg(short, long)]
     pub icon_name: Option<Box<str>>,
 }
 
@@ -27,7 +33,7 @@ impl Config {
     }
 }
 
-#[derive(Debug, serde::Serialize, serde::Deserialize, Copy, Clone)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Copy, Clone, ValueEnum, PartialEq, Eq)]
 pub enum Orientation {
     Horizontal,
     Vertical,
