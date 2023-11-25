@@ -1,6 +1,5 @@
 use std::{fmt::Display, sync::Arc};
 
-use anyhow::anyhow;
 use arcstr::ArcStr;
 use crossterm::style::{Color, Stylize};
 
@@ -244,8 +243,7 @@ impl Info {
         .into_iter()
         .map(|(x, y)| {
             y.map(|z| (x.clone(), z))
-                .or(Some((x.clone(), arcstr::format!("> DUMMY {}", x.clone()))))
-                .unwrap()
+                .unwrap_or((x.clone(), arcstr::format!("> DUMMY {}", x)))
         }) // todo debugging
         // .filter_map(|(x, y)| y.map(|z| (x, z)))
         .chain(

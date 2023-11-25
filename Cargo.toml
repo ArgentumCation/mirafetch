@@ -9,8 +9,8 @@ repository="https://github.com/ArgentumCation/mirafetch"
 include=["/data", "/src", "build.rs"]
 
 
-[dev-dependencies]
-cargo-semver-checks="0.22.0"
+# [dev-dependencies]
+# cargo-semver-checks="0.22.0"
 
 
 [dependencies]
