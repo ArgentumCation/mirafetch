@@ -4,6 +4,9 @@ use arcstr::ArcStr;
 #[cfg(target_os = "macos")]
 use sysctl::Sysctl;
 
+use std::alloc::Layout;
+use libc::timespec;
+
 use crate::info::OSInfo;
 
 pub struct MacInfo {}
@@ -104,11 +107,11 @@ impl OSInfo for MacInfo {
     }
 
     fn disks(&self) -> Vec<(ArcStr, ArcStr)> { 
-       vec![]
+        vec![]
     }
 
     fn battery(&self) -> Option<ArcStr> {
-       None 
+        None 
     }
 
     fn locale(&self) -> Option<ArcStr> {
@@ -121,7 +124,17 @@ impl OSInfo for MacInfo {
     }
 
     fn uptime(&self) -> Option<ArcStr> {
-       None 
+        unsafe {
+            let time: *mut timespec = std::alloc::alloc(Layout::new::<timespec>()).cast();
+            libc::clock_gettime(libc::CLOCK_MONOTONIC_RAW, time);
+            Some(ArcStr::from(
+                (
+                    time::Duration::seconds(time.as_ref().unwrap().tv_sec)
+                    // + time::Duration::nanoseconds(time.as_ref().unwrap().tv_nsec)
+                )
+                .to_string(),
+            ))
+        }
     }
 
     // TODO
