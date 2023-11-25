@@ -4113,7 +4113,7 @@
              |  |   _ _ ___ ___ ___        
              |  |__| | |   | .'|  _|       
              |_____|___|_|_|__,|_|         
-- name: ['mac', 'Darwin']
+- name: ['mac', 'Darwin', 'macos']
   width: 30
   colors:
     - !AnsiValue 2

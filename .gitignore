@@ -18,3 +18,4 @@ Cargo.lock
 src/neowofetch.bash
 .vscode/launch.json
 config.toml
+.direnv

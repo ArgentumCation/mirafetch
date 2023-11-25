@@ -9,9 +9,12 @@ use crate::info::iosinfo::IosInfo as get_info;
 use crate::info::linuxinfo::LinuxInfo as get_info;
 #[cfg(target_family = "windows")]
 use crate::info::wininfo::WindowsInfo as get_info;
+#[cfg(target_os = "macos")]
+use crate::info::macinfo::MacInfo as get_info;
 pub mod iosinfo;
 pub mod linuxinfo;
 pub mod wininfo;
+pub mod macinfo;
 pub trait OSInfo: Send + Sync {
     fn sys_font(&self) -> Option<ArcStr> {
         None
