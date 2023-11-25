@@ -4,16 +4,27 @@ use arcstr::ArcStr;
 #[cfg(target_os = "macos")]
 use sysctl::Sysctl;
 
-use std::alloc::Layout;
+use platform_info::*;
+
+use rustc_hash::{FxHashMap, FxHashSet};
+
+use itertools::Itertools;
+
+use std::{sync::OnceLock, alloc::Layout, ffi::{CStr, CString}, fs, mem::{self, MaybeUninit}, net::{Ipv4Addr, Ipv6Addr}};
+
 use libc::timespec;
 
 use crate::info::OSInfo;
 
-pub struct MacInfo {}
+pub struct MacInfo {
+    uts: PlatformInfo
+}
 
 impl MacInfo {
     pub fn new() -> Self {
-      MacInfo {}
+        MacInfo {
+            uts: PlatformInfo::new().unwrap()
+        }
     }
 }
 
@@ -35,7 +46,7 @@ impl OSInfo for MacInfo {
     }
 
     fn kernel(&self) -> Option<ArcStr> {
-       None 
+        Some(ArcStr::from(self.uts.release().to_string_lossy()))
     }
 
     #[allow(clippy::similar_names)]
@@ -103,7 +114,61 @@ impl OSInfo for MacInfo {
     }
 
     fn ip(&self) -> Vec<ArcStr> {
-      	vec![] 
+        use libc::{
+            getifaddrs, statvfs, timespec, AF_INET, AF_INET6, IFF_LOOPBACK, IFF_RUNNING,
+        };
+        let mut ipv4_addrs = FxHashSet::<Ipv4Addr>::default();
+        let mut ipv6_addrs = FxHashSet::<Ipv6Addr>::default();
+        unsafe {
+            let mut addrs = mem::MaybeUninit::<*mut libc::ifaddrs>::uninit();
+            getifaddrs(addrs.as_mut_ptr());
+            while let Some(addr) = addrs.assume_init().as_ref() {
+                if addr.ifa_addr.is_null() {
+                    addrs = MaybeUninit::new(addr.ifa_next);
+                    continue;
+                }
+                if addr.ifa_flags & IFF_RUNNING as u32 == 0 {
+                    addrs = MaybeUninit::new(addr.ifa_next);
+                    continue;
+                }
+                if addr.ifa_flags & IFF_LOOPBACK as u32 != 0 {
+                    addrs = MaybeUninit::new(addr.ifa_next);
+                    continue;
+                } 
+                if i32::from((*addr.ifa_addr).sa_family) == AF_INET {
+                    let ipv4 = (*(addr.ifa_addr).cast::<libc::sockaddr_in>())
+                        .sin_addr
+                        .s_addr
+                        .swap_bytes();
+                    ipv4_addrs.insert(Ipv4Addr::from(ipv4));
+                }
+                if i32::from((*addr.ifa_addr).sa_family) == AF_INET6 {
+                    let ipv6 = (*(addr.ifa_addr).cast::<libc::sockaddr_in6>())
+                        .sin6_addr
+                        .s6_addr;
+                    if !ipv6.starts_with(&[0xfe, 0x80]) {
+                        ipv6_addrs.insert(Ipv6Addr::from(ipv6));
+                    }
+                }
+                // if addr.ifa_next.is_null() {
+                //     break;
+                // }
+                addrs = MaybeUninit::new(addr.ifa_next);
+            }
+        };
+
+        vec![
+            ArcStr::from(
+                ipv4_addrs
+                    .iter()
+                    .map(std::string::ToString::to_string)
+                    .collect_vec()
+                    .join(", "),
+            ),
+            /*ipv6_addrs.iter().fold(ArcStr::new(), |x, y| {
+                (if x.is_empty() { x } else { x + ", " }) + &y.to_string()
+            }),*/
+        ]
     }
 
     fn disks(&self) -> Vec<(ArcStr, ArcStr)> { 

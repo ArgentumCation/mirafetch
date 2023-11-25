@@ -52,7 +52,7 @@ winsafe={version="0.0.17", features=["dwm"], default-features=false}
 sysctl="0.5.4"
 plist="1.5.0"
 whoami="1.4.1"
-
+platform-info="2.0.1"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 platform-info="2.0.1"
