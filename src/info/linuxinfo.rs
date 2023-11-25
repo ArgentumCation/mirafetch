@@ -16,7 +16,15 @@ use rayon::{
     str::ParallelString,
 };
 use rustc_hash::{FxHashMap, FxHashSet};
-use std::{sync::OnceLock, alloc::Layout, ffi::{CStr, CString}, fs, mem::{self, MaybeUninit}, net::{Ipv4Addr, Ipv6Addr}};
+use std::env;
+use std::{
+    alloc::Layout,
+    ffi::{CStr, CString},
+    fs,
+    mem::{self, MaybeUninit},
+    net::{Ipv4Addr, Ipv6Addr},
+    sync::OnceLock,
+};
 
 pub struct LinuxInfo {
     uts: PlatformInfo,
@@ -29,7 +37,7 @@ impl Default for LinuxInfo {
     }
 }
 impl LinuxInfo {
-    pub fn new() -> Self {
+    #[must_use] pub fn new() -> Self {
         Self {
             uts: PlatformInfo::new().unwrap(),
             os_release: OnceLock::default(),
@@ -134,9 +142,9 @@ impl OSInfo for LinuxInfo {
             .or_else(|| fs::read_to_string("/sys/devices/virtual/dmi/id/sys_vendor").ok())
             .or_else(|| fs::read_to_string("/sys/class/dmi/id/sys_vendor").ok())
             .or_else(|| {
-                std::env::var("WSL_DISTRO_NAME")
-                    .or_else(|_| std::env::var("WSL_DISTRO"))
-                    .or_else(|_| std::env::var("WSL_INTEROP"))
+                env::var("WSL_DISTRO_NAME")
+                    .or_else(|_| env::var("WSL_DISTRO"))
+                    .or_else(|_| env::var("WSL_INTEROP"))
                     .ok()
                     .map(|_| "Windows Subsystem for Linux".to_string())
             })
@@ -200,7 +208,12 @@ impl OSInfo for LinuxInfo {
 
     // TODO
     fn de(&self) -> Option<ArcStr> {
-        None
+        let de = env::var("XDG_CURRENT_DESKTOP").ok()?;
+        let protocol = env::var("XDG_SESSION_TYPE").ok();
+        Some(match protocol {
+            Some(proto) => arcstr::format!("{de} ({proto})"),
+            None => de.into(),
+        })
     }
 
     fn shell(&self) -> Option<ArcStr> {
@@ -349,7 +362,7 @@ impl OSInfo for LinuxInfo {
     fn disks(&self) -> Vec<(ArcStr, ArcStr)> {
         (|| -> Option<Vec<(ArcStr, ArcStr)>> {
             let mnt = fs::read_to_string("/proc/mounts").ok()?;
-            let re = regex::Regex::new(r#"(^/dev/(loop|ram|fd))|(/var/snap)"#).unwrap();
+            let re = regex::Regex::new(r"(^/dev/(loop|ram|fd))|(/var/snap)").unwrap();
             Some(
                 mnt.par_lines()
                     .filter_map(|line| -> Option<std::str::SplitAsciiWhitespace<'_>> {
@@ -428,11 +441,11 @@ impl OSInfo for LinuxInfo {
     }
 
     fn locale(&self) -> Option<ArcStr> {
-        std::env::var("LANG")
+        env::var("LANG")
             .ok()
             .filter(|x| !x.is_empty())
-            .or_else(|| std::env::var("LC_ALL").ok().filter(|x| !x.is_empty()))
-            .or_else(|| std::env::var("LC_MESSAGES").ok().filter(|x| !x.is_empty()))
+            .or_else(|| env::var("LC_ALL").ok().filter(|x| !x.is_empty()))
+            .or_else(|| env::var("LC_MESSAGES").ok().filter(|x| !x.is_empty()))
             .map(ArcStr::from)
     }
 

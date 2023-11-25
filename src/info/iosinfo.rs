@@ -3,6 +3,12 @@ use arcstr::ArcStr;
 use crate::info::OSInfo;
 
 pub struct IosInfo {}
+impl Default for IosInfo {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl IosInfo {
     #[must_use]
     pub fn new() -> Self {

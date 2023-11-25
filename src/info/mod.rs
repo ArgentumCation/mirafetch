@@ -2,6 +2,8 @@ use std::{fmt::Display, sync::Arc};
 
 use arcstr::ArcStr;
 use crossterm::style::{Color, Stylize};
+use itertools::Itertools;
+use rayon::prelude::*;
 
 #[cfg(target_os = "ios")]
 use crate::info::iosinfo::IosInfo as get_info;
@@ -209,19 +211,12 @@ impl Info {
     }
     #[must_use]
     pub fn as_vec(self) -> Vec<(ArcStr, ArcStr)> {
-        let username = self.username.unwrap_or_default();
-        let hostname = self.hostname.unwrap_or_default();
-        let y = arcstr::format!("{username}@{hostname}");
-        let repeats = y.len();
-        let (dark, light) = palette();
-        let mut res: Vec<(ArcStr, ArcStr)> = vec![
-            (y, Some(ArcStr::default())),
-            (
-                ArcStr::from(["-"].repeat(repeats).join("")),
-                Some(ArcStr::new()),
-            ),
-            // if none, empty string
-            // if not none
+        let (user_with_host, underline) = self.header_text();
+
+        // Properties with one (optional) value
+        let properties = vec![
+            (user_with_host, Some(ArcStr::default())),
+            (underline, Some(ArcStr::new())),
             (arcstr::literal!("OS"), self.os),
             (arcstr::literal!("Host"), self.machine),
             (arcstr::literal!("Kernel"), self.kernel),
@@ -239,33 +234,42 @@ impl Info {
             (arcstr::literal!("Battery"), self.battery),
             (arcstr::literal!("Locale"), self.locale),
             (arcstr::literal!("Icon Theme"), self.icons),
-        ]
-        .into_iter()
-        .map(|(x, y)| {
-            y.map(|z| (x.clone(), z))
-                .unwrap_or((x.clone(), arcstr::format!("> DUMMY {}", x)))
-        }) // todo debugging
-        // .filter_map(|(x, y)| y.map(|z| (x, z)))
-        .chain(
-            self.resolution
-                .into_iter()
-                .enumerate()
-                .map(|(idx, res)| (arcstr::format!("Display {}", idx + 1), res)),
-        )
-        .chain(
-            self.gpus
-                .into_iter()
-                .enumerate()
-                .map(|(idx, res)| (arcstr::format!("GPU {}", idx + 1), res)),
-        )
-        .chain(self.disks)
-        .chain(self.ip.into_iter().map(|x| (arcstr::literal!("IP"), x)))
-        .collect();
-        res.push((ArcStr::new(), dark));
-        res.push((ArcStr::new(), light));
-        res
+        ];
+        // filter out invalid values and add properties with multiple values
+        let mut filtered_properties: Vec<(ArcStr, ArcStr)> = filter_properties(properties)
+            .chain(Self::enumerate_properties(
+                "Display",
+                self.resolution.into_par_iter(),
+            ))
+            .chain(Self::enumerate_properties("GPU", self.gpus.into_par_iter()))
+            .chain(self.disks)
+            .chain(self.ip.into_iter().map(|x| (arcstr::literal!("IP"), x)))
+            .collect();
+        get_palette(&mut filtered_properties);
+        filtered_properties
     }
 
+    fn header_text(&self) -> (ArcStr, ArcStr) {
+        let user_with_host = arcstr::format!(
+            "{}@{}",
+            self.username.clone().unwrap_or_default(),
+            self.hostname.clone().unwrap_or_default()
+        );
+        let repeats = user_with_host.len();
+        let underline = ArcStr::from(["-"].repeat(repeats).join(""));
+        (user_with_host, underline)
+    }
+
+    fn enumerate_properties(
+        prop: &str,
+        values: impl IndexedParallelIterator<Item = ArcStr>,
+    ) -> Vec<(ArcStr, ArcStr)> {
+        values
+            .into_par_iter()
+            .enumerate()
+            .map(|(idx, res)| (arcstr::format!("{} {}", prop, idx + 1), res))
+            .collect()
+    }
     /// TODO
     ///
     /// # Errors
@@ -289,8 +293,8 @@ impl Info {
     }
 }
 
-fn palette() -> (ArcStr, ArcStr) {
-    (
+fn get_palette(properties: &mut Vec<(ArcStr, ArcStr)>) {
+    let (dark, light) = (
         (0..8u8)
             .map(|x| "   ".on(Color::AnsiValue(x)).to_string())
             .collect::<String>()
@@ -299,5 +303,23 @@ fn palette() -> (ArcStr, ArcStr) {
             .map(|x| "   ".on(Color::AnsiValue(x)).to_string())
             .collect::<String>()
             .into(),
-    )
+    );
+    properties.push((ArcStr::new(), dark));
+    properties.push((ArcStr::new(), light));
+}
+
+fn filter_properties(
+    res: Vec<(ArcStr, Option<ArcStr>)>,
+) -> Box<dyn Iterator<Item = (ArcStr, ArcStr)>> {
+    if cfg!(debug_assertions) {
+        Box::from(
+            res.into_iter()
+                .map(|(property, value)| (property, value.unwrap_or(arcstr::literal!("DUMMY")))),
+        ) as Box<dyn Iterator<Item = (ArcStr, ArcStr)>>
+    } else {
+        Box::from(
+            res.into_iter()
+                .filter_map(|(property, value)| value.map(|val| (property, val))),
+        ) as Box<dyn Iterator<Item = (ArcStr, ArcStr)>>
+    }
 }

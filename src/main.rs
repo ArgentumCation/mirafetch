@@ -109,6 +109,7 @@ fn display(
     logo: &AsciiArt,
 ) -> Result<(), anyhow::Error> {
     stdout().execute(Clear(All))?.execute(MoveTo(0, 0))?;
+    // panic!();
     for line in icon {
         stdout() /* .execute(ResetColor)?*/
             .execute(PrintStyledContent(line))?;
