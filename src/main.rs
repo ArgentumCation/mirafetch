@@ -3,7 +3,7 @@
 // #![allow(unused_imports)]
 #![warn(clippy::style)]
 
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Context, Ok, Result};
 use arcstr::ArcStr;
 use clap::Parser;
 use crossterm::{
@@ -15,7 +15,7 @@ use crossterm::{
 use directories::ProjectDirs;
 use mirafetch::{
     colorizer::{Colorizer, Default, Flag},
-    config::Config,
+    config::{Config, Orientation},
     info::Info,
     util::{get_colorscheme, get_icon, AsciiArt},
 };
@@ -23,27 +23,21 @@ use std::{cmp::max, fmt::Display, fs, io::stdout, process::ExitCode, sync::Arc};
 mod util;
 
 fn main() -> anyhow::Result<std::process::ExitCode> {
-    let settings = Config::parse();
-    let settings = load_settings_file(settings)?;
+    let mut settings = load_settings()?;
     let scheme = get_colorscheme_from_settings(&settings);
 
     let info = Info::default();
-    let id = info.id.clone();
+    settings.icon_name = settings
+        .icon_name
+        .or(Some(info.id.clone().to_string().into_boxed_str()));
     let info_vec = info.as_vec();
-    let logo: AsciiArt = get_icon(get_os_id(&settings, id.as_str()))?;
-    let colored_logo = colorize_logo(&settings, &scheme, &logo)?;
+    let logo: AsciiArt = get_icon(&settings.icon_name.expect("Missing icon name"))?;
+    let colored_logo = colorize_logo(settings.orientation.as_ref(), &scheme, &logo)?;
 
     // Show system info
     display(colored_logo, info_vec, &logo)?;
 
     Ok(ExitCode::SUCCESS)
-}
-
-fn get_os_id<'a>(settings: &'a Config, default: impl Into<&'a str>) -> impl Into<&str> {
-    settings
-        .icon_name
-        .as_ref()
-        .map_or_else(|| default.into(), |name| name.as_ref())
 }
 
 fn get_colorscheme_from_settings(settings: &Config) -> Option<Arc<[Color]>> {
@@ -54,55 +48,39 @@ fn get_colorscheme_from_settings(settings: &Config) -> Option<Arc<[Color]>> {
     scheme
 }
 
-fn load_settings_file(cmd_args: Config) -> Result<Config, anyhow::Error> {
-    let proj_dir = ProjectDirs::from("", "", "Mirafetch");
-    let settings = proj_dir
-        .ok_or_else(|| {
-            anyhow!(
-                "Could not find a project directory for Mirafetch. Please report this as a bug.",
-            )
-        })
-        .and_then(|dir| {
-            let config_path = dir.config_dir().join("config.toml");
-            if !config_path.exists() {
-                return anyhow::Ok(Config::default());
-            };
-            let config_file = fs::read_to_string(config_path)?;
-            toml::from_str::<Config>(&config_file).map_err(|err| {
-                eprintln!("Invalid config: {err}");
-                anyhow!(exitcode::CONFIG)
-            })
-        })?;
+fn load_settings() -> anyhow::Result<Config> {
+    let cli_args = Config::parse();
+    let dir = ProjectDirs::from("", "", "Mirafetch")
+        .expect("Could not find a project directory for Mirafetch. Please report this as a bug.");
+    let config_path = dir.config_dir().join("config.toml");
+    let mut settings = Config::default();
+    if config_path.exists() {
+        let config_file = fs::read_to_string(config_path)?;
+        settings = toml::from_str::<Config>(&config_file)
+            .map_err(|err| anyhow!(exitcode::CONFIG).context(err))?;
+    }
     // Merge config file options with arguments
-    Ok(Config {
-        scheme_name: cmd_args.scheme_name.or(settings.scheme_name),
-        orientation: cmd_args.orientation.or(settings.orientation),
-        icon_name: cmd_args.icon_name.or(settings.icon_name),
-    })
+    settings.scheme_name = cli_args.scheme_name.or(settings.scheme_name);
+    settings.orientation = cli_args.orientation.or(settings.orientation);
+    settings.icon_name = cli_args.icon_name.or(settings.icon_name);
+    Ok(settings)
 }
 
 fn colorize_logo(
-    settings: &Config,
+    orientation: Option<&Orientation>,
     scheme: &Option<Arc<[Color]>>,
     logo: &AsciiArt,
 ) -> Result<impl IntoIterator<Item = crossterm::style::StyledContent<impl Display>>, anyhow::Error>
 {
-    let colorizer = scheme.as_ref().map_or_else(
-        || Ok(Box::new(Default {}) as Box<dyn Colorizer>),
-        |scheme| {
-            settings.orientation.map_or_else(
-                || Err(anyhow!("Missing Orientation")),
-                |orientation| {
-                    Ok(Box::new(Flag {
-                        color_scheme: scheme.clone(),
-                        orientation,
-                    }) as Box<dyn Colorizer>)
-                },
-            )
-        },
-    );
+    let colorizer = match scheme {
+        None => Box::new(Default {}) as Box<dyn Colorizer>,
+        Some(colors) => Box::new(Flag {
+            color_scheme: colors.clone(),
+            orientation: *orientation.ok_or(anyhow!("Missing Orientation"))?,
+        }) as Box<dyn Colorizer>,
+    };
 
-    Ok(colorizer?.colorize(logo))
+    Ok(colorizer.colorize(logo))
 }
 
 /// Display the formatted logo and system information
@@ -115,27 +93,25 @@ fn display(
     info: impl IntoIterator<Item = (ArcStr, ArcStr)>,
     logo: &AsciiArt,
 ) -> Result<(), anyhow::Error> {
-    stdout().execute(Clear(All))?.execute(MoveTo(0, 0))?;
+    let mut out = stdout();
+    out.execute(Clear(All))?.execute(MoveTo(0, 0))?;
     // panic!();
     for line in icon {
-        stdout() /* .execute(ResetColor)?*/
+        out /* .execute(ResetColor)?*/
             .execute(PrintStyledContent(line))?;
     }
     let pos = position()?;
-    stdout().execute(MoveTo(0, 0))?;
-    for line in info {
-        let (x, y) = line;
-        stdout()
-            .execute(MoveToColumn(logo.width + 3))?
-            .execute(PrintStyledContent(x.clone().bold().red()))?;
-        if !x.is_empty() && !y.is_empty() {
-            stdout().execute(PrintStyledContent(": ".bold().red()))?;
+    out.execute(MoveTo(0, 0))?;
+    for (property, value) in info {
+        out.execute(MoveToColumn(logo.width + 3))?
+            .execute(PrintStyledContent(property.clone().bold().red()))?;
+        if !property.is_empty() && !value.is_empty() {
+            out.execute(PrintStyledContent(": ".bold().red()))?;
         }
-        stdout()
-            .execute(PrintStyledContent(y.reset()))?
+        out.execute(PrintStyledContent(value.reset()))?
             .execute(MoveToNextLine(1))?;
     }
     let (_x, y) = position()?;
-    stdout().execute(MoveTo(0, max(y, pos.1) + 1))?;
+    out.execute(MoveTo(0, max(y, pos.1) + 1))?;
     Ok(())
 }
