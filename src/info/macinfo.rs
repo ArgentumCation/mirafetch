@@ -1,6 +1,7 @@
 #[cfg(target_os = "macos")]
 use arcstr::ArcStr;
 
+use battery::units::ratio::Conversion;
 #[cfg(target_os = "macos")]
 use sysctl::Sysctl;
 
@@ -10,39 +11,46 @@ use rustc_hash::{FxHashMap, FxHashSet};
 
 use itertools::Itertools;
 
-use std::{sync::OnceLock, alloc::Layout, ffi::{CStr, CString}, fs, mem::{self, MaybeUninit}, net::{Ipv4Addr, Ipv6Addr}};
+use std::{
+    alloc::Layout,
+    ffi::{CStr, CString},
+    fs,
+    mem::{self, MaybeUninit},
+    net::{Ipv4Addr, Ipv6Addr},
+    sync::OnceLock,
+};
 
 use libc::timespec;
 
 use crate::info::OSInfo;
 
 pub struct MacInfo {
-    uts: PlatformInfo
+    uts: PlatformInfo,
 }
 
 impl MacInfo {
     pub fn new() -> Self {
         MacInfo {
-            uts: PlatformInfo::new().unwrap()
+            uts: PlatformInfo::new().unwrap(),
         }
     }
 }
 
 impl OSInfo for MacInfo {
     fn os(&self) -> Option<ArcStr> {
-       None 
+        None
     }
 
     fn hostname(&self) -> Option<ArcStr> {
-       Some(ArcStr::from(whoami::hostname()))
+        Some(ArcStr::from(whoami::hostname()))
     }
 
     fn displays(&self) -> Vec<ArcStr> {
-       vec![]
+        vec![]
     }
 
     fn machine(&self) -> Option<ArcStr> {
-       None 
+        None
     }
 
     fn kernel(&self) -> Option<ArcStr> {
@@ -51,7 +59,7 @@ impl OSInfo for MacInfo {
 
     #[allow(clippy::similar_names)]
     fn gpus(&self) -> Vec<ArcStr> {
-       vec![]
+        vec![]
     }
 
     // TODO
@@ -70,23 +78,24 @@ impl OSInfo for MacInfo {
     }
 
     fn shell(&self) -> Option<ArcStr> {
-       None 
+        None
     }
 
     fn cpu(&self) -> Option<ArcStr> {
-       let model = sysctl::Ctl::new("machdep.cpu.brand_string").unwrap().value_string().unwrap();
-       let core_count = sysctl::Ctl::new("machdep.cpu.core_count").unwrap().value_string().unwrap();
+        let model = sysctl::Ctl::new("machdep.cpu.brand_string")
+            .unwrap()
+            .value_string()
+            .unwrap();
+        let core_count = sysctl::Ctl::new("machdep.cpu.core_count")
+            .unwrap()
+            .value_string()
+            .unwrap();
 
-       
-       Some(arcstr::format!(
-          "{} ({})",
-          model,
-          core_count
-       ))
+        Some(arcstr::format!("{} ({})", model, core_count))
     }
 
     fn username(&self) -> Option<ArcStr> {
-       Some(ArcStr::from(whoami::username()))
+        Some(ArcStr::from(whoami::username()))
     }
 
     // TODO
@@ -110,13 +119,11 @@ impl OSInfo for MacInfo {
     }
 
     fn memory(&self) -> Option<ArcStr> {
-       None 
+        None
     }
 
     fn ip(&self) -> Vec<ArcStr> {
-        use libc::{
-            getifaddrs, statvfs, timespec, AF_INET, AF_INET6, IFF_LOOPBACK, IFF_RUNNING,
-        };
+        use libc::{getifaddrs, AF_INET, AF_INET6, IFF_LOOPBACK, IFF_RUNNING};
         let mut ipv4_addrs = FxHashSet::<Ipv4Addr>::default();
         let mut ipv6_addrs = FxHashSet::<Ipv6Addr>::default();
         unsafe {
@@ -134,7 +141,7 @@ impl OSInfo for MacInfo {
                 if addr.ifa_flags & IFF_LOOPBACK as u32 != 0 {
                     addrs = MaybeUninit::new(addr.ifa_next);
                     continue;
-                } 
+                }
                 if i32::from((*addr.ifa_addr).sa_family) == AF_INET {
                     let ipv4 = (*(addr.ifa_addr).cast::<libc::sockaddr_in>())
                         .sin_addr
@@ -171,12 +178,28 @@ impl OSInfo for MacInfo {
         ]
     }
 
-    fn disks(&self) -> Vec<(ArcStr, ArcStr)> { 
+    fn disks(&self) -> Vec<(ArcStr, ArcStr)> {
         vec![]
     }
 
     fn battery(&self) -> Option<ArcStr> {
-        None 
+        let manager = battery::Manager::new().unwrap();
+        Some(ArcStr::from(
+            manager
+                .batteries()
+                .unwrap()
+                .map(|battery| {
+                    // Get the bare ratio without units
+                    let ratio: f64 = battery
+                        .unwrap()
+                        .state_of_charge()
+                        .get::<battery::units::ratio::ratio>()
+                        .into();
+                    // Reformat as percent
+                    format!("{:.0}%", ratio * 100.0)
+                })
+                .join(", "),
+        ))
     }
 
     fn locale(&self) -> Option<ArcStr> {
@@ -208,6 +231,6 @@ impl OSInfo for MacInfo {
     }
 
     fn id(&self) -> ArcStr {
-       ArcStr::from("macos") 
+        ArcStr::from("macos")
     }
 }
