@@ -1,23 +1,19 @@
 #[cfg(target_os = "macos")]
 use arcstr::ArcStr;
 
-use battery::units::ratio::Conversion;
 #[cfg(target_os = "macos")]
 use sysctl::Sysctl;
 
 use platform_info::*;
 
-use rustc_hash::{FxHashMap, FxHashSet};
+use rustc_hash::FxHashSet;
 
 use itertools::Itertools;
 
 use std::{
     alloc::Layout,
-    ffi::{CStr, CString},
-    fs,
     mem::{self, MaybeUninit},
     net::{Ipv4Addr, Ipv6Addr},
-    sync::OnceLock,
 };
 
 use libc::timespec;
@@ -38,7 +34,25 @@ impl MacInfo {
 
 impl OSInfo for MacInfo {
     fn os(&self) -> Option<ArcStr> {
-        None
+        let system_version = plist::Value::from_file(std::path::Path::new(
+            "/System/Library/CoreServices/SystemVersion.plist",
+        ))
+        .unwrap();
+        let system_version = system_version.as_dictionary().unwrap();
+
+        Some(ArcStr::from(format!(
+            "{} {}",
+            system_version
+                .get("ProductName")
+                .unwrap()
+                .as_string()
+                .unwrap(),
+            system_version
+                .get("ProductVersion")
+                .unwrap()
+                .as_string()
+                .unwrap()
+        )))
     }
 
     fn hostname(&self) -> Option<ArcStr> {
@@ -78,7 +92,7 @@ impl OSInfo for MacInfo {
     }
 
     fn shell(&self) -> Option<ArcStr> {
-        None
+        Some(ArcStr::from(std::env!("SHELL")))
     }
 
     fn cpu(&self) -> Option<ArcStr> {
