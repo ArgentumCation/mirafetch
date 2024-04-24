@@ -20,7 +20,7 @@ regex={features=[
     "std",
     "unicode-perl",
 ], default-features=false, version="1.8.4"}
-serde={version="1.0.164", default-features=false}
+serde={version="1.0.164", default-features=false, features=["derive"]}
 time={default-features=false, version="0.3.22"}
 crossterm={default-features=false, version="0.26.1"}
 anyhow="1.0.71"
