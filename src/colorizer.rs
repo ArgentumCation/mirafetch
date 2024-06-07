@@ -8,9 +8,9 @@ use crate::{config::Orientation, util::AsciiArt};
 pub trait Colorizer {
     fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>>;
 }
-pub struct Default {}
+pub struct DefaultColorizer {}
 
-impl Colorizer for Default {
+impl Colorizer for DefaultColorizer {
     fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>> {
         let colors = &ascii_art.colors;
         ascii_art
@@ -27,12 +27,12 @@ impl Colorizer for Default {
     }
 }
 
-pub struct Flag {
+pub struct FlagColorizer {
     pub color_scheme: Arc<[Color]>,
     pub orientation: Orientation,
 }
 
-impl Flag {
+impl FlagColorizer {
     fn length_to_colors(&self, length: usize) -> impl Index<usize, Output = Color> {
         let preset_len = self.color_scheme.len(); //6
         let center = preset_len / 2; // 4
@@ -60,15 +60,14 @@ impl Flag {
         weights
             .enumerate()
             .flat_map(|(idx, weight)| {
-                let mut v: Vec<Color> = [self.color_scheme[idx]].repeat(weight);
-                v.fill(self.color_scheme[idx]);
-                v
+                //Create iterator with length `weight` containing a color
+                rayon::iter::repeatn(self.color_scheme[idx], weight)
             })
             .collect::<Vec<Color>>()
     }
 }
 
-impl Colorizer for Flag {
+impl Colorizer for FlagColorizer {
     fn colorize(&self, ascii_art: &AsciiArt) -> Vec<StyledContent<String>> {
         let txt: String = ascii_art.art.clone().into_par_iter().map(|x| x.1).collect();
 

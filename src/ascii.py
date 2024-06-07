@@ -9,7 +9,7 @@ COLOR_RGBA_LEN = 9
 COLOR_RGB_LEN = 7
 
 ASCII_ART_REGEX = re.compile(
-    r"match=.*?r?['\"]{1,3}(?P<name>.+?)['\"]{1,3},\n\W*color=['\"]{1,3}(?P<colors>.*?)['\"]{1,3}\W*?ascii=r['\"]{3}(?P<ascii>.*)['\"]{3}",
+    r"match=\s*?r?['\"]{1,3}(?P<name>.+?)['\"]{1,3},\s*color=['\"]{1,3}(?P<colors>.*?)['\"]{1,3},\s*ascii=r?['\"]{3}(?P<ascii>.*)['\"]{3}",
     re.MULTILINE | re.DOTALL,
 )
 
@@ -36,9 +36,9 @@ def process_color(color_raw: str) -> str:
     elif len(color_raw) == COLOR_RGBA_LEN or len(color_raw) == COLOR_RGB_LEN:
         color_rgb = color_raw.strip('"')
         color = f"""- !Rgb
-  r: {int(color_rgb[1:3], 16)}
-  g: {int(color_rgb[3:5], 16)}
-  b: {int(color_rgb[5:7], 16)}
+      r: {int(color_rgb[1:3], 16)}
+      g: {int(color_rgb[3:5], 16)}
+      b: {int(color_rgb[5:7], 16)}
 """
     # ANSI Color
     else:

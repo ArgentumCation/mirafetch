@@ -36,7 +36,8 @@ num={default-features=false, version="0.4.1"}
 arcstr={default-features=false, version="1.1.5"}
 serde_yaml="0.9.27"
 serde_with="3.4.0"
-clap = { version = "4.4.8", features = ["derive"] }
+clap = { version = "4.5.4", features = ["derive"] }
+smallvec = "1.13.2"
 
 [target.'cfg(windows)'.dependencies]
 winreg="0.50.0"

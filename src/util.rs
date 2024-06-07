@@ -15,8 +15,8 @@ const FLAGS_FILE: &str = include_str!("../data/flags.toml");
 ///
 /// This function will return an error if the icon cannot be found
 #[allow(dead_code)]
-pub fn get_icon<'a>(icon_name: &'a Box<str>) -> anyhow::Result<AsciiArt> {
-    let icon_name = &icon_name.to_ascii_lowercase();
+pub fn get_icon<'a>(icon_name: impl ToString) -> anyhow::Result<AsciiArt> {
+    let icon_name = &icon_name.to_string().to_ascii_lowercase();
     let icons = serde_yaml::from_str::<Vec<AsciiArtUnprocessed>>(ICON_FILE)
         .expect("Could not parse icons file")
         .into_iter()
@@ -34,17 +34,18 @@ pub fn get_icon<'a>(icon_name: &'a Box<str>) -> anyhow::Result<AsciiArt> {
 ///
 /// This function will return an error if the colorscheme cannot be found
 #[allow(dead_code)]
-pub fn get_colorscheme<'a>(scheme_name: impl Into<&'a str>) -> Arc<[Color]> {
+pub fn get_colorscheme<'a>(scheme_name: &impl ToString) -> Arc<[Color]> {
+    let scheme = scheme_name.to_string();
     let schemes: FxHashMap<String, Vec<(u8, u8, u8)>> =
         toml::from_str(FLAGS_FILE).expect("Failed to parse flags.toml");
     schemes
-        .get(scheme_name.into())
-        .expect("Failed to find scheme")
+        .get(&scheme)
+        .unwrap_or_else(|| panic!("Failed to find scheme {}", &scheme))
         .iter()
         .map(|(r, g, b)| Color::Rgb {
-            r: r.to_owned(),
-            g: g.to_owned(),
-            b: b.to_owned(),
+            r: *r,
+            g: *g,
+            b: *b,
         })
         .collect()
 }

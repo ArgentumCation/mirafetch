@@ -1,4 +1,7 @@
-use std::{fmt::Display, sync::Arc};
+use std::{
+    str::FromStr,
+    sync::{mpsc::Sender, Arc},
+};
 
 use arcstr::ArcStr;
 use crossterm::style::{Color, Stylize};
@@ -88,212 +91,172 @@ pub trait OSInfo: Send + Sync {
     }
 }
 
-#[derive(Debug)]
-pub struct Info {
-    pub os: Option<ArcStr>,
-    pub machine: Option<ArcStr>,
-    pub kernel: Option<ArcStr>,
-    pub uptime: Option<ArcStr>,
-    pub username: Option<ArcStr>,
-    pub hostname: Option<ArcStr>,
-    pub resolution: Vec<ArcStr>,
-    pub wm: Option<ArcStr>,
-    pub de: Option<ArcStr>,
-    pub shell: Option<ArcStr>,
-    pub cpu: Option<ArcStr>,
-    pub font: Option<ArcStr>,
-    pub cursor: Option<ArcStr>,
-    pub terminal: Option<ArcStr>,
-    pub terminal_font: Option<ArcStr>,
-    pub gpus: Vec<ArcStr>,
-    pub memory: Option<ArcStr>,
-    pub disks: Vec<(ArcStr, ArcStr)>,
-    pub battery: Option<ArcStr>,
-    pub locale: Option<ArcStr>,
-    pub theme: Option<ArcStr>,
-    pub icons: Option<ArcStr>,
-    pub ip: Vec<ArcStr>,
-    pub id: ArcStr,
+// #[derive(Debug)]
+// pub struct Info {
+//     pub os: Option<ArcStr>,
+//     pub machine: Option<ArcStr>,
+//     pub kernel: Option<ArcStr>,
+//     pub uptime: Option<ArcStr>,
+//     pub username: Option<ArcStr>,
+//     pub hostname: Option<ArcStr>,
+//     pub resolution: Vec<ArcStr>,
+//     pub wm: Option<ArcStr>,
+//     pub de: Option<ArcStr>,
+//     pub shell: Option<ArcStr>,
+//     pub cpu: Option<ArcStr>,
+//     pub font: Option<ArcStr>,
+//     pub cursor: Option<ArcStr>,
+//     pub terminal: Option<ArcStr>,
+//     pub terminal_font: Option<ArcStr>,
+//     pub gpus: Vec<ArcStr>,
+//     pub memory: Option<ArcStr>,
+//     pub disks: Vec<(ArcStr, ArcStr)>,
+//     pub battery: Option<ArcStr>,
+//     pub locale: Option<ArcStr>,
+//     pub theme: Option<ArcStr>,
+//     pub icons: Option<ArcStr>,
+//     pub ip: Vec<ArcStr>,
+//     pub id: ArcStr,
+// }
+
+#[must_use] pub fn get_id() -> ArcStr {
+    get_info::new().id()
 }
 
-impl Default for Info {
-    #[allow(clippy::default_trait_access)]
-    fn default() -> Self {
-        // let mut sys = System::new_all();
-        let getter = Arc::new(get_info::new());
-        let _getter_clone = Arc::clone(&getter);
-        let mut battery = Default::default();
-        let mut cpu = Default::default();
-        let mut cursor = Default::default();
-        let mut de = Default::default();
-        let mut disks = Default::default();
-        let mut font = Default::default();
-        let mut gpus = Default::default();
-        let mut hostname = Default::default();
-        let mut icons = Default::default();
-        let mut id: ArcStr = Default::default();
-        let mut ip = Default::default();
-        let mut kernel = Default::default();
-        let mut locale = Default::default();
-        let mut machine = Default::default();
-        let mut memory = Default::default();
-        let mut os = Default::default();
-        let mut resolution = Default::default();
-        let mut shell = Default::default();
-        let mut terminal_font = Default::default();
-        let mut terminal = Default::default();
-        let mut theme = Default::default();
-        let mut uptime = Default::default();
-        let mut username = Default::default();
-        let mut wm = Default::default();
-        rayon::scope(|s| {
-            // general_readout: general_readout.clone(),
-            (*s).spawn(|_| battery = getter.battery());
-            s.spawn(|_| cpu = getter.cpu());
-            s.spawn(|_| cursor = getter.cursor());
-            s.spawn(|_| de = getter.de());
-            s.spawn(|_| disks = getter.disks());
-            s.spawn(|_| font = getter.sys_font());
-            s.spawn(|_| gpus = getter.gpus());
-            s.spawn(|_| hostname = getter.hostname());
-            s.spawn(|_| icons = getter.icons());
-            s.spawn(|_| id = getter.id());
-            s.spawn(|_| ip = getter.ip());
-            s.spawn(|_| kernel = getter.kernel());
-            s.spawn(|_| locale = getter.locale());
-            s.spawn(|_| machine = getter.machine());
-            s.spawn(|_| memory = getter.memory());
-            s.spawn(|_| os = getter.os());
-            s.spawn(|_| resolution = getter.displays());
-            s.spawn(|_| shell = getter.shell());
-            s.spawn(|_| terminal = getter.terminal());
-            s.spawn(|_| terminal_font = getter.term_font());
-            s.spawn(|_| theme = getter.theme());
-            s.spawn(|_| uptime = getter.uptime());
-            s.spawn(|_| username = getter.username());
-            s.spawn(|_| wm = getter.wm());
+pub fn get_async(tx: Sender<(ArcStr, ArcStr)>) {
+    let getter = Arc::new(get_info::new());
+    let username = getter.username().unwrap_or_default();
+    let hostname = getter.hostname().unwrap_or_default();
+    let y = arcstr::format!("{username}@{hostname}");
+    let repeats =
+        ArcStr::from_str(std::str::from_utf8(vec![b'-'; y.len()].as_slice()).unwrap()).unwrap();
+    tx.send((y, ArcStr::new())).unwrap();
+    tx.send((repeats, ArcStr::new())).unwrap();
+    rayon::scope(|s| {
+        // general_readout: general_readout.clone(),
+        s.spawn(|_| {
+            getter
+                .battery()
+                .and_then(|e| tx.send((arcstr::literal!("Battery"), e)).ok());
         });
-
-        Self {
-            os,
-            machine,
-            kernel,
-            uptime,
-            username,
-            hostname,
-            resolution,
-            wm,
-            de,
-            shell,
-            cpu,
-            font,
-            cursor,
-            terminal,
-            terminal_font,
-            gpus,
-            memory,
-            disks,
-            battery,
-            locale,
-            theme,
-            icons,
-            ip,
-            id,
-        }
-    }
+        s.spawn(|_| {
+            getter
+                .cpu()
+                .and_then(|e| tx.send((arcstr::literal!("cpu"), e)).ok());
+        });
+        s.spawn(|_| {
+            getter
+                .cursor()
+                .and_then(|e| tx.send((arcstr::literal!("cursor"), e)).ok());
+        });
+        s.spawn(|_| {
+            getter
+                .de()
+                .and_then(|e| tx.send((arcstr::literal!("de"), e)).ok());
+        });
+        s.spawn(|_| {
+            for e in getter.disks() {
+                tx.send(e).ok();
+            }
+        });
+        s.spawn(|_| {
+            getter
+                .sys_font()
+                .and_then(|e| tx.send((arcstr::literal!("sys_font"), e)).ok());
+        });
+        s.spawn(|_| {
+            for (idx, e) in getter.gpus().into_iter().enumerate() {
+                tx.send((arcstr::format!("GPU {}", idx + 1), e)).ok();
+            }
+        });
+        s.spawn(|_| {
+            getter
+                .hostname()
+                .and_then(|e| tx.send((arcstr::literal!("hostname"), e)).ok());
+        });
+        s.spawn(|_| {
+            getter
+                .icons()
+                .and_then(|e| tx.send((arcstr::literal!("icons"), e)).ok());
+        });
+        s.spawn(|_| {
+            for e in getter.ip() {
+                tx.send((arcstr::literal!("IP"), e)).ok();
+            }
+        });
+        s.spawn(|_| {
+            getter
+                .kernel()
+                .and_then(|e| tx.send((arcstr::literal!("kernel"), e)).ok());
+        });
+        s.spawn(|_| {
+            getter
+                .locale()
+                .and_then(|e| tx.send((arcstr::literal!("locale"), e)).ok());
+        });
+        s.spawn(|_| {
+            getter
+                .machine()
+                .and_then(|e| tx.send((arcstr::literal!("machine"), e)).ok());
+        });
+        s.spawn(|_| {
+            getter
+                .memory()
+                .and_then(|e| tx.send((arcstr::literal!("memory"), e)).ok());
+        });
+        s.spawn(|_| {
+            getter
+                .os()
+                .and_then(|e| tx.send((arcstr::literal!("OS"), e)).ok());
+        });
+        s.spawn(|_| {
+            for (idx, e) in getter.displays().into_iter().enumerate() {
+                tx.send((arcstr::format!("Display {}", idx + 1), e)).ok();
+            }
+        });
+        s.spawn(|_| {
+            getter
+                .shell()
+                .and_then(|e| tx.send((arcstr::literal!("Shell"), e)).ok());
+        });
+        s.spawn(|_| {
+            getter
+                .terminal()
+                .and_then(|e| tx.send((arcstr::literal!("Terminal"), e)).ok());
+        });
+        s.spawn(|_| {
+            getter
+                .term_font()
+                .and_then(|e| tx.send((arcstr::literal!("Term_font"), e)).ok());
+        });
+        s.spawn(|_| {
+            getter
+                .theme()
+                .and_then(|e| tx.send((arcstr::literal!("Theme"), e)).ok());
+        });
+        s.spawn(|_| {
+            getter
+                .uptime()
+                .and_then(|e| tx.send((arcstr::literal!("Uptime"), e)).ok());
+        });
+        s.spawn(|_| {
+            getter
+                .username()
+                .and_then(|e| tx.send((arcstr::literal!("Username"), e)).ok());
+        });
+        s.spawn(|_| {
+            getter
+                .wm()
+                .and_then(|e| tx.send((arcstr::literal!("WM"), e)).ok());
+        });
+    });
+    let (dark, light) = palette();
+    tx.send((ArcStr::new(), dark)).ok();
+    tx.send((ArcStr::new(), light)).ok();
 }
 
-impl Info {
-    #[must_use]
-    pub fn new() -> Self {
-        Self::default()
-    }
-    #[must_use]
-    pub fn as_vec(self) -> Vec<(ArcStr, ArcStr)> {
-        let (user_with_host, underline) = self.header_text();
-
-        // Properties with one (optional) value
-        let properties = vec![
-            (user_with_host, Some(ArcStr::default())),
-            (underline, Some(ArcStr::new())),
-            (arcstr::literal!("OS"), self.os),
-            (arcstr::literal!("Host"), self.machine),
-            (arcstr::literal!("Kernel"), self.kernel),
-            (arcstr::literal!("Uptime"), self.uptime),
-            (arcstr::literal!("Shell"), self.shell),
-            (arcstr::literal!("WM"), self.wm),
-            (arcstr::literal!("DE"), self.de),
-            (arcstr::literal!("CPU"), self.cpu),
-            (arcstr::literal!("Theme"), self.theme),
-            (arcstr::literal!("System Font"), self.font),
-            (arcstr::literal!("Cursor"), self.cursor),
-            (arcstr::literal!("Terminal"), self.terminal),
-            (arcstr::literal!("Terminal Font"), self.terminal_font),
-            (arcstr::literal!("Memory"), self.memory),
-            (arcstr::literal!("Battery"), self.battery),
-            (arcstr::literal!("Locale"), self.locale),
-            (arcstr::literal!("Icon Theme"), self.icons),
-        ];
-        // filter out invalid values and add properties with multiple values
-        let mut filtered_properties: Vec<(ArcStr, ArcStr)> = filter_properties(properties)
-            .chain(Self::enumerate_properties(
-                "Display",
-                self.resolution.into_par_iter(),
-            ))
-            .chain(Self::enumerate_properties("GPU", self.gpus.into_par_iter()))
-            .chain(self.disks)
-            .chain(self.ip.into_iter().map(|x| (arcstr::literal!("IP"), x)))
-            .collect();
-        get_palette(&mut filtered_properties);
-        filtered_properties
-    }
-
-    fn header_text(&self) -> (ArcStr, ArcStr) {
-        let user_with_host = arcstr::format!(
-            "{}@{}",
-            self.username.clone().unwrap_or_default(),
-            self.hostname.clone().unwrap_or_default()
-        );
-        let repeats = user_with_host.len();
-        let underline = ArcStr::from(["-"].repeat(repeats).join(""));
-        (user_with_host, underline)
-    }
-
-    fn enumerate_properties(
-        prop: &str,
-        values: impl IndexedParallelIterator<Item = ArcStr>,
-    ) -> Vec<(ArcStr, ArcStr)> {
-        values
-            .into_par_iter()
-            .enumerate()
-            .map(|(idx, res)| (arcstr::format!("{} {}", prop, idx + 1), res))
-            .collect()
-    }
-    /// TODO
-    ///
-    /// # Errors
-    ///
-    /// This function will return an error if .
-    #[allow(dead_code)]
-    fn info_fmt(
-        f: &mut std::fmt::Formatter<'_>,
-        info_type: &str,
-        val: Option<&ArcStr>,
-    ) -> std::fmt::Result {
-        if let Some(x) = val {
-            info_type
-                .with(Color::Red)
-                .attribute(crossterm::style::Attribute::Bold)
-                .fmt(f)?;
-            x.clone().reset().fmt(f)?;
-            '\n'.fmt(f)?;
-        }
-        Ok(())
-    }
-}
-
-fn get_palette(properties: &mut Vec<(ArcStr, ArcStr)>) {
-    let (dark, light) = (
+fn palette() -> (ArcStr, ArcStr) {
+    (
         (0..8u8)
             .map(|x| "   ".on(Color::AnsiValue(x)).to_string())
             .collect::<String>()
@@ -302,23 +265,5 @@ fn get_palette(properties: &mut Vec<(ArcStr, ArcStr)>) {
             .map(|x| "   ".on(Color::AnsiValue(x)).to_string())
             .collect::<String>()
             .into(),
-    );
-    properties.push((ArcStr::new(), dark));
-    properties.push((ArcStr::new(), light));
-}
-
-fn filter_properties(
-    res: Vec<(ArcStr, Option<ArcStr>)>,
-) -> Box<dyn Iterator<Item = (ArcStr, ArcStr)>> {
-    if cfg!(debug_assertions) {
-        Box::from(
-            res.into_iter()
-                .map(|(property, value)| (property, value.unwrap_or(arcstr::literal!("DUMMY")))),
-        ) as Box<dyn Iterator<Item = (ArcStr, ArcStr)>>
-    } else {
-        Box::from(
-            res.into_iter()
-                .filter_map(|(property, value)| value.map(|val| (property, val))),
-        ) as Box<dyn Iterator<Item = (ArcStr, ArcStr)>>
-    }
+    )
 }

@@ -7,5 +7,4 @@
 pub mod colorizer;
 pub mod config;
 pub mod info;
-mod tests;
 pub mod util;
