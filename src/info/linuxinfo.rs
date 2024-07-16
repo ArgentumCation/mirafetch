@@ -37,7 +37,8 @@ impl Default for LinuxInfo {
     }
 }
 impl LinuxInfo {
-    #[must_use] pub fn new() -> Self {
+    #[must_use]
+    pub fn new() -> Self {
         Self {
             uts: PlatformInfo::new().unwrap(),
             os_release: OnceLock::default(),

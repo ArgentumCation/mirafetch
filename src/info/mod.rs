@@ -5,16 +5,18 @@ use std::{
 
 use arcstr::ArcStr;
 use crossterm::style::{Color, Stylize};
-use rayon::prelude::*;
 
 #[cfg(target_os = "ios")]
 use crate::info::iosinfo::IosInfo as get_info;
 #[cfg(target_os = "linux")]
 use crate::info::linuxinfo::LinuxInfo as get_info;
+#[cfg(target_os = "macos")]
+use crate::info::macinfo::MacInfo as get_info;
 #[cfg(target_family = "windows")]
 use crate::info::wininfo::WindowsInfo as get_info;
 pub mod iosinfo;
 pub mod linuxinfo;
+pub mod macinfo;
 pub mod wininfo;
 pub trait OSInfo: Send + Sync {
     fn sys_font(&self) -> Option<ArcStr> {
@@ -119,7 +121,8 @@ pub trait OSInfo: Send + Sync {
 //     pub id: ArcStr,
 // }
 
-#[must_use] pub fn get_id() -> ArcStr {
+#[must_use]
+pub fn get_id() -> ArcStr {
     get_info::new().id()
 }
 
