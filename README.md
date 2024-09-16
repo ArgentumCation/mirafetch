@@ -15,6 +15,13 @@ A Rust reimplementation of Hyfetch wih a focus on speed
 
 Download the repo and run `cargo run` in the folder to try it out. To install mirafetch try `cargo install .` and ensure your cargo directory is in `$PATH`
 
+## Images
+Images:
+![image](https://github.com/user-attachments/assets/8c2ce3cd-4870-4441-94e3-9d2469f0dcd7)
+![image](https://github.com/user-attachments/assets/9674b066-f736-408c-af2d-6a62fa2db89b)
+![image](https://github.com/user-attachments/assets/f2c5abb6-0f93-4782-836b-9f88e9385a4e)
+
+
 ## Configuration
 
 ### CLI Config
