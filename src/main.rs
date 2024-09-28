@@ -9,7 +9,6 @@ use clap::Parser;
 use crossterm::{
     cursor::{position, MoveTo, MoveToColumn, MoveToNextLine},
     style::{Color, PrintStyledContent, Stylize},
-    terminal::{Clear, ClearType::All},
     ExecutableCommand,
 };
 use directories::ProjectDirs;
@@ -18,7 +17,7 @@ use mirafetch::{
     config::{Config, Orientation},
     util::{get_colorscheme, get_icon, AsciiArt},
 };
-use std::{cmp::max, fmt::Display, fs, io::stdout, process::ExitCode, sync::Arc};
+use std::{fmt::Display, fs, io::stdout, process::ExitCode, sync::Arc};
 use std::{
     sync::mpsc,
     thread::{self},
