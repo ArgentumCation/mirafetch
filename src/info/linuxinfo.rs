@@ -456,7 +456,7 @@ impl OSInfo for LinuxInfo {
             libc::clock_gettime(libc::CLOCK_BOOTTIME, time);
             Some(ArcStr::from(
                 (
-                    time::Duration::seconds(time.as_ref().unwrap().tv_sec.into())
+                    time::Duration::seconds(time.as_ref().unwrap().tv_sec)
                     // + time::Duration::nanoseconds(time.as_ref().unwrap().tv_nsec)
                 )
                 .to_string(),

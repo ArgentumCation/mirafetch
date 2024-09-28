@@ -7,8 +7,9 @@ use serde::{Deserialize, Serialize};
 use serde_with::{serde_as, DeserializeAs};
 use std::{iter::zip, num::ParseIntError, str::FromStr, sync::Arc};
 
-const ICON_FILE: &str = include_str!("../data/icons.yaml");
-const FLAGS_FILE: &str = include_str!("../data/flags.toml");
+// TODO: see if you can have these as structs set at compile time
+const ICONS: &str = include_str!("../data/icons.yaml");
+const FLAGS: &str = include_str!("../data/flags.toml");
 /// .
 ///
 /// # Errors
@@ -17,7 +18,7 @@ const FLAGS_FILE: &str = include_str!("../data/flags.toml");
 #[allow(dead_code)]
 pub fn get_icon<'a>(icon_name: impl ToString) -> anyhow::Result<AsciiArt> {
     let icon_name = &icon_name.to_string().to_ascii_lowercase();
-    let icons = serde_yaml::from_str::<Vec<AsciiArtUnprocessed>>(ICON_FILE)
+    let icons = serde_yaml::from_str::<Vec<AsciiArtUnprocessed>>(ICONS)
         .expect("Could not parse icons file")
         .into_iter()
         .map(|x| TryInto::<AsciiArt>::try_into(x).expect("Could not parse icon"));
@@ -33,11 +34,10 @@ pub fn get_icon<'a>(icon_name: impl ToString) -> anyhow::Result<AsciiArt> {
 /// # Errors
 ///
 /// This function will return an error if the colorscheme cannot be found
-#[allow(dead_code)]
-pub fn get_colorscheme<'a>(scheme_name: &impl ToString) -> Arc<[Color]> {
+pub fn get_colorscheme(scheme_name: &impl ToString) -> Arc<[Color]> {
     let scheme = scheme_name.to_string();
     let schemes: FxHashMap<String, Vec<(u8, u8, u8)>> =
-        toml::from_str(FLAGS_FILE).expect("Failed to parse flags.toml");
+        toml::from_str(FLAGS).expect("Failed to parse flags.toml");
     schemes
         .get(&scheme)
         .unwrap_or_else(|| panic!("Failed to find scheme {}", &scheme))

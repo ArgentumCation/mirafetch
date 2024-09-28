@@ -13,7 +13,7 @@ use crossterm::{
 };
 use directories::ProjectDirs;
 use mirafetch::{
-    colorizer::{Colorizer, DefaultColorizer, FlagColorizer},
+    colorizer::{Colorizer, DefaultColors, FlagColors},
     config::{Config, Orientation},
     util::{get_colorscheme, get_icon, AsciiArt},
 };
@@ -31,7 +31,7 @@ fn main() -> anyhow::Result<std::process::ExitCode> {
 
     let (tx, rx) = mpsc::channel();
     let id = info::get_id();
-    let logo: AsciiArt = get_icon(get_os_id(&settings, id))?;
+    let logo: AsciiArt = get_icon(get_os_id(&settings, &id))?;
     let colored_logo = colorize_logo(settings.orientation, &scheme, &logo)?;
     thread::spawn(move || {
         info::get_async(tx);
@@ -43,7 +43,7 @@ fn main() -> anyhow::Result<std::process::ExitCode> {
     Ok(ExitCode::SUCCESS)
 }
 
-fn get_os_id(settings: &Config, default: impl ToString) -> impl ToString {
+fn get_os_id(settings: &Config, default: &impl ToString) -> impl ToString {
     settings
         .icon_name
         .as_ref()
@@ -60,11 +60,6 @@ fn get_colorscheme_from_settings(settings: &Config) -> Option<Arc<[Color]>> {
 }
 
 fn load_settings_file() -> Result<Config, anyhow::Error> {
-    // return Ok(Config::new(
-    //     Some("transgender"),
-    //     Some(Orientation::Horizontal),
-    //     None::<String>,
-    // ));
     let proj_dir = ProjectDirs::from("", "", "Mirafetch");
     let settings = proj_dir
         .ok_or_else(|| {
@@ -93,10 +88,10 @@ fn colorize_logo(
 ) -> Result<impl IntoIterator<Item = crossterm::style::StyledContent<impl Display>>, anyhow::Error>
 {
     let colorizer = match scheme {
-        None => Box::new(DefaultColorizer {}) as Box<dyn Colorizer>,
-        Some(colors) => Box::new(FlagColorizer {
+        None => Box::new(DefaultColors {}) as Box<dyn Colorizer>,
+        Some(colors) => Box::new(FlagColors {
             color_scheme: colors.clone(),
-            orientation: orientation.ok_or(anyhow!("Missing Orientation"))?,
+            orientation: orientation.ok_or_else(|| anyhow!("Missing Orientation"))?,
         }) as Box<dyn Colorizer>,
     };
 
