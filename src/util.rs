@@ -53,6 +53,7 @@ pub struct AsciiArt {
     pub name: Vec<String>,
     pub colors: Vec<Color>,
     pub width: u16,
+    pub height: u16,
     pub art: Vec<(u8, String)>,
 }
 
@@ -68,6 +69,7 @@ struct AsciiArtUnprocessed {
 impl TryFrom<AsciiArtUnprocessed> for AsciiArt {
     fn try_from(val: AsciiArtUnprocessed) -> anyhow::Result<Self> {
         let regex = Regex::new(r"\$\{c(\d*)\}")?;
+        let height = val.art.lines().count() as u16;
         let color_idx: Vec<u8> = regex
             .captures_iter(&val.art)
             .map(|x| -> anyhow::Result<u8> {
@@ -95,6 +97,7 @@ impl TryFrom<AsciiArtUnprocessed> for AsciiArt {
                 .collect(),
             colors: val.colors.clone(),
             width: val.width,
+            height,
             art: ascii_art,
         })
     }
