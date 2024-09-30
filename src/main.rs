@@ -9,7 +9,6 @@ use clap::Parser;
 use crossterm::{
     cursor::{position, MoveTo, MoveToColumn, MoveToNextLine},
     style::{Color, PrintStyledContent, Stylize},
-    terminal::{Clear, ClearType::All},
     ExecutableCommand,
 };
 use directories::ProjectDirs;
@@ -18,7 +17,7 @@ use mirafetch::{
     config::{Config, Orientation},
     util::{get_colorscheme, get_icon, AsciiArt},
 };
-use std::{cmp::max, fmt::Display, fs, io::stdout, process::ExitCode, sync::Arc};
+use std::{fmt::Display, fs, io::stdout, process::ExitCode, sync::Arc};
 use std::{
     sync::mpsc,
     thread::{self},
@@ -115,13 +114,13 @@ fn display(
     logo: &AsciiArt,
 ) -> Result<(), anyhow::Error> {
     let mut out = stdout();
-    out.execute(Clear(All))?.execute(MoveTo(0, 0))?;
+    println!("");
     for line in icon {
         out /* .execute(ResetColor)?*/
             .execute(PrintStyledContent(line))?;
     }
     let pos = position()?;
-    out.execute(MoveTo(0, 0))?;
+    out.execute(MoveTo(0, pos.1 - logo.height))?;
     for (property, value) in info {
         out.execute(MoveToColumn(logo.width + 3))?
             .execute(PrintStyledContent(property.clone().bold().red()))?;
@@ -132,7 +131,8 @@ fn display(
             .execute(MoveToNextLine(1))?;
         // sleep(Duration::from_secs(1));
     }
-    let (_x, y) = position()?;
-    out.execute(MoveTo(0, max(y, pos.1) + 1))?;
+    //let (_x, y) = position()?;
+    //out.execute(MoveTo(0, pos.1 + 1))?;
+    println!("");
     Ok(())
 }
