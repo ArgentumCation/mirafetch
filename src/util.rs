@@ -1,5 +1,6 @@
 use anyhow::anyhow;
 use crossterm::style::Color;
+use lazy_static::lazy_static;
 use num::Unsigned;
 use regex::Regex;
 use rustc_hash::FxHashMap;
@@ -68,11 +69,13 @@ struct AsciiArtUnprocessed {
     pub width: u16,
     pub art: String,
 }
+lazy_static! {
+    static ref ascii_regex: Regex = Regex::new(r"\$\{c(\d*)\}").unwrap();
+}
 impl TryFrom<AsciiArtUnprocessed> for AsciiArt {
     fn try_from(val: AsciiArtUnprocessed) -> anyhow::Result<Self> {
-        let regex = Regex::new(r"\$\{c(\d*)\}")?;
         let height = u16::try_from(val.art.lines().count())?;
-        let color_idx: Vec<u8> = regex
+        let color_idx: Vec<u8> = ascii_regex
             .captures_iter(&val.art)
             .map(|x| -> anyhow::Result<u8> {
                 str::parse(
@@ -84,7 +87,7 @@ impl TryFrom<AsciiArtUnprocessed> for AsciiArt {
             })
             .map(std::result::Result::unwrap)
             .collect();
-        let chunks = regex
+        let chunks = ascii_regex
             .split(&val.art)
             .map(std::borrow::ToOwned::to_owned)
             .skip(1)
