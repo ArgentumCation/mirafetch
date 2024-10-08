@@ -1,13 +1,20 @@
 #![cfg(target_os = "macos")]
 use super::OSInfo;
 use arcstr::ArcStr;
+use libc::timespec;
+use platform_info::{PlatformInfo, PlatformInfoAPI, UNameAPI};
 use core::ffi::CStr;
 use rustc_hash::FxHashMap;
-pub struct MacInfo {}
+use std::{alloc::Layout, env};
+pub struct MacInfo {
+    uts: PlatformInfo
+}
 
 impl MacInfo {
     pub fn new() -> Self {
-        Self {}
+        Self {
+            uts: PlatformInfo::new().unwrap()
+        }
     }
 }
 
@@ -85,7 +92,12 @@ impl OSInfo for MacInfo {
     }
 
     fn locale(&self) -> Option<ArcStr> {
-        None
+        env::var("LANG")
+            .ok()
+            .filter(|x| !x.is_empty())
+            .or_else(|| env::var("LC_ALL").ok().filter(|x| !x.is_empty()))
+            .or_else(|| env::var("LC_MESSAGES").ok().filter(|x| !x.is_empty()))
+            .map(ArcStr::from)
     }
 
     fn theme(&self) -> Option<ArcStr> {
@@ -105,7 +117,7 @@ impl OSInfo for MacInfo {
     }
 
     fn kernel(&self) -> Option<ArcStr> {
-        None
+        Some(ArcStr::from(self.uts.release().to_string_lossy()))
     }
 
     fn wm(&self) -> Option<ArcStr> {
@@ -140,7 +152,17 @@ impl OSInfo for MacInfo {
     }
 
     fn uptime(&self) -> Option<ArcStr> {
-        None
+        unsafe {
+            let time: *mut timespec = std::alloc::alloc(Layout::new::<timespec>()).cast();
+            libc::clock_gettime(libc::CLOCK_UPTIME_RAW, time);
+            Some(ArcStr::from(
+                (
+                    time::Duration::seconds(time.as_ref().unwrap().tv_sec)
+                    // + time::Duration::nanoseconds(time.as_ref().unwrap().tv_nsec)
+                )
+                .to_string(),
+            ))
+        }
     }
 
     fn ip(&self) -> Vec<ArcStr> {
@@ -148,6 +170,7 @@ impl OSInfo for MacInfo {
     }
 
     fn hostname(&self) -> Option<ArcStr> {
-        Some(arcstr::literal!("foobar"))
+        self.uts.nodename().to_str().map(ArcStr::from)
+
     }
 }
