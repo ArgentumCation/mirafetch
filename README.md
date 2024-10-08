@@ -60,7 +60,8 @@ Options:
 - Ubuntu 23.10
 - Pop! OS 20.04
 - NixOS 24.10
-- macOS Sonoma
+- macOS Sonoma (14)
+- macOS Ventura (13)
 
 ## Special Thanks
 
