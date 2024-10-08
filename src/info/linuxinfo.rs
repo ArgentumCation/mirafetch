@@ -325,6 +325,7 @@ impl OSInfo for LinuxInfo {
                     continue;
                 }
                 if i32::from((*addr.ifa_addr).sa_family) == AF_INET {
+                    #[allow(clippy::cast_ptr_alignment)]
                     let ipv4 = (*(addr.ifa_addr).cast::<libc::sockaddr_in>())
                         .sin_addr
                         .s_addr
@@ -332,6 +333,7 @@ impl OSInfo for LinuxInfo {
                     ipv4_addrs.insert(Ipv4Addr::from(ipv4));
                 }
                 if i32::from((*addr.ifa_addr).sa_family) == AF_INET6 {
+                    #[allow(clippy::cast_ptr_alignment)]
                     let ipv6 = (*(addr.ifa_addr).cast::<libc::sockaddr_in6>())
                         .sin6_addr
                         .s6_addr;

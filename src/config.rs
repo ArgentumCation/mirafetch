@@ -21,6 +21,7 @@ impl Config {
             orientation: self.orientation,
         }
     }
+    #[must_use]
     pub fn with_scheme_name(self, scheme_name: impl Into<String>) -> Self {
         Self {
             scheme_name: Some(Into::<String>::into(scheme_name)),

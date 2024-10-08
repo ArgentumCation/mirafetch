@@ -16,7 +16,7 @@ const FLAGS: &str = include_str!("../data/flags.toml");
 ///
 /// This function will return an error if the icon cannot be found
 #[allow(dead_code)]
-pub fn get_icon<'a>(icon_name: impl ToString) -> anyhow::Result<AsciiArt> {
+pub fn get_icon(icon_name: &impl ToString) -> anyhow::Result<AsciiArt> {
     let icon_name = &icon_name.to_string().to_ascii_lowercase();
     let icons = serde_yaml::from_str::<Vec<AsciiArtUnprocessed>>(ICONS)
         .expect("Could not parse icons file")
@@ -34,6 +34,7 @@ pub fn get_icon<'a>(icon_name: impl ToString) -> anyhow::Result<AsciiArt> {
 /// # Errors
 ///
 /// This function will return an error if the colorscheme cannot be found
+#[allow(dead_code)]
 pub fn get_colorscheme(scheme_name: &impl ToString) -> Arc<[Color]> {
     let scheme = scheme_name.to_string();
     let schemes: FxHashMap<String, Vec<(u8, u8, u8)>> =
@@ -49,6 +50,7 @@ pub fn get_colorscheme(scheme_name: &impl ToString) -> Arc<[Color]> {
         })
         .collect()
 }
+#[allow(dead_code)]
 pub struct AsciiArt {
     pub name: Vec<String>,
     pub colors: Vec<Color>,
@@ -69,7 +71,7 @@ struct AsciiArtUnprocessed {
 impl TryFrom<AsciiArtUnprocessed> for AsciiArt {
     fn try_from(val: AsciiArtUnprocessed) -> anyhow::Result<Self> {
         let regex = Regex::new(r"\$\{c(\d*)\}")?;
-        let height = val.art.lines().count() as u16;
+        let height = u16::try_from(val.art.lines().count())?;
         let color_idx: Vec<u8> = regex
             .captures_iter(&val.art)
             .map(|x| -> anyhow::Result<u8> {
