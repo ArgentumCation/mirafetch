@@ -7,13 +7,13 @@ use anyhow::{anyhow, Ok, Result};
 use arcstr::ArcStr;
 use clap::Parser;
 use crossterm::{
-    cursor::{position, MoveTo, MoveToColumn, MoveToNextLine},
+    cursor::{position, MoveTo, MoveToColumn, MoveToRow},
     style::{Color, PrintStyledContent, Stylize},
     ExecutableCommand,
 };
 use directories::ProjectDirs;
 use mirafetch::{
-    colorizer::{Colorizer, DefaultColorizer, FlagColorizer},
+    colorizer::{Colorizer, DefaultColors, FlagColors},
     config::{Config, Orientation},
     util::{get_colorscheme, get_icon, AsciiArt},
 };
@@ -31,10 +31,10 @@ fn main() -> anyhow::Result<std::process::ExitCode> {
 
     let (tx, rx) = mpsc::channel();
     let id = info::get_id();
-    let logo: AsciiArt = get_icon(get_os_id(&settings, id))?;
+    let logo: AsciiArt = get_icon(&get_os_id(&settings, &id))?;
     let colored_logo = colorize_logo(settings.orientation, &scheme, &logo)?;
     thread::spawn(move || {
-        info::get_async(tx);
+        info::get_async(&tx);
     });
 
     // Show system info
@@ -43,7 +43,7 @@ fn main() -> anyhow::Result<std::process::ExitCode> {
     Ok(ExitCode::SUCCESS)
 }
 
-fn get_os_id(settings: &Config, default: impl ToString) -> impl ToString {
+fn get_os_id(settings: &Config, default: &impl ToString) -> impl ToString {
     settings
         .icon_name
         .as_ref()
@@ -60,11 +60,6 @@ fn get_colorscheme_from_settings(settings: &Config) -> Option<Arc<[Color]>> {
 }
 
 fn load_settings_file() -> Result<Config, anyhow::Error> {
-    // return Ok(Config::new(
-    //     Some("transgender"),
-    //     Some(Orientation::Horizontal),
-    //     None::<String>,
-    // ));
     let proj_dir = ProjectDirs::from("", "", "Mirafetch");
     let settings = proj_dir
         .ok_or_else(|| {
@@ -93,10 +88,10 @@ fn colorize_logo(
 ) -> Result<impl IntoIterator<Item = crossterm::style::StyledContent<impl Display>>, anyhow::Error>
 {
     let colorizer = match scheme {
-        None => Box::new(DefaultColorizer {}) as Box<dyn Colorizer>,
-        Some(colors) => Box::new(FlagColorizer {
+        None => Box::new(DefaultColors {}) as Box<dyn Colorizer>,
+        Some(colors) => Box::new(FlagColors {
             color_scheme: colors.clone(),
-            orientation: orientation.ok_or(anyhow!("Missing Orientation"))?,
+            orientation: orientation.ok_or_else(|| anyhow!("Missing Orientation"))?,
         }) as Box<dyn Colorizer>,
     };
 
@@ -114,25 +109,26 @@ fn display(
     logo: &AsciiArt,
 ) -> Result<(), anyhow::Error> {
     let mut out = stdout();
-    println!("");
+    // print icon
+    println!();
+    //let (_, top) = position()?;
     for line in icon {
-        out /* .execute(ResetColor)?*/
-            .execute(PrintStyledContent(line))?;
+        out.execute(PrintStyledContent(line))?;
     }
-    let pos = position()?;
-    out.execute(MoveTo(0, pos.1 - logo.height))?;
+    let (_, logo_bottom) = position()?;
+    out.execute(MoveTo(0, logo_bottom - logo.height + 1))?;
+    // print system info
     for (property, value) in info {
         out.execute(MoveToColumn(logo.width + 3))?
             .execute(PrintStyledContent(property.clone().bold().red()))?;
         if !property.is_empty() && !value.is_empty() {
             out.execute(PrintStyledContent(": ".bold().red()))?;
         }
-        out.execute(PrintStyledContent(value.reset()))?
-            .execute(MoveToNextLine(1))?;
-        // sleep(Duration::from_secs(1));
+        out.execute(PrintStyledContent(value.reset()))?;
+        println!();
     }
-    //let (_x, y) = position()?;
-    //out.execute(MoveTo(0, pos.1 + 1))?;
-    println!("");
+    let (_, info_bottom) = position()?;
+    out.execute(MoveToRow(std::cmp::max(info_bottom, logo_bottom)))?;
+    println!();
     Ok(())
 }

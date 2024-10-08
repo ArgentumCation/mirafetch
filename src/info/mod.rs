@@ -18,6 +18,7 @@ pub mod iosinfo;
 pub mod linuxinfo;
 pub mod macinfo;
 pub mod wininfo;
+#[allow(clippy::module_name_repetitions)]
 pub trait OSInfo: Send + Sync {
     fn sys_font(&self) -> Option<ArcStr> {
         None
@@ -125,8 +126,8 @@ pub trait OSInfo: Send + Sync {
 pub fn get_id() -> ArcStr {
     get_info::new().id()
 }
-
-pub fn get_async(tx: Sender<(ArcStr, ArcStr)>) {
+#[allow(clippy::too_many_lines)]
+pub fn get_async(tx: &Sender<(ArcStr, ArcStr)>) {
     let getter = Arc::new(get_info::new());
     let username = getter.username().unwrap_or_default();
     let hostname = getter.hostname().unwrap_or_default();
