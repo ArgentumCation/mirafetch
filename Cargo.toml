@@ -4,9 +4,12 @@ version="0.1.0"
 edition="2021"
 description="A Rust reimplementation of Hyfetch wih a focus on speed"
 license-file="LICENSE.md"
+readme="README.md"
 repository="https://github.com/ArgentumCation/mirafetch"
-
-include=["/data", "/src", "build.rs"]
+homepage="https://github.com/ArgentumCation/mirafetch"
+keywords=["fetch",  "cli", "sysinfo", "hyfetch"]
+exclude = ["src/hyfetch/*"]
+# include=["/data", "/src", "build.rs"]
 
 
 # [dev-dependencies]
@@ -78,4 +81,6 @@ path="src/main.rs"
 
 # [lib]
 # name="mirafetch"
-# path="src/lib.rs"
+# path="src/lib.rs
+
+
