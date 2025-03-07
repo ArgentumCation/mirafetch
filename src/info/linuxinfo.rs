@@ -29,6 +29,7 @@ use std::{
 pub struct LinuxInfo {
     uts: PlatformInfo,
     os_release: OnceLock<FxHashMap<ArcStr, ArcStr>>,
+    machine_info: OnceLock<FxHashMap<ArcStr, ArcStr>>,
 }
 
 impl Default for LinuxInfo {
@@ -42,6 +43,7 @@ impl LinuxInfo {
         Self {
             uts: PlatformInfo::new().unwrap(),
             os_release: OnceLock::default(),
+            machine_info: OnceLock::default(),
         }
     }
 
@@ -62,6 +64,11 @@ impl LinuxInfo {
     fn os_release(&self) -> &FxHashMap<ArcStr, ArcStr> {
         self.os_release
             .get_or_init(|| self.parse_shellenv_like_file("/etc/os-release"))
+    }
+
+    fn machine_info(&self) -> &FxHashMap<ArcStr, ArcStr> {
+        self.machine_info
+            .get_or_init(|| self.parse_shellenv_like_file("/etc/machine-info"))
     }
 }
 impl OSInfo for LinuxInfo {
@@ -133,8 +140,15 @@ impl OSInfo for LinuxInfo {
     }
 
     fn machine(&self) -> Option<ArcStr> {
-        fs::read_to_string("/sys/class/dmi/id/product_name")
-            .ok()
+        self.machine_info()
+            .get("HARDWARE_MODEL")
+            .map(|model| model.to_string())
+            .or_else(|| {
+                self.machine_info()
+                    .get("HARDWARE_VENDOR")
+                    .map(|vendor| vendor.to_string())
+            })
+            .or_else(|| fs::read_to_string("/sys/class/dmi/id/product_name").ok())
             .or_else(|| fs::read_to_string("/sys/devices/virtual/dmi/id/product_name").ok())
             .or_else(|| fs::read_to_string("/sys/firmware/devicetree/base/model").ok())
             .or_else(|| fs::read_to_string("/sys/firmware/devicetree/base/banner-name").ok())
