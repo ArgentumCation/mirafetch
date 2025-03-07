@@ -45,19 +45,22 @@ impl LinuxInfo {
         }
     }
 
+    fn parse_shellenv_like_file(&self, filename: &str) -> FxHashMap<ArcStr, ArcStr> {
+        let mut res = FxHashMap::default();
+        let data = fs::read_to_string(filename).ok().unwrap();
+        res.par_extend(data.par_lines().map(|line| {
+            let (x, y) = line.split_once('=').unwrap();
+            (
+                x.to_owned().into_boxed_str().into(),
+                y.trim_matches('"').to_owned().into_boxed_str().into(),
+            )
+        }));
+        res
+    }
+
     fn os_release(&self) -> &FxHashMap<ArcStr, ArcStr> {
-        self.os_release.get_or_init(|| {
-            let mut res = FxHashMap::default();
-            let data = fs::read_to_string("/etc/os-release").ok().unwrap();
-            res.par_extend(data.par_lines().map(|line| {
-                let (x, y) = line.split_once('=').unwrap();
-                (
-                    x.to_owned().into_boxed_str().into(),
-                    y.trim_matches('"').to_owned().into_boxed_str().into(),
-                )
-            }));
-            res
-        })
+        self.os_release
+            .get_or_init(|| self.parse_shellenv_like_file("/etc/os-release"))
     }
 }
 impl OSInfo for LinuxInfo {
