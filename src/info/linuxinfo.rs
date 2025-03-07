@@ -47,14 +47,15 @@ impl LinuxInfo {
 
     fn parse_shellenv_like_file(&self, filename: &str) -> FxHashMap<ArcStr, ArcStr> {
         let mut res = FxHashMap::default();
-        let data = fs::read_to_string(filename).ok().unwrap();
-        res.par_extend(data.par_lines().map(|line| {
-            let (x, y) = line.split_once('=').unwrap();
-            (
-                x.to_owned().into_boxed_str().into(),
-                y.trim_matches('"').to_owned().into_boxed_str().into(),
-            )
-        }));
+        if let Ok(data) = fs::read_to_string(filename) {
+            res.par_extend(data.par_lines().map(|line| {
+                let (x, y) = line.split_once('=').unwrap();
+                (
+                    x.to_owned().into_boxed_str().into(),
+                    y.trim_matches('"').to_owned().into_boxed_str().into(),
+                )
+            }));
+        }
         res
     }
 
