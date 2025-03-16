@@ -50,6 +50,7 @@ winreg="0.52"
 wmi={default-features=false, version="0.14"}
 windows={version="0.59.0", features=[
     "std",
+    "Win32_System_Power",
     "Win32_System_SystemInformation",
     "Win32_Networking_WinSock",
     "Win32_NetworkManagement_IpHelper",
