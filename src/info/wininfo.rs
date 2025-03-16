@@ -361,12 +361,11 @@ impl OSInfo for WindowsInfo {
     }
 
     fn memory(&self) -> Option<ArcStr> {
-        let mut state = MEMORYSTATUSEX::default();
-        GlobalMemoryStatusEx(&mut state).ok()?;
+        let result = GlobalMemoryStatusEx().ok()?;
         Some(arcstr::format!(
             "{} / {}",
-            bytecount_format(state.ullTotalPhys - state.ullAvailPhys, 2),
-            bytecount_format(state.ullTotalPhys, 2),
+            bytecount_format(result.ullTotalPhys - result.ullAvailPhys, 2),
+            bytecount_format(result.ullTotalPhys, 2),
         ))
     }
 
