@@ -13,6 +13,15 @@ A Rust reimplementation of Hyfetch wih a focus on speed
 
 ## Installation
 
+### Homebrew
+
+```
+brew tap ArgentumCation/mirafetch https://github.com/ArgentumCation/mirafetch
+brew install [--head] mirafetch
+```
+
+### Manual
+
 Download the repo and run `cargo run` in the folder to try it out. To install mirafetch try `cargo install .` and ensure your cargo directory is in `$PATH`
 
 ## Images
