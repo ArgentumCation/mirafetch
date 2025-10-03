@@ -13,6 +13,15 @@ A Rust reimplementation of Hyfetch wih a focus on speed
 
 ## Installation
 
+### Copr (Fedora, rpm-based)
+
+```
+sudo dnf copr enable osalbahr/mirafetch
+sudo dnf install mirafetch
+```
+
+### Manual
+
 Download the repo and run `cargo run` in the folder to try it out. To install mirafetch try `cargo install .` and ensure your cargo directory is in `$PATH`
 
 ## Images
