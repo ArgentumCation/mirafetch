@@ -4,6 +4,7 @@ version="0.1.0"
 edition="2021"
 description="A Rust reimplementation of Hyfetch wih a focus on speed"
 license-file="LICENSE.md"
+license="EUPL-1.2" # Required for rust2rpm
 readme="README.md"
 repository="https://github.com/ArgentumCation/mirafetch"
 homepage="https://github.com/ArgentumCation/mirafetch"
