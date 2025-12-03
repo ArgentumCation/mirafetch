@@ -75,4 +75,4 @@ Options:
 ## Special Thanks
 
 - https://github.com/fastfetch-cli/fastfetch
-- https://github.com/hykilpikonna/hyfetch/
+- https://github.com/hykilpikonna/hyfetch
