@@ -18,7 +18,7 @@ use windows::Win32::{
         GAA_FLAG_SKIP_MULTICAST, IP_ADAPTER_ADDRESSES_LH,
     },
     Networking::WinSock::{AF_INET, AF_INET6, AF_UNSPEC, SOCKADDR_IN, SOCKADDR_IN6},
-    System::SystemInformation::{GetLogicalProcessorInformationEx, RelationAll},
+    System::{Power::GetSystemPowerStatus, SystemInformation::{GetLogicalProcessorInformationEx, RelationAll}},
 };
 use winsafe::co::{SPI, SPIF};
 use winsafe::{
@@ -392,7 +392,33 @@ impl OSInfo for WindowsInfo {
     }
 
     fn battery(&self) -> Option<ArcStr> {
-        None
+        unsafe {
+            let mut system_power_status = Default::default();
+            GetSystemPowerStatus(&mut system_power_status).ok()?;
+            let no_battery = system_power_status.BatteryFlag & 128 == 128;
+            if no_battery {
+                return None;
+            }
+
+            let ac_line_status = match system_power_status.ACLineStatus {
+                 0 => Some("unplugged"),
+                 1 => Some("plugged in"),
+                 255 => None,
+                 _ => None
+            };
+            let charging = if system_power_status.BatteryFlag & 8 == 8 { "charging" } else { "not charging" };
+            let charge = match system_power_status.BatteryLifePercent { x if x <= 100 => Some(x.to_string()), _ => None };
+            let energy_saver = match system_power_status.SystemStatusFlag { 
+                0 => None,
+                1 => Some("energy saver on"),
+                x => panic!("unexpected value {} for SYSTEM_POWER_STATUS.SystemStatusFlag", x)
+            };
+            let mut status_parts = Vec::with_capacity(3);
+            if ac_line_status.is_some() { status_parts.push(ac_line_status.unwrap()); }
+            status_parts.push(charging);
+            if energy_saver.is_some() { status_parts.push(energy_saver.unwrap()); }
+            Some(ArcStr::from(format!("{}% ({})", charge.unwrap_or("\u{221e}".to_string()), status_parts.join(", "))))
+        }
     }
 
     fn locale(&self) -> Option<ArcStr> {
