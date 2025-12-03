@@ -18,6 +18,11 @@ A Rust reimplementation of Hyfetch wih a focus on speed
 ```
 brew tap ArgentumCation/mirafetch https://github.com/ArgentumCation/mirafetch
 brew install [--head] mirafetch
+### Copr (Fedora, rpm-based)
+
+```
+sudo dnf copr enable osalbahr/mirafetch
+sudo dnf install mirafetch
 ```
 
 ### Manual
@@ -75,4 +80,4 @@ Options:
 ## Special Thanks
 
 - https://github.com/fastfetch-cli/fastfetch
-- https://github.com/hykilpikonna/hyfetch/
+- https://github.com/hykilpikonna/hyfetch

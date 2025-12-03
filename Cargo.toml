@@ -4,6 +4,7 @@ version="0.1.0"
 edition="2021"
 description="A Rust reimplementation of Hyfetch wih a focus on speed"
 license-file="LICENSE.md"
+license="EUPL-1.2" # Required for rust2rpm
 readme="README.md"
 repository="https://github.com/ArgentumCation/mirafetch"
 homepage="https://github.com/ArgentumCation/mirafetch"
@@ -45,15 +46,17 @@ smallvec = "1.13.2"
 platform-info="2.0"
 
 [target.'cfg(windows)'.dependencies]
+crossterm={default-features=false, features=["events","windows"],version="0.28"}
 winreg="0.52"
 wmi={default-features=false, version="0.14"}
 windows={version="0.59.0", features=[
+    "std",
     "Win32_System_SystemInformation",
     "Win32_Networking_WinSock",
     "Win32_NetworkManagement_IpHelper",
     "Win32_NetworkManagement_Ndis",
 ], default-features=false}
-winsafe={version="0.0", features=["dwm"], default-features=false}
+winsafe={version="0.0", features=["advapi","dwm","kernel"], default-features=false}
 
 [target.'cfg(target_os = "macos")'.dependencies]
 sysctl="0.6.0"
