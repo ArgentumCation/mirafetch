@@ -29,6 +29,7 @@ use std::{
 pub struct LinuxInfo {
     uts: PlatformInfo,
     os_release: OnceLock<FxHashMap<ArcStr, ArcStr>>,
+    machine_info: OnceLock<FxHashMap<ArcStr, ArcStr>>,
 }
 
 impl Default for LinuxInfo {
@@ -42,13 +43,13 @@ impl LinuxInfo {
         Self {
             uts: PlatformInfo::new().unwrap(),
             os_release: OnceLock::default(),
+            machine_info: OnceLock::default(),
         }
     }
 
-    fn os_release(&self) -> &FxHashMap<ArcStr, ArcStr> {
-        self.os_release.get_or_init(|| {
-            let mut res = FxHashMap::default();
-            let data = fs::read_to_string("/etc/os-release").ok().unwrap();
+    fn parse_shellenv_like_file(&self, filename: &str) -> FxHashMap<ArcStr, ArcStr> {
+        let mut res = FxHashMap::default();
+        if let Ok(data) = fs::read_to_string(filename) {
             res.par_extend(data.par_lines().map(|line| {
                 let (x, y) = line.split_once('=').unwrap();
                 (
@@ -56,8 +57,18 @@ impl LinuxInfo {
                     y.trim_matches('"').to_owned().into_boxed_str().into(),
                 )
             }));
-            res
-        })
+        }
+        res
+    }
+
+    fn os_release(&self) -> &FxHashMap<ArcStr, ArcStr> {
+        self.os_release
+            .get_or_init(|| self.parse_shellenv_like_file("/etc/os-release"))
+    }
+
+    fn machine_info(&self) -> &FxHashMap<ArcStr, ArcStr> {
+        self.machine_info
+            .get_or_init(|| self.parse_shellenv_like_file("/etc/machine-info"))
     }
 }
 impl OSInfo for LinuxInfo {
@@ -129,8 +140,15 @@ impl OSInfo for LinuxInfo {
     }
 
     fn machine(&self) -> Option<ArcStr> {
-        fs::read_to_string("/sys/class/dmi/id/product_name")
-            .ok()
+        self.machine_info()
+            .get("HARDWARE_MODEL")
+            .map(|model| model.to_string())
+            .or_else(|| {
+                self.machine_info()
+                    .get("HARDWARE_VENDOR")
+                    .map(|vendor| vendor.to_string())
+            })
+            .or_else(|| fs::read_to_string("/sys/class/dmi/id/product_name").ok())
             .or_else(|| fs::read_to_string("/sys/devices/virtual/dmi/id/product_name").ok())
             .or_else(|| fs::read_to_string("/sys/firmware/devicetree/base/model").ok())
             .or_else(|| fs::read_to_string("/sys/firmware/devicetree/base/banner-name").ok())
