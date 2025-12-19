@@ -421,7 +421,7 @@ impl OSInfo for LinuxInfo {
                                 (
                                     arcstr::format!("Disk ({mount})"),
                                     arcstr::format!(
-                                        "{}/ {}",
+                                        "{} / {}",
                                         bytecount_format(bytes, 0),
                                         bytecount_format(total * block_size, 0)
                                     ),
