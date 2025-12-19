@@ -201,7 +201,9 @@ impl OSInfo for LinuxInfo {
                 }
                 let pid = u16::from_str_radix(&fs::read_to_string(path).unwrap().trim()[2..], 16)
                     .unwrap();
-                let device = &Device::from_vid_pid(vid, pid).unwrap();
+                let Some(device) = &Device::from_vid_pid(vid, pid) else {
+                    continue;
+                };
                 let vendor = device
                     .vendor()
                     .name()
